@@ -2,7 +2,7 @@
 
 # Report Metric
 
-Report a binary outcome for a quality metric on a specific session. Sessions can take up to five seconds to become available in three.dev after their first request completes. Wait at least this long before reporting.
+Report a binary outcome for a quality metric on a specific session.
 
 ## Request
 
