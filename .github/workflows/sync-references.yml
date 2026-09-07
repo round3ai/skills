@@ -25,6 +25,7 @@ jobs:
       - name: Open a pull request if anything changed
         uses: peter-evans/create-pull-request@v8
         with:
+          sign-commits: true
           branch: bot/sync-references
           delete-branch: true
           commit-message: "Sync docs references from docs.three.dev"
