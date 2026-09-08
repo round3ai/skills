@@ -9,42 +9,97 @@ Skills that teach AI coding agents how to integrate and work with
 The repository is an [Agent Plugin](https://agent-plugins.org): one install
 gives an agent the skills below and the three.dev MCP server at
 `https://mcp.three.dev/mcp`. The first tool call opens a browser sign-in to
-three.dev; no API key to create or paste.
+three.dev; there is no API key to create or paste. Pick the path that matches
+your client.
 
-**Claude Code**
+### Claude Code: plugin
 
 ```bash
 claude plugin marketplace add round3ai/skills
 claude plugin install three-dev@three-dev
 ```
 
-**Codex**
+Then run `/mcp` in a session, select `plugin:three-dev:three-dev` and sign in.
+The `plugin:` prefix is how Claude Code labels servers that come from a
+plugin. While this repository is private, the commands above use your own git
+credentials; the `owner/repo` form clones over SSH, so have your key loaded in
+`ssh-agent`, or set `CLAUDE_CODE_PLUGIN_PREFER_HTTPS=1` to clone over HTTPS.
+
+### Claude Code: share with a team through the repository
+
+Commit this to `.claude/settings.json` in the project. Anyone who opens the
+repository and trusts the folder gets the marketplace registered and is told
+to run the one install command; nobody has to find these docs.
+
+```json
+{
+  "extraKnownMarketplaces": {
+    "three-dev": {
+      "source": { "source": "github", "repo": "round3ai/skills" }
+    }
+  },
+  "enabledPlugins": {
+    "three-dev@three-dev": true
+  }
+}
+```
+
+### MCP server only, no skills
+
+Commit a `.mcp.json` at the project root. Every MCP client reads this file,
+and in Claude Code the server shows up as plain `three-dev`.
+
+```json
+{
+  "mcpServers": {
+    "three-dev": {
+      "type": "http",
+      "url": "https://mcp.three.dev/mcp"
+    }
+  }
+}
+```
+
+Or register it for yourself only:
+
+```bash
+claude mcp add --transport http --scope user three-dev https://mcp.three.dev/mcp
+codex mcp add three-dev --url https://mcp.three.dev/mcp
+```
+
+Do not combine this with the plugin on the same machine, or the same server
+is listed twice.
+
+### Codex
 
 ```bash
 codex plugin marketplace add round3ai/skills
 codex plugin install three-dev
 ```
 
-**Cursor, VS Code, GitHub Copilot, Kiro, Cline** read the plugin manifest at
-the repository root. Install from source with the client's plugin command, or
-add `https://github.com/round3ai/skills` from its plugin marketplace where one
+### Cursor, VS Code, GitHub Copilot, Kiro, Cline
+
+These clients read the `plugin.json` at the repository root. Install from
+source with the client's plugin command, or add
+`https://github.com/round3ai/skills` from its plugin marketplace where one
 exists.
 
-**Skills only**, for any other agent:
+### Skills only, any other agent
 
 ```bash
 npx skills add round3ai/skills
 ```
 
-This installs the skills but not the MCP server. To add the server by hand,
-point the client at `https://mcp.three.dev/mcp` with the Streamable HTTP
-transport, for example `claude mcp add --transport http three-dev
-https://mcp.three.dev/mcp`. Or copy the `skills/three-dev` folder into your
-agent's skills directory (`.claude/skills/`, `.agents/skills/`, or
-equivalent).
+This installs the skills but not the MCP server; add the server with the
+`.mcp.json` above. To copy the files by hand, put the `skills/three-dev`
+folder in your agent's skills directory (`.claude/skills/`,
+`.agents/skills/`, or equivalent).
 
-Installed plugins and skills do not update themselves. Run
-`claude plugin update three-dev` or `npx skills update` to pick up changes.
+### Updating
+
+Installed plugins and skills do not update themselves. The plugin declares no
+version, so `claude plugin update three-dev` picks up the latest commit;
+`npx skills update` does the same for skills-only installs.
 
 ## Skills
 
