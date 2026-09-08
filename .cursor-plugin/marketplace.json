@@ -1,0 +1,13 @@
+{
+  "name": "three-dev",
+  "owner": {
+    "name": "round3"
+  },
+  "plugins": [
+    {
+      "name": "three-dev",
+      "source": "./",
+      "description": "Integrate three.dev into a codebase and work with recorded LLM traffic: route calls through the proxy, define use cases and quality metrics, and investigate failure modes with the three.dev MCP server."
+    }
+  ]
+}

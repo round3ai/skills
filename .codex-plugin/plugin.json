@@ -1,0 +1,39 @@
+{
+  "name": "three-dev",
+  "description": "Integrate three.dev into a codebase and work with recorded LLM traffic: route calls through the proxy, define use cases and quality metrics, and investigate failure modes with the three.dev MCP server.",
+  "author": {
+    "name": "round3",
+    "url": "https://three.dev"
+  },
+  "homepage": "https://docs.three.dev",
+  "repository": "https://github.com/round3ai/skills",
+  "license": "MIT",
+  "keywords": [
+    "three.dev",
+    "llm",
+    "proxy",
+    "observability",
+    "experiments",
+    "evaluation",
+    "ai-judge",
+    "mcp"
+  ],
+  "skills": "./skills/",
+  "mcpServers": "./mcp.json",
+  "interface": {
+    "displayName": "three.dev",
+    "shortDescription": "three.dev proxy integration and MCP",
+    "longDescription": "Integrate three.dev into a codebase and work with recorded LLM traffic. The skill wires OpenAI, Anthropic, Gemini, Azure OpenAI, OpenRouter, Bedrock or LiteLLM clients through the three.dev proxy with use cases, sessions, tags and quality metrics. The MCP server reads the live docs, lists recorded requests and conversations, and surfaces the failure modes the AI Judge detected.",
+    "developerName": "round3",
+    "category": "Developer Tools",
+    "capabilities": [
+      "Interactive"
+    ],
+    "websiteURL": "https://three.dev",
+    "defaultPrompt": [
+      "Add three.dev to this codebase",
+      "What are the worst failure modes for my use case this week?",
+      "Show me the conversation for a failing request and propose a fix"
+    ]
+  }
+}
