@@ -2,6 +2,8 @@
 
 # Overview
 
+Route your LLM requests through the three.dev proxy for observability and experimentation.
+
 The three.dev proxy forwards your requests to your AI provider and records them for observability and experimentation. To start using the proxy, make three changes to your application code:
 
 * **Change your base URL** to `gate.three.dev`. This routes requests through the three.dev proxy, which forwards them to the AI provider.

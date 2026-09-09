@@ -2,6 +2,8 @@
 
 # Report Metric
 
+Report a binary quality metric outcome for a session.
+
 Report a binary outcome for a quality metric on a specific session.
 
 ## Request
