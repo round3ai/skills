@@ -2,6 +2,8 @@
 
 # Planning your integration
 
+Decisions to make before wiring in the proxy — how many use cases to create, whether environments need separate keys, what a session is for your feature, and which tags to send.
+
 The proxy needs three headers to record a request: your API key, a use case slug, and a session ID. You can create a use case from the **Use Cases** page or let three.dev create it on the first request under a new slug; either way, the decisions on this page are about which slugs your code sends.
 
 ## How many use cases should I create?

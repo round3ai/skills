@@ -2,6 +2,8 @@
 
 # Supported paths
 
+Advanced observability for the Chat Completions, Messages, and Responses APIs, session grouping, and request- and session-level tags.
+
 By default, the proxy forwards and records any type of LLM request. High-level details are stored and visible in the [Requests](https://app.three.dev/requests) page.
 
 The proxy supports **advanced observability** for three interaction types:
@@ -12,7 +14,7 @@ The proxy supports **advanced observability** for three interaction types:
 
 When one of these interaction methods is used, additional information appears in the [Requests](https://app.three.dev/requests) page — cost, tokens, and the full messages.
 
-<figure><img src="/files/PIoxiZctVAXhHQzTFx6m" alt=""><figcaption></figcaption></figure>
+<figure><img src="https://304769546-files.gitbook.io/~/files/v0/b/gitbook-x-prod.appspot.com/o/spaces%2F8mgRUFL8AoxKn8ZwmSqd%2Fuploads%2F6lpKGJwxoUyWIhddfmRP%2Frequests.png?alt=media&amp;token=dbb5948e-646c-46a8-a0a9-55416b3c9948" alt=""><figcaption></figcaption></figure>
 
 ## Specifying the session ID
 

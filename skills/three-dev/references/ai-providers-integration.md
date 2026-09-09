@@ -2,6 +2,8 @@
 
 # AI Providers Integration
 
+Configure the three.dev proxy for OpenAI, Anthropic, Gemini, Azure OpenAI, and LiteLLM — with code examples per provider and language.
+
 The three.dev proxy supports multiple AI providers. Point your SDK at `gate.three.dev`, authenticate with your three.dev API key, and set the `X-Three-AI-Provider` header to route to the right backend. See [Overview](https://docs.three.dev/sending-requests/sending-requests.md) for the three changes every integration requires.
 
 ## Provider examples
