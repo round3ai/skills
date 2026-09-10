@@ -1,4 +1,4 @@
-<!-- Synced from https://docs.three.dev/sending-requests/sending-requests.md by scripts/sync-references.sh. Do not edit; the live page wins. -->
+<!-- Synced from https://docs.three.dev/sending-requests/sending-requests.md. Do not edit; the live page wins. -->
 
 # Overview
 

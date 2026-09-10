@@ -70,8 +70,11 @@ verbatim when the user wants to look; never compose an app URL yourself.
 - **The user approves, you do.** Present findings and the proposed fix, then stop.
   Never edit the user's code, prompt, or configuration without a yes.
 - **Never start an offline experiment on your own.** It spends the user's provider
-  and AI Judge budget and runs for hours. Propose it with `dry_run=true` numbers
-  and ask; create it only after an explicit yes. See
+  and AI Judge budget and runs for hours. When the user asked for the experiment
+  or already said yes to your proposal, dry-run it and then create it without
+  asking again; a dry run is validation, not a second request for permission.
+  When the experiment is your own idea, propose it with the dry-run numbers and
+  wait for an explicit yes. See
   [references/offline-experiments.md](references/offline-experiments.md).
 - **Be brief.** No narration of tool calls. Numbers go in a table with their
   denominators next to them.
@@ -91,8 +94,10 @@ case slug, so try the use cases in turn when it is unknown. No tool reads a
 session; say so and ask for a request id from it.
 
 If `list_failure_modes` answers that failure modes are not available for the use
-case, or an experiment tool answers that it is not enabled for the organization,
-report that message as is and stop that branch. Do not retry or work around it.
+case, report that message as is and stop that branch. If the offline-experiment
+tools are missing from the tool list, or answer that they are not enabled for
+the organization, offline experiments are not enabled: say so and skip Step 6.
+Do not retry or work around either.
 
 ### Step 1: List and rank the failure modes
 
@@ -135,9 +140,10 @@ the mode's traffic beyond the examples, call `list_requests` with a
 ### Step 4: Read the conversations
 
 Call `get_request_conversation` on two or three example `request_id`s, choosing
-different-looking ones. Conversations can be long, and a large result may come
-back as a file path instead of text: read the file. Read the system prompt and the
-tool definitions once, then the turns around the failure. Look for what the model
+different-looking ones. Conversations can be long; if a client hands you a large
+result as a file instead of text, read the file. Read the system prompt and the
+tool names once, then the turns around the failure; ask for `detail=full` or
+`include_tools=true` only when a capped part or a tool definition matters. Look for what the model
 saw and what it did: a missing or contradicting instruction, a tool result it
 ignored, a fact it invented, a format it broke, a context it lost.
 
@@ -185,6 +191,7 @@ a sample.
 - Failure mode ids and request ids are UUIDs; copy them exactly from a result.
 - The `to` bound is exclusive and windows are RFC3339 with an offset
   (`2026-09-01T00:00:00Z`).
-- `create_offline_experiment` with `dry_run=false` only after the user said yes
-  to the specific proposal you showed.
+- `create_offline_experiment` with `dry_run=false` only when the user asked for
+  the experiment or said yes to the specific proposal you showed; then do not
+  ask again.
 - Do not paraphrase a conversation as evidence; quote it.

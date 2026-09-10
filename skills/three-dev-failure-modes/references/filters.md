@@ -2,9 +2,9 @@
 
 `list_requests` takes `filters`, a list of up to five conditions that must all
 match. Each is `{field, predicate, value}` plus `key` for tags. Call
-`get_request_facets` first: it returns, per field, the predicates it accepts and
-the values present in the window, and every entry's `example` is a filter you can
-pass as is.
+`get_request_facets` first: it returns, per field, the values present in the
+window, and every entry's `example` is a filter you can pass as is. The
+predicates each field accepts are in the table below.
 
 | Field | Predicates | Value | Notes |
 | --- | --- | --- | --- |

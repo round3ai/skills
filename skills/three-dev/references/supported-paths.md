@@ -1,4 +1,4 @@
-<!-- Synced from https://docs.three.dev/sending-requests/supported-paths.md by scripts/sync-references.sh. Do not edit; the live page wins. -->
+<!-- Synced from https://docs.three.dev/sending-requests/supported-paths.md. Do not edit; the live page wins. -->
 
 # Supported paths
 

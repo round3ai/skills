@@ -1,4 +1,4 @@
-<!-- Synced from https://docs.three.dev/api-reference/report-metric.md by scripts/sync-references.sh. Do not edit; the live page wins. -->
+<!-- Synced from https://docs.three.dev/api-reference/report-metric.md. Do not edit; the live page wins. -->
 
 # Report Metric
 
