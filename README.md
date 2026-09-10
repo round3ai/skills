@@ -21,9 +21,7 @@ claude plugin install three-dev@three-dev
 
 Then run `/mcp` in a session, select `plugin:three-dev:three-dev` and sign in.
 The `plugin:` prefix is how Claude Code labels servers that come from a
-plugin. While this repository is private, the commands above use your own git
-credentials; the `owner/repo` form clones over SSH, so have your key loaded in
-`ssh-agent`, or set `CLAUDE_CODE_PLUGIN_PREFER_HTTPS=1` to clone over HTTPS.
+plugin.
 
 ### Claude Code: share with a team through the repository
 
@@ -91,9 +89,9 @@ npx skills add round3ai/skills
 ```
 
 This installs the skills but not the MCP server; add the server with the
-`.mcp.json` above. To copy the files by hand, put the `skills/three-dev`
-folder in your agent's skills directory (`.claude/skills/`,
-`.agents/skills/`, or equivalent).
+`.mcp.json` above. To copy the files by hand, put the `skills/three-dev` and
+`skills/three-dev-failure-modes` folders in your agent's skills directory
+(`.claude/skills/`, `.agents/skills/`, or equivalent).
 
 ### Updating
 
@@ -106,22 +104,21 @@ version, so `claude plugin update three-dev` picks up the latest commit;
 | Skill | Use it when |
 | --- | --- |
 | [`three-dev`](skills/three-dev/SKILL.md) | Adding three.dev to a codebase, or extending an existing integration: routing LLM calls through the proxy, use cases, sessions, tags, and quality metrics. |
+| [`three-dev-failure-modes`](skills/three-dev-failure-modes/SKILL.md) | Investigating an LLM feature that three.dev already records: triaging the AI Judge's failure modes, reading the flagged conversations, proposing a fix, and verifying it with an offline experiment. |
 
-The skill works on its own. With the
+`three-dev` works on its own. With the
 [three.dev MCP server](https://docs.three.dev) connected it reads the live
 docs and checks recorded traffic; without it, it uses the docs copies under
-`references/`.
+`references/`. `three-dev-failure-modes` needs the MCP server; every fact it
+reports comes from the tools.
 
-## Keeping the docs copies current
+## Contributing
 
-Files under `skills/three-dev/references/` marked "Synced from" are copies of
-pages on docs.three.dev. Do not edit them; edit the docs, then run:
-
-```bash
-./scripts/sync-references.sh
-```
-
-and commit the diff.
+The skills are maintained by the three.dev team and published to this
+repository automatically; the same files are served by the three.dev MCP
+server. Pull requests that edit `skills/` are overwritten by the next
+publish, so report mistakes or suggestions as an issue here instead, and
+they will land in both places.
 
 ## License
 
