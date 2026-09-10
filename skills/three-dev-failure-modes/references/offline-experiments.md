@@ -19,7 +19,8 @@ quality, latency, cost and failure modes per variant against control.
    count, the AI Judge that will be used, and the validated variants. It creates
    nothing and needs no consent. The dataset is the newest matching requests from
    the last 30 days that succeeded and are not already in an experiment; at least
-   100 must match. Use `filters` (same grammar as `list_requests`) to target the
+   10 must match, and below about 100 the comparison is weak (the dry run says so
+   in `note`). Use `filters` (same grammar as `list_requests`) to target the
    traffic the failure mode lives in.
 
 If the use case has no released AI Judge the call fails; the user creates one in
@@ -27,7 +28,10 @@ the three.dev app first.
 
 ## The proposal
 
-Show, then ask "Do you want me to start this experiment?" and wait:
+If the user asked for the experiment, or already confirmed one you proposed,
+skip this section: the dry run is validation, not a second request for
+permission, and you create right after it. Otherwise show, then ask "Do you want
+me to start this experiment?" and wait:
 
 | Variant | Change | Provider / model | Reasoning |
 | Dataset | N requests (from the dry run), filters used |

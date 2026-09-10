@@ -1,4 +1,4 @@
-<!-- Synced from https://docs.three.dev/getting-started/planning-your-integration.md by scripts/sync-references.sh. Do not edit; the live page wins. -->
+<!-- Synced from https://docs.three.dev/getting-started/planning-your-integration.md. Do not edit; the live page wins. -->
 
 # Planning your integration
 

@@ -1,4 +1,4 @@
-<!-- Synced from https://docs.three.dev/sending-requests/ai-providers-integration.md by scripts/sync-references.sh. Do not edit; the live page wins. -->
+<!-- Synced from https://docs.three.dev/sending-requests/ai-providers-integration.md. Do not edit; the live page wins. -->
 
 # AI Providers Integration
 
