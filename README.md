@@ -91,9 +91,9 @@ npx skills add round3ai/skills
 ```
 
 This installs the skills but not the MCP server; add the server with the
-`.mcp.json` above. To copy the files by hand, put the `skills/three-dev`
-folder in your agent's skills directory (`.claude/skills/`,
-`.agents/skills/`, or equivalent).
+`.mcp.json` above. To copy the files by hand, put the `skills/three-dev` and
+`skills/three-dev-failure-modes` folders in your agent's skills directory
+(`.claude/skills/`, `.agents/skills/`, or equivalent).
 
 ### Updating
 
@@ -106,22 +106,22 @@ version, so `claude plugin update three-dev` picks up the latest commit;
 | Skill | Use it when |
 | --- | --- |
 | [`three-dev`](skills/three-dev/SKILL.md) | Adding three.dev to a codebase, or extending an existing integration: routing LLM calls through the proxy, use cases, sessions, tags, and quality metrics. |
+| [`three-dev-failure-modes`](skills/three-dev-failure-modes/SKILL.md) | Investigating an LLM feature that three.dev already records: triaging the AI Judge's failure modes, reading the flagged conversations, proposing a fix, and verifying it with an offline experiment. |
 
-The skill works on its own. With the
+`three-dev` works on its own. With the
 [three.dev MCP server](https://docs.three.dev) connected it reads the live
 docs and checks recorded traffic; without it, it uses the docs copies under
-`references/`.
+`references/`. `three-dev-failure-modes` needs the MCP server; every fact it
+reports comes from the tools.
 
-## Keeping the docs copies current
+## Where the skills are edited
 
-Files under `skills/three-dev/references/` marked "Synced from" are copies of
-pages on docs.three.dev. Do not edit them; edit the docs, then run:
-
-```bash
-./scripts/sync-references.sh
-```
-
-and commit the diff.
+The `skills/` directory is published from
+[`round3ai/three`](https://github.com/round3ai/three) (`mcp-server/skills/`)
+by CI on every merge to `main`, and the same files are embedded in the
+three.dev MCP server. Do not edit skills in this repository; changes made
+here are overwritten by the next publish. Open a pull request in
+`round3ai/three` instead.
 
 ## License
 
