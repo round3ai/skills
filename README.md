@@ -21,9 +21,7 @@ claude plugin install three-dev@three-dev
 
 Then run `/mcp` in a session, select `plugin:three-dev:three-dev` and sign in.
 The `plugin:` prefix is how Claude Code labels servers that come from a
-plugin. While this repository is private, the commands above use your own git
-credentials; the `owner/repo` form clones over SSH, so have your key loaded in
-`ssh-agent`, or set `CLAUDE_CODE_PLUGIN_PREFER_HTTPS=1` to clone over HTTPS.
+plugin.
 
 ### Claude Code: share with a team through the repository
 
@@ -114,14 +112,13 @@ docs and checks recorded traffic; without it, it uses the docs copies under
 `references/`. `three-dev-failure-modes` needs the MCP server; every fact it
 reports comes from the tools.
 
-## Where the skills are edited
+## Contributing
 
-The `skills/` directory is published from
-[`round3ai/three`](https://github.com/round3ai/three) (`mcp-server/skills/`)
-by CI on every merge to `main`, and the same files are embedded in the
-three.dev MCP server. Do not edit skills in this repository; changes made
-here are overwritten by the next publish. Open a pull request in
-`round3ai/three` instead.
+The skills are maintained by the three.dev team and published to this
+repository automatically; the same files are served by the three.dev MCP
+server. Pull requests that edit `skills/` are overwritten by the next
+publish, so report mistakes or suggestions as an issue here instead, and
+they will land in both places.
 
 ## License
 
