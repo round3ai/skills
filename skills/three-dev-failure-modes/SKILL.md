@@ -55,6 +55,9 @@ verbatim when the user wants to look; never compose an app URL yourself.
   returns the `window` it answered for; report that, not the one you asked for.
 - **`scored` and `failure_mode_ids` on a request.** An empty `failure_mode_ids`
   means either scored and clean or not scored at all. Read `scored` first.
+- **`assessment` on a request.** The AI Judge's verdict (`pass` or `fail`) and
+  reasoning; `null` when the judge did not score it. `list_requests` includes it
+  only with `include_assessment=true`; `get_request_conversation` always does.
 - **Severity** (`high`, `medium`, `low`, `unknown`) is assigned when the mode is
   grouped and can be changed by people in the app. It is a priority hint, not a
   measurement.
@@ -174,6 +177,10 @@ call `create_offline_experiment` from this skill.
   [references/filters.md](references/filters.md).
 - **"Show me bad conversations"**: `list_requests` with a `judge` `fail` filter,
   then `get_request_conversation` on the ones the user picks.
+- **"What did the judge make of my latest N requests?"**: `list_requests` with
+  `include_assessment=true` and `limit=30`, following `next_cursor` until N rows,
+  then read each row's `assessment`. A pass rate over those rows is per scored
+  row, not per `total`.
 - **"What did the experiment change?"** and anything else about an offline
   experiment: the `three-dev-experiments` skill.
 
