@@ -110,9 +110,12 @@ means live scoring is not enabled or has not sampled yet, point the user to
 https://docs.three.dev/live-scoring/live-scoring.md; otherwise say what the
 `note` says and offer a wider window. Then stop.
 
-Rank by severity first, then rate. Offer the top one or two, or the one the user
-named, as a numbered list with your recommendation marked, one question at a
-time, using a structured question tool if one exists, and wait.
+Rank by rate. Severity is a hint people set by hand and is usually `unknown`,
+so it does not reorder the table; instead, name any mode with a set severity
+under it, and treat a `high` one as a candidate even when its rate is low.
+Offer the top one or two, or the one the user named, as a numbered list with
+your recommendation marked, one question at a time, using a structured question
+tool if one exists, and wait.
 
 ### Step 2: Check the trend when it matters
 
