@@ -1,6 +1,6 @@
 ---
 name: three-dev-failure-modes
-description: Investigates production quality problems in an LLM feature that three.dev already records. Triages the AI Judge's failure modes, reads the flagged conversations, finds the root cause, proposes a prompt, model, or code fix, and optionally verifies it with an offline experiment on recorded traffic. Use when the user asks why an LLM feature is failing or misbehaving in production, what its top failure modes, issues, or quality problems are, whether a problem is growing or started after a deploy, wants to see bad conversations or count or segment requests, or wants to test a prompt or model change offline before shipping. Needs the three.dev MCP server. Not for setting up three.dev, routing calls through the proxy, or defining quality metrics; that is the three-dev skill.
+description: Investigates production quality problems in an LLM feature that three.dev already records. Triages the AI Judge's failure modes, reads the flagged conversations, finds the root cause, and proposes a prompt, model, or code fix. Use when the user asks why an LLM feature is failing or misbehaving in production, what its top failure modes, issues, or quality problems are, whether a problem is growing or started after a deploy, or wants to see bad conversations or count or segment requests. Needs the three.dev MCP server. Not for setting up three.dev, routing calls through the proxy, or defining quality metrics; that is the three-dev skill. Not for testing a change on recorded traffic or reading experiment results; that is the three-dev-experiments skill.
 ---
 
 # three.dev failure-mode investigation
@@ -10,7 +10,8 @@ sample of the production traffic of each use case and groups the failures it fin
 into **failure modes**: recurring problems named in the product's own words, each
 with a severity, counts, first and last seen, and example requests. This skill
 turns those into a diagnosis grounded in real conversations and a fix the user can
-apply, and verifies the fix against recorded traffic when the user wants that.
+apply. Testing that fix on recorded traffic is an offline experiment and belongs
+to the `three-dev-experiments` skill; hand over once the fix is written.
 
 If the user's code is not sending traffic through three.dev yet, or `list_use_cases`
 returns nothing, stop and use the `three-dev` skill first. Quality metrics (the
@@ -30,7 +31,6 @@ stop; do not answer from the prompt or the code alone. The tools:
 | The full conversation behind one request | `get_request_conversation` |
 | What the requests can be filtered by, and the values present | `get_request_facets` |
 | Count, segment or browse requests | `list_requests` |
-| Test a change offline | `list_available_models`, `create_offline_experiment`, `get_offline_experiment`, `list_offline_experiments` |
 | How three.dev itself works | `search_docs`, then `read_doc` |
 
 Every result carries `url` fields and an "Open in three.dev" link. Show them
@@ -69,13 +69,9 @@ verbatim when the user wants to look; never compose an app URL yourself.
   the turn. A hypothesis from the description alone is labelled as such.
 - **The user approves, you do.** Present findings and the proposed fix, then stop.
   Never edit the user's code, prompt, or configuration without a yes.
-- **Never start an offline experiment on your own.** It spends the user's provider
-  and AI Judge budget and runs for hours. When the user asked for the experiment
-  or already said yes to your proposal, dry-run it and then create it without
-  asking again; a dry run is validation, not a second request for permission.
-  When the experiment is your own idea, propose it with the dry-run numbers and
-  wait for an explicit yes. See
-  [references/offline-experiments.md](references/offline-experiments.md).
+- **Never start an offline experiment from here.** Verifying a fix is the
+  `three-dev-experiments` skill's job, with its own consent rule; this skill
+  ends with a fix proposed, not an experiment created.
 - **Be brief.** No narration of tool calls. Numbers go in a table with their
   denominators next to them.
 - **Prefer aggregates.** Ranking and counting come from `list_failure_modes`,
@@ -94,10 +90,8 @@ case slug, so try the use cases in turn when it is unknown. No tool reads a
 session; say so and ask for a request id from it.
 
 If `list_failure_modes` answers that failure modes are not available for the use
-case, report that message as is and stop that branch. If the offline-experiment
-tools are missing from the tool list, or answer that they are not enabled for
-the organization, offline experiments are not enabled: say so and skip Step 6.
-Do not retry or work around either.
+case, report that message as is and stop that branch. Do not retry or work
+around it.
 
 ### Step 1: List and rank the failure modes
 
@@ -162,16 +156,12 @@ change, say what to compare.
 
 Then stop and wait.
 
-### Step 6: Verify offline, on request
+### Step 6: Hand over for verification
 
-If the user wants the fix tested before shipping, follow
-[references/offline-experiments.md](references/offline-experiments.md):
-`list_available_models`, a `dry_run=true` sizing, the proposal, the user's yes,
-`create_offline_experiment`, then `get_offline_experiment` until `results_ready`.
-Report the pass counts with `p_beats_control`, whether the failure mode being
-fixed dropped, and whether new ones appeared. These are AI Judge results only;
-the shipping recommendation comes from the app once domain experts have assessed
-a sample.
+If the user wants the fix tested on recorded traffic before shipping, that is an
+offline experiment: load the `three-dev-experiments` skill and follow it, taking
+the fix, the failure mode id and the window from this report with you. Do not
+call `create_offline_experiment` from this skill.
 
 ## Other questions this skill answers
 
@@ -181,8 +171,8 @@ a sample.
   [references/filters.md](references/filters.md).
 - **"Show me bad conversations"**: `list_requests` with a `judge` `fail` filter,
   then `get_request_conversation` on the ones the user picks.
-- **"What did the experiment change?"**: `get_offline_experiment`; read the
-  `failure_modes` block per variant against control.
+- **"What did the experiment change?"** and anything else about an offline
+  experiment: the `three-dev-experiments` skill.
 
 ## Hard rules
 
@@ -191,7 +181,5 @@ a sample.
 - Failure mode ids and request ids are UUIDs; copy them exactly from a result.
 - The `to` bound is exclusive and windows are RFC3339 with an offset
   (`2026-09-01T00:00:00Z`).
-- `create_offline_experiment` with `dry_run=false` only when the user asked for
-  the experiment or said yes to the specific proposal you showed; then do not
-  ask again.
+- No experiment is created from this skill; hand over to `three-dev-experiments`.
 - Do not paraphrase a conversation as evidence; quote it.

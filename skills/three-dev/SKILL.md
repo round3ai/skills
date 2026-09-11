@@ -1,6 +1,6 @@
 ---
 name: three-dev
-description: Integrate three.dev into a codebase or extend an existing integration. three.dev is an LLM proxy (gate.three.dev) that records every LLM call for observability and runs experiments on models, prompts, and parameters against quality metrics. Use when the user mentions three.dev, gate.three.dev, or X-Three headers, or asks to record, monitor, or A/B test their LLM calls, or to add use cases, sessions, tags, or quality metrics to LLM code. Covers discovery of call sites, use case and metric design, wiring OpenAI, Anthropic, Gemini, Azure OpenAI, OpenRouter, Bedrock, or LiteLLM clients through the proxy, session IDs, tags, and metric reporting. Read the docs before writing code; never guess header values or base URLs. Not for investigating failure modes, reading recorded conversations, or running offline experiments; that is the three-dev-failure-modes skill.
+description: Integrate three.dev into a codebase or extend an existing integration. three.dev is an LLM proxy (gate.three.dev) that records every LLM call for observability and runs experiments on models, prompts, and parameters against quality metrics. Use when the user mentions three.dev, gate.three.dev, or X-Three headers, or asks to record or monitor their LLM calls, or to add use cases, sessions, tags, or quality metrics to LLM code. Covers discovery of call sites, use case and metric design, wiring OpenAI, Anthropic, Gemini, Azure OpenAI, OpenRouter, Bedrock, or LiteLLM clients through the proxy, session IDs, tags, and metric reporting. Read the docs before writing code; never guess header values or base URLs. Not for investigating failure modes or reading recorded conversations; that is the three-dev-failure-modes skill. Not for running or reading experiments; that is the three-dev-experiments skill.
 ---
 
 # three.dev integration
@@ -14,11 +14,14 @@ The user's provider key (OpenAI, Anthropic, ...) is stored in the three.dev
 dashboard and injected server-side. It leaves the codebase.
 
 This skill gets traffic recorded and metrics reported. Everything that reads the
-recorded traffic starts once requests are flowing: when the user asks why the
-feature is failing, wants to see conversations, or wants an offline experiment,
-finish the integration first, then use the `three-dev-failure-modes` skill. Live
-experiments start in the dashboard; point them at
-https://docs.three.dev/getting-started/quickstart-run-live-experiment.md.
+recorded traffic starts once requests are flowing, and belongs to another skill:
+why the feature is failing, or what the conversations show, is the
+`three-dev-failure-modes` skill; testing a model, prompt, or reasoning change on
+recorded traffic, or reading an experiment's results, is the
+`three-dev-experiments` skill. Finish the integration first. A live experiment
+on real users is set up in the dashboard,
+https://docs.three.dev/getting-started/quickstart-run-live-experiment.md, and
+only needs from this skill the metrics and session IDs it measures.
 
 ## Where the facts are
 
@@ -186,8 +189,8 @@ On failure: 401 is the key, 404 or a proxy error is the base URL path, a
 request missing from the dashboard is the use-case header (absent, or a slug
 that is not lowercase alphanumeric with single hyphens).
 
-Once traffic flows and live scoring has scored some of it, investigation moves
-to the `three-dev-failure-modes` skill.
+Once traffic flows, investigation moves to the `three-dev-failure-modes` skill
+and experiments to the `three-dev-experiments` skill.
 
 ### Step 6: Wrap up
 
