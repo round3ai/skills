@@ -54,11 +54,6 @@ same id, so the two sides pair on it.
 
 ## Reading a row
 
-- `scored` false means the judge never saw the request; `failure_mode_ids` is then
-  empty for that reason, not because the request was fine.
 - `input_preview` and `output_preview` are about 160 characters. Use
   `get_request_conversation` for the rest.
-- `assessment` appears only when the call set `include_assessment=true`: the
-  judge's `verdict` (`pass` or `fail`) and `reasoning`, or `null` when the judge
-  did not score the request. Leave the flag off to count or browse.
 - `total` is the matching count across all pages; do not page to count.

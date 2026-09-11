@@ -108,20 +108,19 @@ tell that the template matched few requests. Worked calls:
 Call `create_offline_experiment` with `dry_run=true`. It creates nothing, needs
 no consent, and returns `eligible_request_count`, the `ai_judge` that will
 score (chosen by three.dev: the live-scoring judge, else the active released
-one; `source` says which), and the validated variants. The dataset is the
-newest matching requests from the last 30 days that succeeded and are not
-already in an experiment.
+one; `source` says which), and the validated variants. The tool's parameter
+descriptions say which requests are eligible and the dataset size bounds;
+repeat them to the user when proposing.
 
 - Below 100 eligible requests the response carries a `dataset_note` saying the
   comparison is weak; widen the filters or the user proceeds knowingly.
-- `dataset_size` defaults to 500 (100 to 2000). Keep the default unless the
-  behaviour under test is rare enough that 500 requests would hold too few
-  cases; then raise it and say why.
+- Keep the default `dataset_size` unless the behaviour under test is rare
+  enough that the default would hold too few cases; then raise it and say why.
 - `control.filters` narrow the dataset to the traffic the question is about,
   with values from `get_request_facets`: one model or provider when the change
   only concerns it, a tag such as `environment` or a customer segment, a
-  latency or cost band. Only `latency_ms`, `cost_usd`, `model`, `provider` and
-  `tag` filter a dataset.
+  latency or cost band. Fields and predicates:
+  [references/worked-calls.md](references/worked-calls.md).
 - If the call fails because the use case has no released AI Judge, the user
   creates one in the app first; there is no tool for that. If it answers that
   prompt offline experiments are not enabled for the organization, report that
