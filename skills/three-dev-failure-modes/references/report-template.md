@@ -25,7 +25,7 @@ list both.
 remove or replace and where it goes. For a model or parameter change, the
 alternative and why. For a tool or code change, the file and behaviour.
 
-**How to verify**: the offline experiment to run (variants, dataset, filters), or
+**How to verify**: the offline experiment to run (variants, dataset, filters; the `three-dev-experiments` skill runs it), or
 the window to re-check live after shipping, and what number should move.
 
 **Links**: the failure mode and request URLs the tools returned, verbatim.
