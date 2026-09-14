@@ -14,8 +14,6 @@ The proxy supports **advanced observability** for three interaction types:
 
 When one of these interaction methods is used, additional information appears in the [Requests](https://app.three.dev/requests) page — cost, tokens, and the full messages.
 
-<figure><img src="https://304769546-files.gitbook.io/~/files/v0/b/gitbook-x-prod.appspot.com/o/spaces%2F8mgRUFL8AoxKn8ZwmSqd%2Fuploads%2F6lpKGJwxoUyWIhddfmRP%2Frequests.png?alt=media&amp;token=dbb5948e-646c-46a8-a0a9-55416b3c9948" alt=""><figcaption></figcaption></figure>
-
 ## Specifying the session ID
 
 Group requests into sessions to display aggregated information. In chat-based contexts, each conversation maps to a session containing several requests.
