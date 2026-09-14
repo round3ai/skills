@@ -197,6 +197,9 @@ and experiments to the `three-dev-experiments` skill.
 Ship the change the way the user normally does in this repo; ask if unclear.
 Never commit a secret. Report, one line each: use cases and slugs instrumented,
 metrics created with where each is reported and its direction, tags added.
+If the three.dev MCP server is not connected, end by telling the user to connect
+it and sign in, restarting the agent if their client needs that; both skills
+named in Step 5 depend on it.
 
 ## Hard rules
 
