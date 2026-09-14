@@ -1,6 +1,6 @@
 {
   "name": "three-dev",
-  "description": "Integrate three.dev into a codebase and work with recorded LLM traffic: route calls through the proxy, define use cases and quality metrics, and investigate failure modes with the three.dev MCP server.",
+  "description": "Integrate three.dev into a codebase and work with recorded LLM traffic: route calls through the proxy, define use cases and quality metrics, investigate failure modes, and test prompt or model changes with offline experiments, using the three.dev MCP server.",
   "author": {
     "name": "round3",
     "url": "https://three.dev"
@@ -22,8 +22,8 @@
   "mcpServers": "./mcp.json",
   "interface": {
     "displayName": "three.dev",
-    "shortDescription": "three.dev proxy integration and MCP",
-    "longDescription": "Integrate three.dev into a codebase and work with recorded LLM traffic. The skill wires OpenAI, Anthropic, Gemini, Azure OpenAI, OpenRouter, Bedrock or LiteLLM clients through the three.dev proxy with use cases, sessions, tags and quality metrics. The MCP server reads the live docs, lists recorded requests and conversations, and surfaces the failure modes the AI Judge detected.",
+    "shortDescription": "Set up three.dev, triage failures, run experiments",
+    "longDescription": "Integrate three.dev into a codebase and work with recorded LLM traffic. The three-dev skill wires OpenAI, Anthropic, Gemini, Azure OpenAI, OpenRouter, Bedrock or LiteLLM clients through the three.dev proxy with use cases, sessions, tags and quality metrics. With the three.dev MCP server, the three-dev-failure-modes skill surfaces the failure modes the AI Judge detected in recorded conversations, and the three-dev-experiments skill tests a prompt, model or reasoning change on recorded traffic with an offline experiment.",
     "developerName": "round3",
     "category": "Developer Tools",
     "capabilities": [
@@ -33,7 +33,7 @@
     "defaultPrompt": [
       "Add three.dev to this codebase",
       "What are the worst failure modes for my use case this week?",
-      "Show me the conversation for a failing request and propose a fix"
+      "Would a cheaper model keep the same quality on my recorded traffic?"
     ]
   }
 }

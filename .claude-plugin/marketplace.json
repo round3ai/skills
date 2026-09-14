@@ -1,7 +1,7 @@
 {
   "$schema": "https://code.claude.com/schemas/marketplace.json",
   "name": "three-dev",
-  "description": "three.dev agent plugin: proxy integration skill plus the three.dev MCP server.",
+  "description": "three.dev agent plugin: the three.dev skills plus the three.dev MCP server.",
   "owner": {
     "name": "round3",
     "url": "https://three.dev"
@@ -10,7 +10,7 @@
     {
       "name": "three-dev",
       "source": "./",
-      "description": "Integrate three.dev into a codebase and work with recorded LLM traffic: route calls through the proxy, define use cases and quality metrics, and investigate failure modes with the three.dev MCP server.",
+      "description": "Integrate three.dev into a codebase and work with recorded LLM traffic: route calls through the proxy, define use cases and quality metrics, investigate failure modes, and test prompt or model changes with offline experiments, using the three.dev MCP server.",
       "category": "monitoring",
       "homepage": "https://docs.three.dev"
     }

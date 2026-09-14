@@ -6,8 +6,8 @@
 #   scripts/build-readme.sh          rewrite README.md
 #   scripts/build-readme.sh --check  exit 1 if README.md is out of date
 #
-# The publish workflow in round3ai/three runs this after copying the skill
-# directories, so the table always matches what ships.
+# The publish workflow runs this after copying the skill directories, so the
+# table always matches what ships.
 set -euo pipefail
 
 cd "$(dirname "$0")/.."
@@ -15,7 +15,6 @@ cd "$(dirname "$0")/.."
 start='<!-- SKILLS:START -->'
 end='<!-- SKILLS:END -->'
 readme=README.md
-mcp_phrase='Needs the three.dev MCP server'
 
 # Prints the single-line value of a top-level frontmatter key, without
 # surrounding quotes. Block scalars (">" or "|") are not supported.
@@ -54,11 +53,7 @@ while IFS= read -r dir; do
   summary="${description%%. *}"
   summary="${summary%.}."
   summary="${summary//|/\\|}"
-  case "$description" in
-    *"$mcp_phrase"*) mcp="Required" ;;
-    *) mcp="Optional" ;;
-  esac
-  rows+="| [\`$name\`](skills/$name/SKILL.md) | $summary | $mcp |"$'\n'
+  rows+="| [\`$name\`](skills/$name/SKILL.md) | $summary |"$'\n'
 done < <(find skills -mindepth 1 -maxdepth 1 -type d -exec basename {} \; | LC_ALL=C sort)
 
 if [ -z "$rows" ]; then
@@ -73,7 +68,7 @@ if [ -z "$start_line" ] || [ -z "$end_line" ] || [ "$start_line" -ge "$end_line"
   exit 1
 fi
 
-block=$(printf '%s\n\n| Skill | What it does | MCP server |\n| --- | --- | --- |\n%s\n%s' "$start" "$rows" "$end")
+block=$(printf '%s\n\n| Skill | What it does |\n| --- | --- |\n%s\n%s' "$start" "$rows" "$end")
 
 generated=$(
   if [ "$start_line" -gt 1 ]; then head -n "$((start_line - 1))" "$readme"; fi
