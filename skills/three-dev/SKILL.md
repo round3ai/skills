@@ -80,9 +80,10 @@ and the code you write from it fails silently.
 
 ### Step 0: Prerequisites
 
-Confirm as one checklist: a three.dev account, provider keys added under
-Settings → AI Provider Keys, a three.dev API key created under Settings → API
-Keys (shown once).
+Confirm as one checklist, with these links: a three.dev account
+(https://app.three.dev), provider keys added under AI Provider Keys
+(https://app.three.dev/goto/ai-provider-keys), a three.dev API key created under
+API Keys (https://app.three.dev/goto/api-keys; shown once).
 
 Do not ask for the key. Find where the repo keeps local secrets (`.env`,
 `.env.local`, `.envrc`, a secrets manager) and tell the user the exact file and
