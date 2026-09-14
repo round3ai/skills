@@ -89,9 +89,9 @@ npx skills add round3ai/skills
 ```
 
 This installs the skills but not the MCP server; add the server with the
-`.mcp.json` above. To copy the files by hand, put the `skills/three-dev` and
-`skills/three-dev-failure-modes` folders in your agent's skills directory
-(`.claude/skills/`, `.agents/skills/`, or equivalent).
+`.mcp.json` above. To copy the files by hand, put the folders under `skills/`
+in your agent's skills directory (`.claude/skills/`, `.agents/skills/`, or
+equivalent).
 
 ### Updating
 
@@ -101,24 +101,33 @@ version, so `claude plugin update three-dev` picks up the latest commit;
 
 ## Skills
 
-| Skill | Use it when |
-| --- | --- |
-| [`three-dev`](skills/three-dev/SKILL.md) | Adding three.dev to a codebase, or extending an existing integration: routing LLM calls through the proxy, use cases, sessions, tags, and quality metrics. |
-| [`three-dev-failure-modes`](skills/three-dev-failure-modes/SKILL.md) | Investigating an LLM feature that three.dev already records: triaging the AI Judge's failure modes, reading the flagged conversations, proposing a fix, and verifying it with an offline experiment. |
+<!-- SKILLS:START -->
 
-`three-dev` works on its own. With the
-[three.dev MCP server](https://docs.three.dev) connected it reads the live
-docs and checks recorded traffic; without it, it uses the docs copies under
-`references/`. `three-dev-failure-modes` needs the MCP server; every fact it
-reports comes from the tools.
+| Skill | What it does | MCP server |
+| --- | --- | --- |
+| [`three-dev`](skills/three-dev/SKILL.md) | Integrate three.dev into a codebase or extend an existing integration. | Optional |
+| [`three-dev-experiments`](skills/three-dev-experiments/SKILL.md) | Runs an offline experiment in three.dev to test a prompt, model, or reasoning change on recorded production traffic, and reads the results. | Required |
+| [`three-dev-failure-modes`](skills/three-dev-failure-modes/SKILL.md) | Investigates production quality problems in an LLM feature that three.dev already records. | Required |
+
+<!-- SKILLS:END -->
+
+Each skill's `SKILL.md` says when to use it. Where the
+[three.dev MCP server](https://docs.three.dev) is optional, the skill reads the
+live docs and checks recorded traffic when the server is connected and falls
+back to the docs copies under `references/` otherwise; where it is required,
+every fact the skill reports comes from the tools.
+
+The table is generated from each skill's description by
+`scripts/build-readme.sh`; the publish workflow runs it, so do not edit the
+table by hand.
 
 ## Contributing
 
 The skills are maintained by the three.dev team and published to this
 repository automatically; the same files are served by the three.dev MCP
-server. Pull requests that edit `skills/` are overwritten by the next
-publish, so report mistakes or suggestions as an issue here instead, and
-they will land in both places.
+server. Pull requests that edit `skills/` or the skills table in this README
+are overwritten by the next publish, so report mistakes or suggestions as an
+issue here instead, and they will land in both places.
 
 ## License
 
