@@ -53,7 +53,7 @@ and the code you write from it fails silently.
   the user a menu. Stop only when the code gives no safe answer: no LLM calls
   found, or no worked example for the exact client.
 - **Be brief.** No preamble, no narration, no repeating fetched docs, no diffs
-  in chat. The only message the user needs is the one in Step 4.
+  in chat. The only message the user needs is the one in Step 5.
 - **Secrets never touch the chat or the repo.** Never ask the user to paste a
   key. Never hardcode, print, echo, or commit one.
 - **Keep the SDK and API surface the user already has.** The proxy is a
@@ -69,7 +69,11 @@ and the code you write from it fails silently.
 
 ## Workflow
 
-### Step 1: Find the LLM calls
+### Step 1: Understand the product and find the LLM calls
+
+Read the README, the domain models, and the configuration first: what the
+product does, who uses it, and how the business segments it (plans, markets,
+channels, customer types). Steps 2 and 3 depend on it.
 
 Scan for every LLM call site: `openai`, `anthropic`, `@anthropic-ai/sdk`,
 `@google/genai`, `google.generativeai`, `litellm`, `langchain`, the Vercel `ai`
@@ -107,8 +111,7 @@ then decide:
 
 Slugs name the feature, not the file, model, or provider, and are constant in
 code. Never build a slug from a runtime value such as a user, tenant, or
-session ID. Do not ask
-the user to confirm the grouping.
+session ID. Do not ask the user to confirm the grouping.
 
 ### Step 3: Wire the code
 
@@ -122,26 +125,64 @@ the user to confirm the grouping.
    `.env.sample`, or similar), add `THREE_DEV_API_KEY=` to it. If the repo
    documents a local secrets file, make sure git ignores it. Leave the old
    provider-key variables in place.
-3. **Session IDs and tags.** Apply [references/sessions-and-tags.md](references/sessions-and-tags.md).
+3. **Tags and session IDs.** Apply [references/sessions-and-tags.md](references/sessions-and-tags.md):
+   a session ID on every call, and every tag that segments the traffic the way
+   the business compares it.
 4. Do not change models, prompts, parameters, or behaviour.
 
 Do not commit unless the user asked you to.
 
-### Step 4: Tell the user what to do next
+### Step 4: Verify
 
-One short message: one sentence on what was wired, then at most four bullets.
-No tables, no options, no file-by-file list. Use this shape:
+The change must build and behave exactly as before, apart from where the calls
+go. No three.dev key exists yet, so verify without calling the proxy.
 
-> three.dev is wired into <N> LLM calls, grouped as `<slug>`, `<slug>`. Next:
-> - Create a three.dev API key at https://app.three.dev/goto/api-keys and set it as `THREE_DEV_API_KEY` <where the code reads it>.
-> - Add your <provider> key at https://app.three.dev/goto/ai-provider-keys.
-> - Run the app. Requests appear in three.dev as they happen.
+1. **Run the repo's own checks.** Type check, compile or build, lint, and the
+   existing tests, using the commands the repo documents; then start the app
+   far enough to see it import and boot. If dependencies are missing, install
+   them only through the repo's documented setup into its own environment:
+   never globally, never a new package.
+2. **Review the diff against this list:**
+   - Every LLM call path goes through the proxy: streaming, retries,
+     fallbacks, background jobs, sync and async clients. No direct provider
+     call is left and none is made twice.
+   - `X-Three-Use-Case` and `X-Three-AI-Provider` are on every client, and
+     every per-call session header passed the merge check from Step 3.
+   - An unset `THREE_DEV_API_KEY` fails the way an unset provider key did
+     before. Nothing crashes at import, and every test that passed before
+     still passes.
+   - Models, prompts, parameters, timeouts, and error handling are unchanged.
+   - No key is logged, printed, hardcoded, or committed.
+   - A tag whose value can be missing sends no header rather than an empty or
+     `None` value, and no tag carries personal data.
+3. **Fix what fails and repeat** until the checks and the list are clean.
 
-Add a bullet only when it applies:
+### Step 5: Tell the user how to start sending traffic
 
-- A call site left unchanged: name it and why, in one line.
-- The three.dev MCP server is not connected: connect it and sign in,
-  restarting the agent if the client needs that, to use the other two skills.
+Send this message, filled in, and nothing else. No summary of the changes, no
+files, no test or verification status, no caveats, no defaults explained, and
+no word on how the skill or plugin was loaded.
+
+> three.dev is set up for `<slug>`. To start sending traffic:
+>
+> 1. Create a three.dev API key: https://app.three.dev/goto/api-keys
+> 2. <One exact action that puts the key where the code reads it.>
+> 3. Add your <provider> API key in three.dev: https://app.three.dev/goto/ai-provider-keys
+> 4. Start the app with `<the repo's run command>` and use it. Requests appear in three.dev.
+
+Step 2 is a single copyable action for the mechanism from Step 3: "Add
+`THREE_DEV_API_KEY=<your key>` to `<path>`" when the code loads a file, or "Run
+`export THREE_DEV_API_KEY=<your key>` in the terminal that starts the app" when
+it reads a plain environment variable. List every use case slug in the first
+line and every provider in step 3. When the repo documents no run command,
+step 4 is "Start the app and use it."
+
+Add one line after the list only when it applies:
+
+- A call site left unchanged: "Not connected: `<file>`, <reason in a few words>."
+- A check from Step 4 that could not run: "Not verified: <what, and why in a few words>."
+- The three.dev MCP server is not connected: "To investigate failures and run
+  experiments, connect the three.dev MCP server and sign in."
 
 ## Hard rules
 
