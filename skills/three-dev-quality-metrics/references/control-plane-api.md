@@ -1,6 +1,7 @@
-# Metric endpoints
+# Listing metrics through the REST API
 
-These endpoints have no docs page yet. Base URL `https://api.three.dev`, header
+For when the three.dev MCP server is not connected. This endpoint has no docs
+page yet. Base URL `https://api.three.dev`, header
 `Authorization: Bearer $THREE_DEV_API_KEY` on every call.
 
 ## Checking the key without printing it
@@ -18,7 +19,7 @@ variable, an `.envrc`, a secrets manager), use that tool's "run one command with
 the environment loaded" form, such as `direnv exec . <cmd>`. Never echo the key
 or write it into a command the user can see.
 
-## Listing metrics
+## The endpoint
 
 `GET /api/v1/quality-metrics?use_case_slug=<slug>` → `200` and a bare JSON
 array, not an object:
@@ -28,14 +29,3 @@ array, not an object:
 ```
 
 Match on `slug`.
-
-## Creating a metric
-
-`POST /api/v1/quality-metrics` with
-
-```json
-{"slug": "booking-completed", "name": "Booking completed", "use_case_slug": "<slug>", "type": "binary", "optimize_for": "max"}
-```
-
-→ `201` with `{"metric_id": "<uuid>"}`. `optimize_for` is `"max"` when `true`
-is good and `"min"` when `true` is bad.
