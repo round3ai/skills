@@ -1,6 +1,6 @@
 ---
 name: three-dev-experiments
-description: Runs an offline experiment in three.dev to test a prompt, model, or reasoning change on recorded production traffic, and reads the results. Use when the user has a change in hand and wants to know whether it is better, cheaper, or faster before shipping, wants to compare two models or providers on their own traffic, asks whether a cheaper or smaller model holds the same quality, wants to A/B test a prompt, or asks what an existing offline experiment showed. Also routes live experiments, which run on real users and start in the three.dev app. Needs the three.dev MCP server. Not for finding out why a feature is failing in production; that is the three-dev-failure-modes skill. Not for wiring calls through the proxy or reporting quality metrics; that is the three-dev skill.
+description: Runs an offline experiment in three.dev to test a prompt, model, or reasoning change on recorded production traffic, and reads the results. Use when the user has a change in hand and wants to know whether it is better, cheaper, or faster before shipping, wants to compare two models or providers on their own traffic, asks whether a cheaper or smaller model holds the same quality, wants to A/B test a prompt, or asks what an existing offline experiment showed. Also routes live experiments, which run on real users and start in the three.dev app. Needs the three.dev MCP server. Not for finding out why a feature is failing in production; that is the three-dev-failure-modes skill. Not for wiring calls through the proxy; that is the three-dev skill. Not for defining or reporting the quality metric a live experiment measures; that is the three-dev-quality-metrics skill.
 ---
 
 # three.dev experiments
@@ -16,9 +16,9 @@ user's own traffic, without touching a user.
 A **live experiment** assigns a share of real user sessions to each variant and
 measures the quality metrics the user's code reports. No tool here creates or
 reads one: it starts in the three.dev app at
-https://docs.three.dev/getting-started/quickstart-run-live-experiment.md, and the
-code-side prerequisites (metric reporting, session IDs) belong to the `three-dev`
-skill. When the user wants a live experiment, say that and hand over.
+https://docs.three.dev/getting-started/quickstart-run-live-experiment.md. When the
+user wants a live experiment and has no metric yet, load the
+`three-dev-quality-metrics` skill first.
 
 If `list_use_cases` returns nothing, traffic is not flowing yet; use the
 `three-dev` skill first. If the experiment tools are missing from the tool list
@@ -37,9 +37,6 @@ not retry or work around it.
 | Values a dataset filter can take | `get_request_facets` |
 | The replayed conversations themselves | `list_requests` with an `experiment` filter, then `get_request_conversation` |
 | How three.dev itself works | `search_docs`, then `read_doc` |
-
-Every result carries `url` fields and an "Open in three.dev" link. Show them
-verbatim when the user wants to look; never compose an app URL yourself.
 
 ## Ground rules
 
