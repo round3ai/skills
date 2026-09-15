@@ -29,9 +29,9 @@ three.dev forwards a request to the AI provider without recording it when:
 
 * The `X-Three-Use-Case` header is missing.
 * The slug is malformed: uppercase letters, underscores, spaces, or more than 64 characters. A well-formed slug with a typo is not malformed, so it creates a use case. Check the sidebar after your first request.
-* Your organization already has 20 use cases created from a first request. The limit guards against an integration that puts a per-user or per-session value in the header. Use cases created from the **Use Cases** page do not count toward it, and deleting a use case that was created from a first request frees a slot.
+* Your organization already has 20 use cases that three.dev created automatically, from a first request or from a [metric report](https://docs.three.dev/api-reference/report-metric.md#creating-the-metric-on-first-report). The limit guards against an integration that puts a per-user or per-session value in the header. Use cases created from the **Use Cases** page do not count toward it, and deleting a use case that three.dev created automatically frees a slot.
 
-Deleting a use case while traffic still arrives under its slug creates it again. Stop sending the slug before you delete the use case.
+Deleting a use case while requests or [metric reports](https://docs.three.dev/api-reference/report-metric.md#creating-the-metric-on-first-report) with `optimize_for` still arrive under its slug creates it again. Stop sending the slug before you delete the use case.
 
 ## Next
 
