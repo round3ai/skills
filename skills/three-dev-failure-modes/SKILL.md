@@ -15,8 +15,8 @@ to the `three-dev-experiments` skill; hand over once the fix is written.
 
 If the user's code is not sending traffic through three.dev yet, or `list_use_cases`
 returns nothing, stop and use the `three-dev` skill first. Quality metrics (the
-outcomes the user's code reports) are a different signal from failure modes and
-no tool here reads them; setting one up is the `three-dev-quality-metrics` skill.
+outcomes the user's code reports) are a different signal from failure modes;
+setting one up is the `three-dev-quality-metrics` skill.
 
 ## Where the facts are
 

@@ -53,7 +53,7 @@ and the code you write from it fails silently.
   the user a menu. Stop only when the code gives no safe answer: no LLM calls
   found, or no worked example for the exact client.
 - **Be brief.** No preamble, no narration, no repeating fetched docs, no diffs
-  in chat. The only message the user needs is the one in Step 5.
+  in chat. The only message the user needs is the one in Step 6.
 - **Secrets never touch the chat or the repo.** Never ask the user to paste a
   key. Never hardcode, print, echo, or commit one.
 - **Keep the SDK and API surface the user already has.** The proxy is a
@@ -132,16 +132,21 @@ session ID. Do not ask the user to confirm the grouping.
 
 Do not commit unless the user asked you to.
 
-### Step 4: Verify
+### Step 4: Continue with quality metrics
+
+Load the `three-dev-quality-metrics` skill, follow it, then come back here. It
+wires reports only for outcomes that are clear and adds nothing otherwise.
+Metrics never add a question or a line to the message in Step 6.
+
+### Step 5: Verify
 
 The change must build and behave exactly as before, apart from where the calls
 go. No three.dev key exists yet, so verify without calling the proxy.
 
 1. **Run the repo's own checks.** Type check, compile or build, lint, and the
-   existing tests, using the commands the repo documents; then start the app
-   far enough to see it import and boot. If dependencies are missing, install
-   them only through the repo's documented setup into its own environment:
-   never globally, never a new package.
+   existing tests, using the commands the repo documents. If dependencies are
+   missing, install them only through the repo's documented setup into its own
+   environment: never globally, never a new package.
 2. **Review the diff against this list:**
    - Every LLM call path goes through the proxy: streaming, retries,
      fallbacks, background jobs, sync and async clients. No direct provider
@@ -155,32 +160,54 @@ go. No three.dev key exists yet, so verify without calling the proxy.
    - No key is logged, printed, hardcoded, or committed.
    - A tag whose value can be missing sends no header rather than an empty or
      `None` value, and no tag carries personal data.
-3. **Fix what fails and repeat** until the checks and the list are clean.
+   - Every metric report is non-blocking, sends the session ID of its LLM
+     calls, and carries `optimize_for`.
+3. **Verify every instruction Step 6 will give:**
+   - **Which process calls the LLM.** Trace it from the call sites: a
+     backend, a worker, a CLI, not the frontend that talks to it.
+   - **How to start it.** Take the command from the repo (README, package
+     scripts, Makefile, Procfile, compose file), run it from the directory you
+     will name, and see that process boot. When using the app needs more than
+     one process (a backend and a frontend), check each command.
+   - **Where that process reads the key.** Follow `THREE_DEV_API_KEY` from the
+     place Step 6 will name to the running process. A containerized or
+     process-managed app does not see a shell `export` unless its
+     configuration passes the variable through; name the file or setting it
+     actually reads.
+   - **Which providers.** Only providers the wired call sites use.
+4. **Fix what fails and repeat** until the checks, the list, and the
+   instructions are clean.
 
-### Step 5: Tell the user how to start sending traffic
+### Step 6: Tell the user how to start sending traffic
 
 Send this message, filled in, and nothing else. No summary of the changes, no
 files, no test or verification status, no caveats, no defaults explained, and
-no word on how the skill or plugin was loaded.
+no word on how the skill or plugin was loaded. Every command, directory, file,
+and provider in it was verified in Step 5.
 
 > three.dev is set up for `<slug>`. To start sending traffic:
 >
 > 1. Create a three.dev API key: https://app.three.dev/goto/api-keys
 > 2. <One exact action that puts the key where the code reads it.>
 > 3. Add your <provider> API key in three.dev: https://app.three.dev/goto/ai-provider-keys
-> 4. Start the app with `<the repo's run command>` and use it. Requests appear in three.dev.
+> 4. Start <the process> with `<verified command>` from `<directory>`, and use the app. Requests appear in three.dev.
 
-Step 2 is a single copyable action for the mechanism from Step 3: "Add
-`THREE_DEV_API_KEY=<your key>` to `<path>`" when the code loads a file, or "Run
-`export THREE_DEV_API_KEY=<your key>` in the terminal that starts the app" when
-it reads a plain environment variable. List every use case slug in the first
-line and every provider in step 3. When the repo documents no run command,
-step 4 is "Start the app and use it."
+Step 2 is a single copyable action, the one Step 5 traced to the process: "Add
+`THREE_DEV_API_KEY=<your key>` to `<path>`" when it reads a file, or "Run
+`export THREE_DEV_API_KEY=<your key>` in the terminal where you run step 4"
+when it reads a plain environment variable from that shell. When the location
+could not be confirmed, step 2 is "Set `THREE_DEV_API_KEY=<your key>` in the
+environment of the process that calls <provider>."
+
+List every use case slug in the first line and every provider in step 3. Step
+4 names each process the app needs, one clause per verified command; omit
+"from `<directory>`" when it is the repository root. When no command could be
+verified, step 4 is "Start the app and use it."
 
 Add one line after the list only when it applies:
 
 - A call site left unchanged: "Not connected: `<file>`, <reason in a few words>."
-- A check from Step 4 that could not run: "Not verified: <what, and why in a few words>."
+- A check from Step 5 that could not run: "Not verified: <what, and why in a few words>."
 - The three.dev MCP server is not connected: "To investigate failures and run
   experiments, connect the three.dev MCP server and sign in."
 

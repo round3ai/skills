@@ -33,7 +33,7 @@ feature's goal:
 
 - The session ID goes in per-call options.
 - Check the merge hard rule in the installed SDK's source. If the SDK is not
-  installed, set it up as Step 4 allows and check then. Only if it still
+  installed, set it up as Step 5 allows and check then. Only if it still
   cannot be confirmed, leave the session header out of that call site.
 
 ## Tags
