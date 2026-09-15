@@ -134,9 +134,12 @@ Do not commit unless the user asked you to.
 
 ### Step 4: Continue with quality metrics
 
-Load the `three-dev-quality-metrics` skill, follow it, then come back here. It
-wires reports only for outcomes that are clear and adds nothing otherwise.
-Metrics never add a question or a line to the message in Step 6.
+Load the `three-dev-quality-metrics` skill, follow it, then come back here. When
+it cannot be loaded, because the skills were installed during this session or
+you are reading these files directly, read `three-dev-quality-metrics/SKILL.md`,
+the directory next to this skill's own, or call `learn` on the three.dev MCP
+server. Never skip this step. It wires reports only for outcomes that are clear
+and adds nothing otherwise, and never asks the user anything.
 
 ### Step 5: Verify
 
@@ -160,8 +163,9 @@ go. No three.dev key exists yet, so verify without calling the proxy.
    - No key is logged, printed, hardcoded, or committed.
    - A tag whose value can be missing sends no header rather than an empty or
      `None` value, and no tag carries personal data.
-   - Every metric report is non-blocking, sends the session ID of its LLM
-     calls, and carries `optimize_for`.
+   - Step 4 ran from the `three-dev-quality-metrics` skill's own text, not
+     from memory. Every metric report it wired is non-blocking, sends the
+     session ID of its LLM calls, and carries `optimize_for`.
 3. **Verify every instruction Step 6 will give:**
    - **Which process calls the LLM.** Trace it from the call sites: a
      backend, a worker, a CLI, not the frontend that talks to it.
@@ -180,36 +184,43 @@ go. No three.dev key exists yet, so verify without calling the proxy.
 
 ### Step 6: Tell the user how to start sending traffic
 
-Send this message, filled in, and nothing else. No summary of the changes, no
-files, no test or verification status, no caveats, no defaults explained, and
-no word on how the skill or plugin was loaded. Every command, directory, file,
-and provider in it was verified in Step 5.
+Your final message is this template, filled in, with no text before or after
+it. Do not describe what you changed, which files, how calls are grouped or
+tagged, what you checked, what was installed, or how the skill was loaded;
+the user reads the diff for that. Every command, directory, file, and provider
+in it was verified in Step 5.
 
-> three.dev is set up for `<slug>`. To start sending traffic:
+> three.dev is now installed in your app. To start sending traffic:
 >
 > 1. Create a three.dev API key: https://app.three.dev/goto/api-keys
 > 2. <One exact action that puts the key where the code reads it.>
 > 3. Add your <provider> API key in three.dev: https://app.three.dev/goto/ai-provider-keys
 > 4. Start <the process> with `<verified command>` from `<directory>`, and use the app. Requests appear in three.dev.
+> 5. Restart <your coding agent> and sign in to the three.dev MCP server.
 
-Step 2 is a single copyable action, the one Step 5 traced to the process: "Add
+Item 2 is a single copyable action, the one Step 5 traced to the process: "Add
 `THREE_DEV_API_KEY=<your key>` to `<path>`" when it reads a file, or "Run
 `export THREE_DEV_API_KEY=<your key>` in the terminal where you run step 4"
 when it reads a plain environment variable from that shell. When the location
-could not be confirmed, step 2 is "Set `THREE_DEV_API_KEY=<your key>` in the
+could not be confirmed, item 2 is "Set `THREE_DEV_API_KEY=<your key>` in the
 environment of the process that calls <provider>."
 
-List every use case slug in the first line and every provider in step 3. Step
-4 names each process the app needs, one clause per verified command; omit
-"from `<directory>`" when it is the repository root. When no command could be
-verified, step 4 is "Start the app and use it."
+List every provider in item 3. Item 4 names each process the app needs, one
+clause per verified command; omit "from `<directory>`" when it is the
+repository root. When no command could be verified, item 4 is "Start the app
+and use it."
+
+Item 5 is there only when the three.dev MCP server is not connected in this
+session, for example because it was installed during it; only a restart loads
+it. Name the coding agent you are running in. Add how to sign in only when you
+know that client's own way; otherwise keep "sign in to the three.dev MCP
+server". When the client has no three.dev MCP server configured at all, item 5
+is "Connect the three.dev MCP server and sign in."
 
 Add one line after the list only when it applies:
 
 - A call site left unchanged: "Not connected: `<file>`, <reason in a few words>."
 - A check from Step 5 that could not run: "Not verified: <what, and why in a few words>."
-- The three.dev MCP server is not connected: "To investigate failures and run
-  experiments, connect the three.dev MCP server and sign in."
 
 ## Hard rules
 
