@@ -23,9 +23,11 @@ three.dev categorizes quality metrics into two optimization directions:
 * **Maximizing metrics** track positive outcomes you want as often as possible. A `true` evaluation represents a success — for example, a "Code Review Assistant" metric tracking whether the developer accepted the suggested code change.
 * **Minimizing metrics** track negative outcomes you want to prevent. A `true` evaluation represents an undesirable event — for example, a "Customer Support Bot" metric tracking the escalation rate to a human agent.
 
+Set the direction when you create the metric on the [Metrics](https://app.three.dev/metrics) page, or with the `optimize_for` field (`max` or `min`) of the report that creates the metric. See [Report Metric](https://docs.three.dev/api-reference/report-metric.md#creating-the-metric-on-first-report).
+
 ## Reporting metrics
 
-Report metric outcomes from your application code using the [Report Metric](https://docs.three.dev/api-reference/report-metric.md) endpoint.
+Report metric outcomes from your application code using the [Report Metric](https://docs.three.dev/api-reference/report-metric.md) endpoint. You do not need to create the metric first: include `optimize_for` in the report, and three.dev creates the metric on its first report.
 
 ### What to report
 
