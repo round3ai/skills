@@ -185,10 +185,12 @@ go. No three.dev key exists yet, so verify without calling the proxy.
 ### Step 6: Tell the user how to start sending traffic
 
 Your final message is this template, filled in, with no text before or after
-it. Do not describe what you changed, which files, how calls are grouped or
-tagged, what you checked, what was installed, or how the skill was loaded;
-the user reads the diff for that. Every command, directory, file, and provider
-in it was verified in Step 5.
+it. It ends at the last item, apart from the lines listed below: no "things to
+know", notes, or summary. Do not describe what you changed, which files, how
+calls are grouped or tagged, which metrics were wired, what you checked or
+installed, or how the skill or plugin was loaded; the user reads the diff for
+that. Every command, directory, file, and provider in it was verified in Step
+5.
 
 > three.dev is now installed in your app. To start sending traffic:
 >
