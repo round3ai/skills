@@ -1,6 +1,6 @@
 ---
 name: three-dev-failure-modes
-description: Investigates production quality problems in an LLM feature that three.dev already records. Triages the AI Judge's failure modes, reads the flagged conversations, finds the root cause, and proposes a prompt, model, or code fix. Use when the user asks why an LLM feature is failing or misbehaving in production, what its top failure modes, issues, or quality problems are, whether a problem is growing or started after a deploy, or wants to see bad conversations or count or segment requests. Needs the three.dev MCP server. Not for setting up three.dev, routing calls through the proxy, or defining quality metrics; that is the three-dev skill. Not for testing a change on recorded traffic or reading experiment results; that is the three-dev-experiments skill.
+description: Investigates production quality problems in an LLM feature that three.dev already records. Triages the AI Judge's failure modes, reads the flagged conversations, finds the root cause, and proposes a prompt, model, or code fix. Use when the user asks why an LLM feature is failing or misbehaving in production, what its top failure modes, issues, or quality problems are, whether a problem is growing or started after a deploy, or wants to see bad conversations or count or segment requests. Needs the three.dev MCP server. Not for setting up three.dev or routing calls through the proxy; that is the three-dev skill. Not for testing a change on recorded traffic or reading experiment results; that is the three-dev-experiments skill. Not for defining or reporting quality metrics; that is the three-dev-quality-metrics skill.
 ---
 
 # three.dev failure-mode investigation
@@ -15,8 +15,8 @@ to the `three-dev-experiments` skill; hand over once the fix is written.
 
 If the user's code is not sending traffic through three.dev yet, or `list_use_cases`
 returns nothing, stop and use the `three-dev` skill first. Quality metrics (the
-outcomes the user's code reports, set up by that skill) are a different signal
-from failure modes and no tool here reads them; say so if asked about one.
+outcomes the user's code reports) are a different signal from failure modes and
+no tool here reads them; setting one up is the `three-dev-quality-metrics` skill.
 
 ## Where the facts are
 
