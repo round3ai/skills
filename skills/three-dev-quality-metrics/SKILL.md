@@ -47,17 +47,17 @@ fetch tool that returns the Markdown verbatim); the copies may lag it.
   key. Never hardcode, print, echo, or commit one.
 - **Never break the app.** Reports are non-blocking and a failure is logged,
   never raised into a user-facing flow.
-- **Minimal diff.** A report call at each outcome point and at most one small
-  helper. No refactors.
+- **Minimal diff.** A report call at each outcome point, the session ID
+  carried to it, and at most one small helper. No refactors.
 - **Be brief.** No narration. Findings go in the table in Step 2.
 
 ## Workflow
 
 ### Step 1: Confirm traffic and find the outcomes
 
-Find the use case slugs and how the session ID is set in the code
-(`X-Three-Use-Case`, `X-Three-Session-ID`). If either is missing, stop and use
-the `three-dev` skill.
+Find the use case slugs and the session IDs in the code (`X-Three-Use-Case`,
+`X-Three-Session-ID`). If the use case of an outcome sends no session ID, stop
+and use the `three-dev` skill for it first.
 
 For each use case, work out what the feature is for and what happens after the
 LLM responds. Look in the code for events that mark success or failure of that
@@ -70,8 +70,8 @@ mid-flow, feedback already stored.
 A candidate is ready only when all of these hold:
 
 - **Observable:** the code already detects the event at one specific place.
-- **Session-bound:** it belongs to exactly one session, and the session ID is
-  available where it fires.
+- **Session-bound:** it belongs to exactly one interaction, and that
+  interaction's ID can reach the point where the event fires.
 - **Binary:** it either happened in the session or it did not.
 - **Tied to the goal:** moving it means the feature got better or worse.
 
