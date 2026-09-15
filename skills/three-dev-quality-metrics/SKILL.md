@@ -62,15 +62,19 @@ Find the use case slugs and the session IDs in the code (`X-Three-Use-Case`,
 use the `three-dev` skill first.
 
 For each use case, work out what the feature is for and what happens after the
-LLM responds. Look in the code for events that mark success or failure of that
-goal: a record created (an order, a booking, a ticket), a suggestion applied
-or discarded, a handoff to a human, a retry or regeneration, a user leaving
-mid-flow, feedback already stored.
+LLM responds. Look in the code for business events that mark success or
+failure of that goal: a record created (an order, a booking, a ticket), a
+suggestion applied or discarded, a handoff to a human, a user leaving mid-flow,
+feedback already stored.
 
 ### Step 2: Decide which outcomes to track
 
 An outcome is tracked only when all of these hold:
 
+- **Business outcome:** something the business counts in its own terms, such
+  as a sale, a booking, a resolved request, or a customer handed to a human.
+  Technical signals are never metrics: errors, timeouts, turn or token limits,
+  retries, latency, guardrail trips, model or provider fallbacks.
 - **Observable:** the code already detects the event at one specific place.
 - **Session-bound:** it belongs to exactly one interaction, and that
   interaction's ID can reach the point where the event fires.
