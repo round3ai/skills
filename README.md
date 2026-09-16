@@ -8,7 +8,7 @@ bundled with the three.dev MCP server at `https://mcp.three.dev/mcp`.
 Paste this into your coding agent:
 
 ```text
-Install github.com/round3ai/skills and use its three-dev skill to set up three.dev in this repository.
+Install github.com/round3ai/skills and run its three-dev-setup skill in this repository.
 ```
 
 ### Install by hand
@@ -41,7 +41,7 @@ If you installed with `npx skills`, add the MCP server to your client's config:
 Then paste this into your coding agent:
 
 ```text
-Use the three-dev skill to set up three.dev in this repository.
+Run the three-dev-setup skill in this repository.
 ```
 
 Update with `claude plugin update three-dev` or `npx skills update`.
