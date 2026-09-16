@@ -1,6 +1,6 @@
 ---
-name: three-dev-quality-metrics
-description: Sets up quality metrics for an LLM feature that three.dev already records. Decides whether a business outcome is worth tracking and, if so, wires the code that reports it; three.dev creates the metric from the first report. Use when the user wants to track conversions, bookings, resolutions, escalations, accepted suggestions, or another outcome of an LLM feature, asks which quality metric to use, or needs a metric for a live experiment. Not for adding three.dev to a codebase or routing calls through the proxy; that is the three-dev skill. Not for investigating failure modes or reading recorded conversations; that is the three-dev-failure-modes skill. Not for running or reading offline experiments; that is the three-dev-experiments skill.
+name: three-dev-quality-metrics-setup
+description: Sets up quality metrics for an LLM feature that three.dev already records. Decides whether a business outcome is worth tracking and, if so, wires the code that reports it; three.dev creates the metric from the first report. Use when the user wants to start tracking conversions, bookings, resolutions, escalations, accepted suggestions, or another outcome of an LLM feature, or needs a metric wired for a live experiment. Not for reading which metrics exist or how they are performing, which is the list_quality_metrics tool and the three.dev app. Not for adding three.dev to a codebase or routing calls through the proxy; that is the three-dev-setup skill. Not for investigating failure modes or reading recorded conversations; that is the three-dev-failure-modes skill. Not for running or reading offline experiments; that is the three-dev-experiments skill.
 ---
 
 # three.dev quality metrics
@@ -18,13 +18,13 @@ adds the business view on top. This skill's first job is to decide whether an
 outcome worth tracking exists; "none fits" is a valid result.
 
 The LLM calls must already send use case and session headers; if they do not,
-use the `three-dev` skill first. No metric has to be created in advance: the
-first report that carries `optimize_for` creates it. With no access to the
+use the `three-dev-setup` skill first. No metric has to be created in advance:
+the first report that carries `optimize_for` creates it. With no access to the
 user's code, work out the candidate outcomes from what the user tells you and
 point them to the Metrics page in the app to create them.
 
-When the `three-dev` skill loaded this skill during setup, skip Step 5 and
-return to it.
+When the `three-dev-setup` skill loaded this skill during setup, skip Step 5
+and return to it.
 
 ## Where the facts are
 
@@ -32,7 +32,7 @@ return to it.
 | --- | --- | --- |
 | The event-based model, direction, what and when to report | https://docs.three.dev/live-experiments/quality-metric.md | [references/quality-metric.md](references/quality-metric.md) |
 | The report endpoint and its body | https://docs.three.dev/api-reference/report-metric.md | [references/report-metric.md](references/report-metric.md) |
-| What a session is, and why it must end | https://docs.three.dev/getting-started/planning-your-integration.md | the `three-dev` skill's copy |
+| What a session is, and why it must end | https://docs.three.dev/getting-started/planning-your-integration.md | the `three-dev-setup` skill's copy |
 | Listing existing metrics without the MCP server | none | [references/control-plane-api.md](references/control-plane-api.md) |
 | Wiring reports into code | none | [references/metric-reporting.md](references/metric-reporting.md) |
 
@@ -59,7 +59,7 @@ fetch tool that returns the Markdown verbatim); the copies may lag it.
 
 Find the use case slugs and the session IDs in the code (`X-Three-Use-Case`,
 `X-Three-Session-ID`). Skip a use case that sends no session ID; if none does,
-use the `three-dev` skill first.
+use the `three-dev-setup` skill first.
 
 For each use case, work out what the feature is for and what happens after the
 LLM responds. Look in the code for business events that mark success or

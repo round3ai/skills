@@ -53,10 +53,10 @@ Update with `claude plugin update three-dev` or `npx skills update`.
 
 | Skill | What it does |
 | --- | --- |
-| [`three-dev`](skills/three-dev/SKILL.md) | Adds three.dev to a codebase so its LLM calls are recorded. |
 | [`three-dev-experiments`](skills/three-dev-experiments/SKILL.md) | Runs an offline experiment in three.dev to test a prompt, model, or reasoning change on recorded production traffic, and reads the results. |
 | [`three-dev-failure-modes`](skills/three-dev-failure-modes/SKILL.md) | Investigates production quality problems in an LLM feature that three.dev already records. |
-| [`three-dev-quality-metrics`](skills/three-dev-quality-metrics/SKILL.md) | Sets up quality metrics for an LLM feature that three.dev already records. |
+| [`three-dev-quality-metrics-setup`](skills/three-dev-quality-metrics-setup/SKILL.md) | Sets up quality metrics for an LLM feature that three.dev already records. |
+| [`three-dev-setup`](skills/three-dev-setup/SKILL.md) | Adds three.dev to a codebase so its LLM calls are recorded. |
 
 <!-- SKILLS:END -->
 
