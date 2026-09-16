@@ -23,7 +23,7 @@ There are two ways to create a use case. Both give you the same use case, with t
 
 A request under an existing use case is recorded under that use case; three.dev never modifies an existing use case.
 
-The first-request path also suits onboarding with an AI coding agent. Whether the agent works through the REST API, an MCP server, or code edits alone, it can wire in the proxy and send traffic right away; three.dev creates the use case on the first request. See [Onboard with an AI agent](https://docs.three.dev/getting-started/onboard-with-an-ai-agent.md).
+The first-request path also suits onboarding with an AI coding agent: the agent wires in the proxy and sends traffic right away, and three.dev creates the use case on the first request. See [Onboard with an AI agent](https://docs.three.dev/getting-started/onboard-with-an-ai-agent.md).
 
 three.dev forwards a request to the AI provider without recording it when:
 

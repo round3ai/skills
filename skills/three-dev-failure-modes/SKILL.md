@@ -1,6 +1,6 @@
 ---
 name: three-dev-failure-modes
-description: Investigates production quality problems in an LLM feature that three.dev already records. Triages the AI Judge's failure modes, reads the flagged conversations, finds the root cause, and proposes a prompt, model, or code fix. Use when the user asks why an LLM feature is failing or misbehaving in production, what its top failure modes, issues, or quality problems are, whether a problem is growing or started after a deploy, or wants to see bad conversations or count or segment requests. Needs the three.dev MCP server. Not for setting up three.dev or routing calls through the proxy; that is the three-dev skill. Not for testing a change on recorded traffic or reading experiment results; that is the three-dev-experiments skill. Not for defining or reporting quality metrics; that is the three-dev-quality-metrics skill.
+description: Investigates production quality problems in an LLM feature that three.dev already records. Triages the AI Judge's failure modes, reads the flagged conversations, finds the root cause, and proposes a prompt, model, or code fix. Use when the user asks why an LLM feature is failing or misbehaving in production, what its top failure modes, issues, or quality problems are, whether a problem is growing or started after a deploy, or wants to see bad conversations or count or segment requests. Needs the three.dev MCP server. Not for setting up three.dev or routing calls through the proxy; that is the three-dev-setup skill. Not for testing a change on recorded traffic or reading experiment results; that is the three-dev-experiments skill. Not for defining or reporting quality metrics; that is the three-dev-quality-metrics-setup skill.
 ---
 
 # three.dev failure-mode investigation
@@ -14,9 +14,9 @@ apply. Testing that fix on recorded traffic is an offline experiment and belongs
 to the `three-dev-experiments` skill; hand over once the fix is written.
 
 If the user's code is not sending traffic through three.dev yet, or `list_use_cases`
-returns nothing, stop and use the `three-dev` skill first. Quality metrics (the
+returns nothing, stop and use the `three-dev-setup` skill first. Quality metrics (the
 outcomes the user's code reports) are a different signal from failure modes;
-setting one up is the `three-dev-quality-metrics` skill.
+setting one up is the `three-dev-quality-metrics-setup` skill.
 
 ## Where the facts are
 
@@ -108,7 +108,7 @@ in the window.
 
 If the list is empty, find out why before answering. Call `list_requests` with
 `limit=0` for the same window: no requests means the use case is not receiving
-traffic, use the `three-dev` skill; requests but `totals.scored_requests` of zero
+traffic, use the `three-dev-setup` skill; requests but `totals.scored_requests` of zero
 means live scoring is not enabled or has not sampled yet, point the user to
 https://docs.three.dev/live-scoring/live-scoring.md; otherwise say what the
 `note` says and offer a wider window. Then stop.

@@ -1,6 +1,6 @@
 ---
-name: three-dev
-description: Adds three.dev to a codebase so its LLM calls are recorded. Finds every LLM call site, groups the calls into use cases, and routes them through the three.dev proxy (gate.three.dev) with use case, session, and environment headers. Use when the user mentions three.dev, gate.three.dev, or X-Three headers, asks to record or monitor their LLM calls, or wants to set up or extend a three.dev integration. Covers OpenAI, Anthropic, Gemini, Azure OpenAI, OpenRouter, Bedrock, and LiteLLM clients. Read the docs before writing code; never guess header values or base URLs. Not for investigating failure modes or reading recorded conversations; that is the three-dev-failure-modes skill. Not for running or reading experiments; that is the three-dev-experiments skill. Not for defining or reporting quality metrics; that is the three-dev-quality-metrics skill.
+name: three-dev-setup
+description: Adds three.dev to a codebase so its LLM calls are recorded. Finds every LLM call site, groups the calls into use cases, and routes them through the three.dev proxy (gate.three.dev) with use case, session, and environment headers. Use when the user mentions three.dev, gate.three.dev, or X-Three headers, asks to record or monitor their LLM calls, or wants to set up or extend a three.dev integration. Covers OpenAI, Anthropic, Gemini, Azure OpenAI, OpenRouter, Bedrock, and LiteLLM clients. Read the docs before writing code; never guess header values or base URLs. Not for investigating failure modes or reading recorded conversations; that is the three-dev-failure-modes skill. Not for running or reading experiments; that is the three-dev-experiments skill. Not for defining or reporting quality metrics; that is the three-dev-quality-metrics-setup skill.
 ---
 
 # three.dev integration
@@ -134,11 +134,11 @@ Do not commit unless the user asked you to.
 
 ### Step 4: Continue with quality metrics
 
-Load the `three-dev-quality-metrics` skill, follow it, then come back here. When
-it cannot be loaded, because the skills were installed during this session or
-you are reading these files directly, read `three-dev-quality-metrics/SKILL.md`,
-the directory next to this skill's own, or call `learn` on the three.dev MCP
-server. Never skip this step. It wires reports only for outcomes that are clear
+Load the `three-dev-quality-metrics-setup` skill, follow it, then come back
+here. When it cannot be loaded, because the skills were installed during this
+session or you are reading these files directly, read
+`three-dev-quality-metrics-setup/SKILL.md`, the directory next to this skill's
+own, or call `learn` on the three.dev MCP server. Never skip this step. It wires reports only for outcomes that are clear
 and adds nothing otherwise, and never asks the user anything.
 
 ### Step 5: Verify
@@ -163,7 +163,7 @@ go. No three.dev key exists yet, so verify without calling the proxy.
    - No key is logged, printed, hardcoded, or committed.
    - A tag whose value can be missing sends no header rather than an empty or
      `None` value, and no tag carries personal data.
-   - Step 4 ran from the `three-dev-quality-metrics` skill's own text, not
+   - Step 4 ran from the `three-dev-quality-metrics-setup` skill's own text, not
      from memory. Every metric report it wired is non-blocking, sends the
      session ID of its LLM calls, and carries `optimize_for`.
 3. **Verify every instruction Step 6 will give:**
