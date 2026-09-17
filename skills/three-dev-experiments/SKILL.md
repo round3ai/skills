@@ -111,6 +111,13 @@ repeat them to the user when proposing.
 
 - Below 100 eligible requests the response carries a `dataset_note` saying the
   comparison is weak; widen the filters or the user proceeds knowingly.
+- `estimated_cost` is a rough figure for replaying the dataset through the
+  variants: `total_usd`, and `usd` per variant, `null` when its model has no
+  list price (the total leaves it out, and is itself `null` when no variant
+  has one). It prices the tokens the recorded
+  requests used at list price, so it assumes similar response lengths and no
+  prompt caching, and it leaves out AI Judge scoring. It is absent when no
+  request is eligible.
 - Keep the default `dataset_size` unless the behaviour under test is rare
   enough that the default would hold too few cases; then raise it and say why.
 - `control.filters` narrow the dataset to the traffic the question is about,
@@ -135,7 +142,8 @@ names:
 
 - each variant and what it changes (provider and model, reasoning, prompt);
 - the dataset: the dry-run count, the filters used, and the judge;
-- that replays and judging spend the user's provider and AI Judge budget;
+- that replays and judging spend the user's provider and AI Judge budget, with
+  the dry run's `estimated_cost` as the rough replay figure, judge cost on top;
 - that it takes minutes to hours.
 
 After creating, show the `experiment_url` and say the user can close the
