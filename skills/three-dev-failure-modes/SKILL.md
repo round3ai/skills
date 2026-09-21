@@ -110,8 +110,9 @@ on from the use case below.
 If the user named one, use its slug. Otherwise call `list_use_cases`; with one
 result use it, with several ask by number. If the user's question is about one
 request id, go straight to Step 4; `get_request_conversation` also needs the use
-case slug, so try the use cases in turn when it is unknown. No tool reads a
-session; say so and ask for a request id from it.
+case slug, so try the use cases in turn when it is unknown. A session id is
+read with `list_requests` filtered by `session`, which returns that
+conversation's turns in the window.
 
 If `list_failure_modes` answers that failure modes are not available for the use
 case, report that message as is and stop that branch. Do not retry or work
@@ -169,8 +170,9 @@ saw and what it did: a missing or contradicting instruction, a tool result it
 ignored, a fact it invented, a format it broke, a context it lost.
 
 Also read one conversation that passed when the failure looks input-dependent.
-A conversation carries its `session_id`; the request's app link opens the whole
-session when the failure needs the earlier turns.
+When a conversation carries a `session_id` — traffic that sends none has no
+session — refilter `list_requests` on `session` to read the turns around a
+failure that needs the earlier ones.
 
 ### Step 5: Report
 
