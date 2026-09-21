@@ -17,9 +17,7 @@ predicates each field accepts are in the table below.
 | `tag` | `eq` | string, with `key` | `key` is the tag name |
 | `experiment` | `eq` | experiment slug | Switches the listing to that experiment's traffic and ignores `from`/`to` |
 | `variant` | `eq` | variant slug | Only with `experiment`; `control` is production |
-
-`limit=0` returns only `total`, the count across all pages. Otherwise pages hold
-up to 30 rows; pass `next_cursor` back as `cursor` with the same filters.
+| `session` | `eq` | a row's `session_id` | The rest of that conversation's turns inside the window; one per call |
 
 ## Worked calls
 
@@ -56,4 +54,7 @@ same id, so the two sides pair on it.
 
 - `input_preview` and `output_preview` are about 160 characters. Use
   `get_request_conversation` for the rest.
+- Rows sharing a `session_id` are turns of one conversation, and a flagged
+  turn is often mid-conversation. Refilter on `session` to read the turns
+  around it; rows with no `session_id` come from traffic that sends none.
 - `total` is the matching count across all pages; do not page to count.
