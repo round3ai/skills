@@ -119,6 +119,9 @@ repeat them to the user when proposing.
 
 - On a weak dataset, widen the filters, or the user proceeds knowingly.
 - Treat the cost figure as rough when you quote it.
+- A question only about cost is answered by a preview with the variant
+  unchanged. Build the control template in Step 1 only once the experiment
+  will run a prompt change.
 - Keep the default `dataset_size` unless the behaviour under test is rare
   enough that the default would hold too few cases; then raise it and say why.
 - `control.filters` narrow the dataset to the traffic the question is about,
