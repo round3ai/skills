@@ -3,6 +3,10 @@
 `get_offline_experiment` returns one block per variant, each compared with
 control on the same requests. Always put the counts next to the rate.
 
+The AI Judge scores `dataset_size` requests in every arm, control included, so
+a one-variant run of 100 produces 200 verdicts and the app's progress bar
+counts those, not the dataset.
+
 ## Quality
 
 `quality.pass_count`, `fail_count`, `pass_rate`, and `p_beats_control`: the

@@ -160,7 +160,9 @@ close the conversation; results stay in the app.
 response; `list_requests` filters take its `slug`, from the same responses.
 Call it every few minutes while the user waits, or once when they come back.
 `results_ready` means quality, latency and cost are final; do not wait for
-`status: finished`. `failure_modes_ready` means the failure-mode comparison is
+`status: finished`: a run is paused or finished early from its page in the app,
+and no tool does either, so point the user there rather than saying they can
+only wait. `failure_modes_ready` means the failure-mode comparison is
 in. `error_reason` means it failed; report the reason as is (a missing provider
 key for a variant's provider is the common one, fixed in the app). Each
 variant's `progress` counts `replayed`, `replay_failed`, `judged`,
