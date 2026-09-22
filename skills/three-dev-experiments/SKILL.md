@@ -31,7 +31,8 @@ not retry or work around it.
 | --- | --- |
 | Which use cases exist, their slugs | `list_use_cases` |
 | Providers, models and reasoning settings a variant may use | `list_available_models` |
-| Size and validate a proposal, then create it | `create_offline_experiment` (`dry_run` true, then false) |
+| Size and validate a proposal | `preview_offline_experiment` |
+| Create it once the user asked or confirmed | `create_offline_experiment` |
 | Status and results of one experiment | `get_offline_experiment` |
 | The use case's past and running experiments | `list_offline_experiments` |
 | Values a dataset filter can take | `get_request_facets` |
@@ -42,9 +43,9 @@ not retry or work around it.
 
 - **Never start an offline experiment on your own.** It spends the user's
   provider and AI Judge budget and runs for hours. When the user asked for the
-  experiment or already said yes to your proposal, dry-run it and then create it
-  without asking again; a dry run is validation, not a second request for
-  permission. When the experiment is your own idea, propose it with the dry-run
+  experiment or already said yes to your proposal, preview it and then create it
+  without asking again; the preview is validation, not a second request for
+  permission. When the experiment is your own idea, propose it with the preview
   numbers and wait for an explicit yes.
 - **Copy, do not type.** `provider`, `model` and reasoning values come verbatim
   from `list_available_models`; the control prompt template comes verbatim from
@@ -65,8 +66,13 @@ If the user named a use case, use its slug; otherwise call `list_use_cases`,
 use the only one, or ask by number. Then state the question in one line before
 building anything: "does model X match control's quality at lower cost", "does
 this prompt wording stop failure mode Y", "does reasoning effort low cut latency".
-The experiment's `description` field carries this sentence plus what traffic it
-runs on.
+That question is yours to aim with; the `description` field states what the
+variants change and what traffic they run on, in plain language a customer
+would say out loud: no parentheses, no quoted failure-mode names, no jargon,
+and not the question written out again. Its `name` is the change itself in 3 to 6
+plain words, in the user's own vocabulary: the phrase a customer scanning the
+experiment list a month later would recognise, never a goal or a draft label.
+Good and bad names: [references/worked-calls.md](references/worked-calls.md).
 
 If the user only wants to know what an experiment showed, skip to Step 4.
 
@@ -92,32 +98,27 @@ conversations, not from the user's source code:
    `{{placeholder}}`s; two placeholders may not touch, put literal text
    between them. Do not tidy whitespace or wording.
 3. Check the template against the other conversations by eye before the dry
-   run. The dry run does not test it.
+   run. The preview does not test it.
 
 The variant's `prompt_template` is that template with the user's change
-applied, using the same placeholders. The dry-run count does not account for
+applied, using the same placeholders. The preview's count does not account for
 the template; a `progress.total` well below it once the experiment runs is the
 tell that the template matched few requests. Worked calls:
 [references/worked-calls.md](references/worked-calls.md).
 
-### Step 2: Size it with a dry run
+### Step 2: Size it with a preview
 
-Call `create_offline_experiment` with `dry_run=true`. It creates nothing, needs
-no consent, and returns `eligible_request_count`, the `ai_judge` that will
-score (chosen by three.dev: the live-scoring judge, else the active released
-one; `source` says which), and the validated variants. The tool's parameter
+Call `preview_offline_experiment` with the body you would create. Nothing
+enforces this step: `create_offline_experiment` called on its own creates the
+experiment unsized. The preview creates nothing, needs no consent, and sizes
+the dataset, resolves the judge and validates the variants; read its numbers
+with
+[references/worked-calls.md](references/worked-calls.md). The tool's parameter
 descriptions say which requests are eligible and the dataset size bounds;
 repeat them to the user when proposing.
 
-- Below 100 eligible requests the response carries a `dataset_note` saying the
-  comparison is weak; widen the filters or the user proceeds knowingly.
-- `estimated_cost` is a rough figure for replaying the dataset through the
-  variants: `total_usd`, and `usd` per variant, `null` when its model has no
-  list price (the total leaves it out, and is itself `null` when no variant
-  has one). It prices the tokens the recorded
-  requests used at list price, so it assumes similar response lengths and no
-  prompt caching, and it leaves out AI Judge scoring. It is absent when no
-  request is eligible.
+- On a weak dataset, widen the filters, or the user proceeds knowingly.
+- Treat the cost figure as rough when you quote it.
 - Keep the default `dataset_size` unless the behaviour under test is rare
   enough that the default would hold too few cases; then raise it and say why.
 - `control.filters` narrow the dataset to the traffic the question is about,
@@ -136,18 +137,19 @@ repeat them to the user when proposing.
 ### Step 3: Propose, or create
 
 If the user asked for this experiment or confirmed it, create it now with
-`dry_run=false` and the exact validated proposal. Otherwise show the proposal
+the exact body you previewed. Otherwise show the proposal
 and ask "Do you want me to start this experiment?", then wait. The proposal
 names:
 
+- the name it will be saved under;
 - each variant and what it changes (provider and model, reasoning, prompt);
-- the dataset: the dry-run count, the filters used, and the judge;
+- the dataset: the preview's count, the filters used, and the judge;
 - that replays and judging spend the user's provider and AI Judge budget, with
-  the dry run's `estimated_cost` as the rough replay figure, judge cost on top;
+  the preview's `estimated_cost` as the rough replay figure, judge cost on top;
 - that it takes minutes to hours.
 
-After creating, show the `experiment_url` and say the user can close the
-conversation; results stay in the app.
+After creating, show the name and the `experiment_url` and say the user can
+close the conversation; results stay in the app.
 
 ### Step 4: Read the results
 
@@ -181,9 +183,9 @@ in production and wants it fixed, not just measured, hand over to the
 
 ## Hard rules
 
-- `create_offline_experiment` with `dry_run=false` only when the user asked for
-  the experiment or said yes to the specific proposal you showed; then do not
-  ask again.
+- `create_offline_experiment` only when the user asked for the experiment or
+  said yes to the specific proposal you showed; then do not ask again. It always
+  creates; sizing is `preview_offline_experiment`.
 - Provider, model, reasoning values and the control prompt are copied, never
   typed from memory.
 - Every rate is reported with its counts; `p_beats_control` is evidence, not a

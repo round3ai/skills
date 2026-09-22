@@ -55,14 +55,6 @@ verbatim when the user wants to look; never compose an app URL yourself.
   returns the `window` it answered for; report that, not the one you asked for.
 - **`scored` and `failure_mode_ids` on a request.** An empty `failure_mode_ids`
   means either scored and clean or not scored at all. Read `scored` first.
-- **`assessment` on a request.** The AI Judge's verdict (`pass` or `fail`) and
-  reasoning; `null` when the judge did not score it. `list_requests` includes it
-  only with `include_assessment=true`; `get_request_conversation` always does.
-- **Severity** (`high`, `medium`, `low`, `unknown`) is assigned when the mode is
-  grouped and can be changed by people in the app. It is a priority hint, not a
-  measurement.
-- **`is_unknown`** marks the catch-all group of failures that matched no mode.
-  Read its examples; it is often several problems in one.
 - **No lifecycle.** A failure mode is never "resolved" in three.dev. Fixed means
   its rate dropped in a later window.
 
@@ -85,6 +77,16 @@ verbatim when the user wants to look; never compose an app URL yourself.
   `get_request_facets` and `list_requests` with `limit=0`. Read individual
   conversations to explain, not to count; two or three per failure mode is
   usually enough.
+- **Classify from the judge's reasoning, not from conversations.** To split or
+  count a pattern inside a failure mode, page `list_requests` with
+  `include_assessment=true` and read each row's reasoning: 30 rows a call,
+  against one conversation per call.
+- **Ten conversations, then stop and ask.** `get_request_conversation` is the
+  most expensive call here. Past ten in one investigation, say what reading the
+  rest would cost and offer the two cheaper answers: read ten picked at random
+  and report a sample ("7 of the 10 I read", with the mode's total beside it),
+  or add the distinction to the judge's criteria so it becomes its own failure
+  mode from the next scored request on.
 
 ## Workflow
 
@@ -135,9 +137,10 @@ means live scoring is not enabled or has not sampled yet, point the user to
 https://docs.three.dev/live-scoring/live-scoring.md; otherwise say what the
 `note` says and offer a wider window. Then stop.
 
-Rank by rate. Severity is a hint people set by hand and is usually `unknown`,
-so it does not reorder the table; instead, name any mode with a set severity
-under it, and treat a `high` one as a candidate even when its rate is low.
+Rank by rate: severity does not reorder the table. Name any mode with a set
+severity under it, and treat a `high` one as a candidate even when its rate is
+low. Read the catch-all `is_unknown` group too; both it and severity are
+explained in [references/filters.md](references/filters.md).
 Offer the top one or two, or the one the user named, as a numbered list with
 your recommendation marked, one question at a time, using a structured question
 tool if one exists, and wait.
@@ -198,6 +201,10 @@ call `create_offline_experiment` from this skill.
   `get_request_facets` for the use case, then `list_requests` with filters copied
   from it and `limit=0`; read `total`. Grammar and examples in
   [references/filters.md](references/filters.md).
+- **"How many of them are X rather than Y?"**: a split inside one failure mode.
+  Filter `list_requests` on the mode with `include_assessment=true` and classify
+  from the judge's reasoning; only when the distinction is not in the reasoning
+  read conversations, and then as a sample under the rule above.
 - **"Show me bad conversations"**: `list_requests` with a `judge` `fail` filter,
   then `get_request_conversation` on the ones the user picks.
 - **"What did the judge make of my latest N requests?"**: `list_requests` with

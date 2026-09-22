@@ -58,3 +58,11 @@ same id, so the two sides pair on it.
   turn is often mid-conversation. Refilter on `session` to read the turns
   around it; rows with no `session_id` come from traffic that sends none.
 - `total` is the matching count across all pages; do not page to count.
+
+## Reading a failure mode
+
+- `severity` is `high`, `medium`, `low` or `unknown`. It is assigned when the
+  mode is grouped and people change it in the app, so it is a priority hint and
+  not a measurement; it is `unknown` on most modes.
+- `is_unknown` marks the catch-all group of failures that matched no mode. It
+  is often several problems in one, so read its examples rather than its count.
