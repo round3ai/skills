@@ -54,7 +54,9 @@ verbatim when the user wants to look; never compose an app URL yourself.
   last 14 days; `to` alone means the 7 days before it. Every windowed result
   returns the `window` it answered for; report that, not the one you asked for.
 - **`scored` and `failure_mode_ids` on a request.** An empty `failure_mode_ids`
-  means either scored and clean or not scored at all. Read `scored` first.
+  means either scored and clean or not scored at all. Read `scored` first. A
+  conversation's `failure_modes` reads the same way, with `assessment` in place
+  of `scored`.
 - **No lifecycle.** A failure mode is never "resolved" in three.dev. Fixed means
   its rate dropped in a later window.
 
@@ -152,7 +154,8 @@ When the user asks whether something is new, growing, or caused by a deploy, cal
 counts: for a deploy, `to = deploy_time` against `from = deploy_time`; for growth,
 the last 3 days against the 11 days before them. Windows must not overlap. Say
 when the two windows have too few scored requests to tell (a handful of
-occurrences either side is noise).
+occurrences either side is noise). Whether a mode is new at all is its
+`all_time_first_seen_at`, not the windowed `first_seen_at`.
 
 ### Step 3: Drill into the chosen failure mode
 
@@ -171,6 +174,11 @@ tool names once, then the turns around the failure; ask for `detail=full` or
 `include_tools=true` only when a capped part or a tool definition matters. Look for what the model
 saw and what it did: a missing or contradicting instruction, a tool result it
 ignored, a fact it invented, a format it broke, a context it lost.
+
+When the conversation lists `failure_modes`, those are the modes to drill into
+with Step 3; the judge's summaries are already there. When `list_use_cases`
+shows `content_retention` `metadata` or `none`, there is no conversation text to
+read; work from the judge's summaries.
 
 Also read one conversation that passed when the failure looks input-dependent.
 When a conversation carries a `session_id` — traffic that sends none has no

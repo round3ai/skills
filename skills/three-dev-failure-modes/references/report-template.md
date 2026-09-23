@@ -8,7 +8,7 @@ evidence section carries the weight.
 
 **How often**: `<occurrences>` occurrences in `<request_count>` of
 `<scored_requests>` scored requests (`<rate>` per scored request) between
-`<window.from>` and `<window.to>`. First seen `<first_seen_at>`.
+`<window.from>` and `<window.to>`. First seen `<all_time_first_seen_at>`.
 `<Trend line when measured: rate in window A vs window B.>`
 
 **What happens**: two or three sentences in the product's terms, from the judge's
