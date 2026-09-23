@@ -4,6 +4,12 @@ All values below are placeholders: provider, model and reasoning come from
 `list_available_models`, the control prompt from a recorded conversation, filter
 values from `get_request_facets`.
 
+Contents: [Naming it](#naming-it) ·
+[Compare two models, preview](#compare-two-models-preview) ·
+[Prompt change on one segment](#prompt-change-on-one-segment) ·
+[Reasoning setting](#reasoning-setting) · [Dataset filters](#dataset-filters) ·
+[Reading the preview](#reading-the-preview) · [Creating it](#creating-it)
+
 ## Naming it
 
 Good and bad names for the same experiment:

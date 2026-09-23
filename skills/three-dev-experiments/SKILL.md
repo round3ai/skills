@@ -179,10 +179,11 @@ on `source_request_id`; read a few with `get_request_conversation`.
 
 ### Existing experiments
 
-"What did we test on this use case?" is `list_offline_experiments`, newest
-first. It pages, so answer "no experiment tried X" only once you have paged to
-the end. "What did experiment X show?" is
-`get_offline_experiment`, read as in Step 4. When the user found a problem
+"What did we test on this use case?" is `list_offline_experiments`. "Did we
+test model X?" or "which experiments used judge Y?" narrow it with `model` or
+`judge_model` rather than paging through every experiment. It pages, so answer
+"no experiment tried X" only once you have paged to the end. "What did
+experiment X show?" is `get_offline_experiment`, read as in Step 4. When the user found a problem
 in production and wants it fixed, not just measured, hand over to the
 `three-dev-failure-modes` skill; come back here with the fix.
 
