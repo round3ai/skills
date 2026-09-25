@@ -51,12 +51,22 @@ not retry or work around it.
   from `list_available_models`; the control prompt template comes verbatim from
   a recorded system message. A typed value is rejected or, worse, silently tests
   the wrong thing.
-- **Results are judge-only evidence.** Report counts next to every rate and
-  `p_beats_control` as a probability, not a verdict. The shipping recommendation
-  comes from the app's Statistical stage once domain experts have assessed a
-  sample; when the user asks whether to ship, point them there.
-- **Be brief.** No narration of tool calls. Numbers go in a table with their
-  denominators.
+- **Results are the judge's evidence.** Counts go next to every rate and
+  `p_beats_control` is a probability, not a verdict. When a variant does best,
+  offer the choice: check a sample of its replies in the app first, after which
+  three.dev gives its own ship verdict, or go ahead and apply the change. Apply
+  nothing without a yes. Where you cannot edit the user's code, as in the
+  three.dev chat, going ahead means continuing in a coding agent, offered as in
+  [references/watching.md](references/watching.md).
+- **Secrets never touch the chat or the repo.** Never ask the user to paste a
+  key. Never hardcode, print, echo, or commit one.
+- **Talk like a colleague.** Two or three sentences: what happened in plain
+  words first, the numbers behind it in one parenthesis (quality, latency,
+  cost), at most one question. Tables only when the user asks for the detail.
+  No narration of tool calls.
+- **Link every claim.** An experiment, a variant's replies or a request you
+  mention is linked with the `url` its result returned, or with the link format
+  your client prescribes; never compose one.
 
 ## Workflow
 
@@ -151,14 +161,17 @@ names:
   the preview's `estimated_cost` as the rough replay figure, judge cost on top;
 - that it takes minutes to hours.
 
-After creating, show the name and the `experiment_url` and say the user can
-close the conversation; results stay in the app.
+After creating, show the name and the `experiment_url`, then keep an eye on
+it until the results are in, as in
+[references/watching.md](references/watching.md). Where you cannot, as in the
+three.dev chat, that reference says what to offer instead.
 
 ### Step 4: Read the results
 
 `get_offline_experiment` takes the experiment's UUID from the create or list
 response; `list_requests` filters take its `slug`, from the same responses.
-Call it every few minutes while the user waits, or once when they come back.
+Call it on each check while you keep an eye on it, or once when the user
+comes back.
 `results_ready` means quality, latency and cost are final; do not wait for
 `status: finished`: a run is paused or finished early from its page in the app,
 and no tool does either, so point the user there rather than saying they can
@@ -169,13 +182,18 @@ variant's `progress` counts `replayed`, `replay_failed`, `judged`,
 `judge_failed` and `judge_skipped`; report a variant whose failures are a
 sizeable share of `total` as unreliable rather than reading its rates.
 
-Report per variant against control using
-[references/results.md](references/results.md): pass counts and rate with
-`p_beats_control`, latency and cost, and which failure modes fell, rose, or are
-new. Answer the Step 0 question in one sentence, with the numbers that support
-it, and stop. To show what a variant actually said, `list_requests` with the
-`experiment` and `variant` filters pairs replays with their production request
-on `source_request_id`; read a few with `get_request_conversation`.
+Read each variant against control with
+[references/results.md](references/results.md): quality, latency and cost, and
+which failure modes fell, rose, or are new. A variant that improves the target
+by making another failure mode worse did not win. Answer the Step 0 question in
+two or three sentences with the numbers behind it, then offer the choice from
+the ground rules. The replies to check are `list_requests` with the
+`experiment` and `variant` filters, linked with the link that result returns. Replays
+pair with their production request on `source_request_id`; read a few with
+`get_request_conversation` when the user wants to see them here.
+
+When the experiment tested fixes for a failure mode and none of them won, go
+back to the `three-dev-failure-modes` skill for the next kind of fix.
 
 ### Existing experiments
 
@@ -194,8 +212,8 @@ in production and wants it fixed, not just measured, hand over to the
   creates; sizing is `preview_offline_experiment`.
 - Provider, model, reasoning values and the control prompt are copied, never
   typed from memory.
-- Every rate is reported with its counts; `p_beats_control` is evidence, not a
-  ship decision.
+- Every rate is reported with its counts; `p_beats_control` is evidence, and
+  the ship decision is the user's.
 - A control prompt template is copied from a `detail=full` conversation and
   checked against others; a template that does not parse a request silently
   drops it.

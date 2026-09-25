@@ -12,10 +12,9 @@ counts those, not the dataset.
 `quality.pass_count`, `fail_count`, `pass_rate`, and `p_beats_control`: the
 probability that the variant's pass rate beats control's, computed from the AI
 Judge counts alone. Report it as judge-only evidence with the counts; do not
-turn it into a verdict. The app moves the experiment to its Statistical stage
-once at least five domain expert assessments are in, and only then shows the
-per-variant badge (Ship, Shippable, Promising, Inconclusive, Behind) and a
-shipping recommendation. If the user asks whether to ship, point them there:
+turn it into a verdict. Once at least five replies are reviewed in the app,
+three.dev adds its own per-variant verdict (Ship, Shippable, Promising,
+Inconclusive, Behind); that is what checking a sample buys, explained at
 https://docs.three.dev/offline-experiments/understanding-results.md.
 
 ## Latency and cost
@@ -58,6 +57,8 @@ Call a variant promising only when quality is not worse and the change it was
 built for shows up; otherwise say so plainly.
 
 ## Reporting table
+
+When the user asks for the detail:
 
 | Variant | Pass / total | Pass rate | P(beats control) | Avg latency | Avg cost |
 | --- | --- | --- | --- | --- | --- |
