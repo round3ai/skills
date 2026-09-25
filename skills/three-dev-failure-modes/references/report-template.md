@@ -11,8 +11,9 @@ shows it:
 > a linked example; the rest in one clause.>` `<The fixes that cover them, in one or two sentences.>` `<One
 > question: make the change, or run the experiment with its rough cost.>`
 
-Numbers go in one parenthesis per sentence, not a table; caveats, false
-positives beyond one clause and sizing limits go in the detail.
+One paragraph: no headers, tables or bullets. Numbers go in one parenthesis
+per sentence; caveats, false positives beyond one clause and sizing limits go
+in the detail.
 
 ## Detail, when the user asks
 
