@@ -1,31 +1,30 @@
 # Report template
 
-One report per failure mode investigated. Keep each section to a few lines; the
-evidence section carries the weight.
+## Default
 
-**Failure mode**: `<name>` (severity `<severity>`, use case `<slug>`)
-`<title, one line>`
+A few short sentences in plain language, each claim linked to the page that
+shows it:
 
-**How often**: `<occurrences>` occurrences in `<request_count>` of
-`<scored_requests>` scored requests (`<rate>` per scored request) between
-`<window.from>` and `<window.to>`. First seen `<all_time_first_seen_at>`.
-`<Trend line when measured: rate in window A vs window B.>`
+> [<Failure mode>](link) is the one to fix first: `<why, as Step 1 picked it>`
+> (`<occurrences>` of `<scored>` scored requests, `<rate>`). `<The two or three
+> largest shapes in plain words, each with its count, what reached the user and
+> a linked example; the rest in one clause.>` `<The fixes that cover them, in one or two sentences.>` `<One
+> question: make the change, or run the experiment with its rough cost.>`
 
-**What happens**: two or three sentences in the product's terms, from the judge's
-description and the conversations, not a restatement of the name.
+Numbers go in one parenthesis per sentence, not a table; caveats, false
+positives beyond one clause and sizing limits go in the detail.
 
-**Evidence**: for each conversation read, the request id, what the user asked,
-and the quoted turn where it went wrong. Two or three entries.
+## Detail, when the user asks
 
-**Root cause**: the mechanism, stated as a claim with its confidence. Say which
-evidence supports it and what would disprove it. If two causes are plausible,
-list both.
-
-**Proposed fix**: the concrete change. For a prompt, the exact wording to add,
-remove or replace and where it goes. For a model or parameter change, the
-alternative and why. For a tool or code change, the file and behaviour.
-
-**How to verify**: the offline experiment to run (variants, dataset, filters; the `three-dev-experiments` skill runs it), or
-the window to re-check live after shipping, and what number should move.
-
-**Links**: the failure mode and request URLs the tools returned, verbatim.
+- **Shapes**: the table from [fix-design.md](fix-design.md), over the `<n>`
+  flagged requests classified, sample stated when one.
+- **Judge check**: the false positives and why, with one quoted example.
+- **Evidence**: per conversation read, the linked request, what the user asked
+  and the quoted turn where it went wrong; the passing one and what it did
+  differently.
+- **Root cause**: the mechanism with its confidence, the evidence for it and
+  what would disprove it; both causes when two are plausible.
+- **Fixes**: the exact prompt wording, the tool or file and new behaviour, the
+  alternative model, or the judge criterion to change.
+- **Constraints**: what the fixes keep unchanged.
+- **How to verify**: the verification plan from [fix-design.md](fix-design.md).

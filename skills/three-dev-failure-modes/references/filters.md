@@ -80,3 +80,16 @@ same id, so the two sides pair on it.
   not a measurement; it is `unknown` on most modes.
 - `is_unknown` marks the catch-all group of failures that matched no mode. It
   is often several problems in one, so read its examples rather than its count.
+
+## Questions outside the journey
+
+- **"How many requests..." / "which models..." / "requests tagged..."**: call
+  `get_request_facets` for the use case, then `list_requests` with filters copied
+  from it and `limit=0`; read `total`, with the grammar above.
+- **"How many of them are X rather than Y?"**: a split inside one failure mode,
+  classified from the judge's reasoning as in Step 3 of the skill.
+- **"Show me bad conversations"**: `list_requests` with a `judge` `fail` filter,
+  then `get_request_conversation` on the ones the user picks.
+- **"What did the judge make of my latest N requests?"**: `list_requests` with
+  `include_assessment=true`, paged until N rows; a pass rate over them is per
+  scored row, not per `total`.
