@@ -149,10 +149,12 @@ repeat them to the user when proposing.
 
 ### Step 3: Propose, or create
 
-If the user asked for this experiment or confirmed it, create it now with
-the exact body you previewed. Otherwise show the proposal
-and ask "Do you want me to start this experiment?", then wait. The proposal
-names:
+If the user asked for this experiment or confirmed a proposal that showed its
+cost, create it now with the exact body you previewed. A yes to a proposal
+without the preview's cost is not a confirmation: preview, show the cost, and
+ask again. Otherwise show the proposal
+and ask "Do you want me to start this experiment?", then wait. The proposal,
+in a few plain sentences rather than a list, names:
 
 - the name it will be saved under;
 - each variant and what it changes (provider and model, reasoning, prompt);
@@ -161,10 +163,11 @@ names:
   the preview's `estimated_cost` as the rough replay figure, judge cost on top;
 - that it takes minutes to hours.
 
-After creating, show the name and the `experiment_url`, then keep an eye on
-it until the results are in, as in
-[references/watching.md](references/watching.md). Where you cannot, as in the
-three.dev chat, that reference says what to offer instead.
+After creating, say in one or two sentences that it started, linking its
+`experiment_url`, with its rough cost and when to expect results. Then keep an eye on it as in
+[references/watching.md](references/watching.md). In the three.dev chat you
+cannot: never promise to check back; say so and offer the Copy conversation
+handoff that reference describes.
 
 ### Step 4: Read the results
 
