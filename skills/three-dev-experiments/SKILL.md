@@ -127,13 +127,15 @@ with
 descriptions say which requests are eligible and the dataset size bounds;
 repeat them to the user when proposing.
 
-- On a weak dataset, widen the filters, or the user proceeds knowingly.
+- When the preview carries a `dataset_note`, pass it on in one clause and do
+  what it says, or the user proceeds knowingly.
 - Treat the cost figure as rough when you quote it.
 - A question only about cost is answered by a preview with the variant
   unchanged. Build the control template in Step 1 only once the experiment
   will run a prompt change.
-- Keep the default `dataset_size` unless the behaviour under test is rare
-  enough that the default would hold too few cases; then raise it and say why.
+- Keep the default `dataset_size` unless the user names a size or the
+  behaviour under test is rare enough that the default would hold too few
+  cases; then use theirs or raise it, and say why.
 - `control.filters` narrow the dataset to the traffic the question is about,
   with values from `get_request_facets`: one model or provider when the change
   only concerns it, a tag such as `environment` or a customer segment, a

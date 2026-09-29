@@ -95,8 +95,10 @@ entry in `get_request_facets` carries an `example` you can pass as is.
   is what will be replayed, capped by it.
 - `ai_judge` is the judge three.dev chose, with `source` saying whether it came
   from live scoring or the active released judge.
-- `dataset_note` appears below 100 eligible requests and says the comparison is
-  weak.
+- `dataset_note` appears when the dataset would hold fewer than 100 requests,
+  whether the filters match too few or `dataset_size` was set below 100, and
+  says the comparison is weak; below 10 matching requests the experiment cannot
+  be created at all.
 - `estimated_cost` carries `total_usd` and `usd` per variant, `null` for a
   variant whose model has no list price; the total leaves that variant out, and
   is itself `null` when no variant has one. It prices the tokens the recorded
