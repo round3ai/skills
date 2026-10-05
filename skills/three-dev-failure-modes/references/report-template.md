@@ -12,20 +12,18 @@ shows it:
 > question: make the change, or run the experiment with its rough cost.>`
 
 One paragraph: no headers, tables or bullets. Numbers go in one parenthesis
-per sentence; caveats, false positives beyond one clause and sizing limits go
-in the detail.
+per sentence; caveats and sizing limits go in the detail.
 
 ## Detail, when the user asks
 
 - **Shapes**: the table from [fix-design.md](fix-design.md), over the `<n>`
   flagged requests classified, sample stated when one.
-- **Judge check**: the false positives and why, with one quoted example.
 - **Evidence**: per conversation read, the linked request, what the user asked
   and the quoted turn where it went wrong; the passing one and what it did
   differently.
 - **Root cause**: the mechanism with its confidence, the evidence for it and
   what would disprove it; both causes when two are plausible.
-- **Fixes**: the exact prompt wording, the tool or file and new behaviour, the
-  alternative model, or the judge criterion to change.
+- **Fixes**: the exact prompt wording, the tool or file and new behaviour, or
+  the alternative model.
 - **Constraints**: what the fixes keep unchanged.
 - **How to verify**: the verification plan from [fix-design.md](fix-design.md).

@@ -1,32 +1,6 @@
 # Designing the fix
 
-Contents: [Judge check](#judge-check), [Shapes](#shapes), [Fix layers](#fix-layers), [Worked example](#worked-example), [Variants](#variants), [Verification plan](#verification-plan), [After the results](#after-the-results).
-
-## Judge check
-
-A failure mode is the AI Judge's reading of the traffic, and the judge can be
-wrong. Before treating a flagged request as a product failure, check it against
-the use case's own instructions, the system prompt you read in the
-conversation. It is a judge false positive when:
-
-- the verdict asks for something the instructions do not say, or forbid;
-- the judge could not see what the model saw: an image or file recorded
-  without its content, a part cut from the recording, a tool result the
-  conversation does not carry;
-- two instructions contradict each other and the judge picked one;
-- the model's answer is right and the judge's reasoning is about wording or
-  style the instructions do not ask for;
-- the same input with the same behaviour passed elsewhere in the window: the
-  verdict is inconsistent, so count those requests as noise, not failures.
-
-A verdict about something checkable in the recording, a tool called or not, a
-field missing, is rarely wrong; spend the check on verdicts about meaning,
-tone or correctness.
-
-Count the false positives per shape and report them with one quoted example.
-Leave them out of the shapes' counts. When most of a mode is false
-positives, the proposed fix is to the judge's criteria, which the user edits
-in the three.dev app, and the product fix is secondary or none.
+Contents: [Shapes](#shapes), [Fix layers](#fix-layers), [Worked example](#worked-example), [Variants](#variants), [Verification plan](#verification-plan), [After the results](#after-the-results).
 
 ## Shapes
 
@@ -39,7 +13,7 @@ which kind of request, which input.
 
 Present them as:
 
-| Shape | Requests | Share of the mode | What reached the user | False positives |
+| Shape | Requests | Share of the mode | What reached the user |
 
 `What reached the user` is observed, not assumed. Read the tool's response to
 the flagged call, not only the call: in `get_request_conversation` of that
@@ -61,7 +35,6 @@ Pick the layer the shape points to, top row first:
 | An instruction missing, ambiguous or contradicted | The prompt | The exact wording to add, remove or replace, and where |
 | A broken output format | Structured output or the schema | Enforce the schema instead of asking for it |
 | Beyond the model: long reasoning, long context, a skill it lacks | The model or its reasoning setting | Name the alternative and what to compare |
-| A criterion the instructions do not support | The judge's criteria | The criterion to change, with the false positives as evidence |
 
 Tighter prompt wording rarely changes which tools a model calls or in what
 order; the interface does. A judge that grades against the system prompt also

@@ -93,8 +93,6 @@ entry in `get_request_facets` carries an `example` you can pass as is.
 
 - `eligible_request_count` is the traffic the filters matched; `dataset_size`
   is what will be replayed, capped by it.
-- `ai_judge` is the judge three.dev chose, with `source` saying whether it came
-  from live scoring or the active released judge.
 - `dataset_note` appears when the dataset would hold fewer than 100 requests,
   whether the filters match too few or `dataset_size` was set below 100, and
   says the comparison is weak; below 10 matching requests the experiment cannot
