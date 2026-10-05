@@ -1,6 +1,6 @@
 ---
 name: three-dev-failure-modes
-description: Investigates production quality problems in an LLM feature that three.dev already records. Takes the worst failure mode, classifies its flagged requests, checks the judge's verdicts, reads the conversations to find the root cause, and proposes a prompt, model, tool or code fix. Use when the user asks why an LLM feature is failing, how to fix or improve its worst failure mode, what its top failure modes or quality problems are, whether a problem is growing or started after a deploy, or wants to see bad conversations or count or segment requests. Also when the user arrives with a three.dev conversation id, to continue an investigation started in the three.dev chat. Needs the three.dev MCP server. Not for setting up three.dev or routing calls through the proxy; that is the three-dev-setup skill. Not for testing a change on recorded traffic or reading experiment results; that is the three-dev-experiments skill. Not for defining or reporting quality metrics; that is the three-dev-quality-metrics-setup skill.
+description: Investigates production quality problems in an LLM feature that three.dev already records. Takes the worst failure mode, classifies its flagged requests, reads the conversations to find the root cause, and proposes a prompt, model, tool or code fix. Use when the user asks why an LLM feature is failing, how to fix or improve its worst failure mode, what its top failure modes or quality problems are, whether a problem is growing or started after a deploy, or wants to see bad conversations or count or segment requests. Also when the user arrives with a three.dev conversation id, to continue an investigation started in the three.dev chat. Needs the three.dev MCP server. Not for setting up three.dev or routing calls through the proxy; that is the three-dev-setup skill. Not for testing a change on recorded traffic or reading experiment results; that is the three-dev-experiments skill. Not for defining or reporting quality metrics; that is the three-dev-quality-metrics-setup skill.
 ---
 
 # three.dev failure-mode investigation
@@ -58,8 +58,8 @@ never compose an app URL yourself.
   ask which to start with, as Step 1 says, and stop until the user answers,
   even when they asked for a fix: it is the one choice that is theirs. Beyond
   it, ask only whether to run an experiment and whether to change their code.
-- **Decide everything else.** The order of the fixes and whether the judge is
-  right are your calls; state each with its evidence and carry on.
+- **Decide everything else.** The order of the fixes is your call; state it
+  with its evidence and carry on.
 - **Ground every claim in a conversation you read.** Link the request; when you
   show the evidence, quote the turn. A hypothesis from the judge's reasoning
   alone is labelled as such.
@@ -99,7 +99,7 @@ If the user named a use case, use the slug that matches it exactly and name
 any near-identical slugs in one line; with no exact match, call
 `list_use_cases` and ask by number among the close ones. Otherwise call
 `list_use_cases`; with one result use it, with several ask by number. If the
-question is about one request id, go straight to Step 5; it also needs the use
+question is about one request id, go straight to Step 4; it also needs the use
 case slug, so try the use cases in turn when it is unknown.
 
 If `list_failure_modes` answers that failure modes are not available for the
@@ -127,8 +127,7 @@ first one further. Otherwise take the mode the user named, or pick one:
   frequent, with its rate (two options when they coincide).
   Most severe is what costs the user or business most: exposed data, wrong
   facts or promises, money, then failed tasks, then style. Take the reason from
-  its description once `get_failure_mode` shows its examples match it and are
-  not mostly judge false positives; otherwise check the next candidate.
+  its description once `get_failure_mode` shows its examples match it.
 
 Never pick the catch-all `is_unknown` group; read its examples and mention a
 recurring problem with no name of its own. Severity and the catch-all group
@@ -159,15 +158,7 @@ every flagged request up to 150; past that, the most recent 150, as a sample.
 Name the shapes and count them, largest first, as
 [references/fix-design.md](references/fix-design.md) describes.
 
-### Step 4: Check the judge
-
-While classifying, mark the rows whose verdict looks wrong, then confirm with
-the conversations you read in Step 5: the signs and what to do with them are in
-[references/fix-design.md](references/fix-design.md). False positives come out
-of the counts and go in the report. When most of the mode is false
-positives, the fix is the judge's criteria and the report says so.
-
-### Step 5: Read the conversations behind each shape
+### Step 4: Read the conversations behind each shape
 
 Call `get_request_conversation` on two requests of each of the two or three
 largest shapes, different-looking ones, and on one scored request that passed
@@ -185,12 +176,12 @@ With `content_retention` `metadata` or `none` there is no conversation text:
 work from the judge's reasoning and say so. Refilter `list_requests` on
 `session` for the turns before a failure that needs them.
 
-### Step 6: Design the fixes and report
+### Step 5: Design the fixes and report
 
 Fix every shape, largest first, at the layer it points to (the fix layers in
 [references/fix-design.md](references/fix-design.md)): interface or code for
 tool misuse and ordering, prompt for a missing or contradicting instruction,
-model for capability, the judge's criteria for false positives. A code fix is
+model for capability. A code fix is
 the fix, with no experiment before it; an experiment is only for the shapes it
 does not cover. Where a prompt, model or reasoning
 change is plausible, list it as the variants section describes, after checking
@@ -202,7 +193,7 @@ place when you can read the user's code; in the three.dev chat, describe it.
 Report with [references/report-template.md](references/report-template.md): a
 few lines by default, the evidence and shapes when the user asks.
 
-### Step 7: Run an experiment
+### Step 6: Run an experiment
 
 When a prompt, model or reasoning fix is plausible, load the
 `three-dev-experiments` skill and preview one experiment holding every such
@@ -211,9 +202,9 @@ Never offer the experiment without its cost: ask once with it in the message,
 under that skill's consent rule. When a reply's
 tool calls will not reach the preview (the three.dev chat has a per-reply
 limit), end with the diagnosis and say the cost comes next. When the fix is in
-code, go to Step 8's last case.
+code, go to Step 7's last case.
 
-### Step 8: After the results, or the code fix
+### Step 7: After the results, or the code fix
 
 Read the results per failure mode as the "after the results" section of
 [references/fix-design.md](references/fix-design.md) describes:

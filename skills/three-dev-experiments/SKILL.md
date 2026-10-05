@@ -121,7 +121,7 @@ tell that the template matched few requests. Worked calls:
 Call `preview_offline_experiment` with the body you would create. Nothing
 enforces this step: `create_offline_experiment` called on its own creates the
 experiment unsized. The preview creates nothing, needs no consent, and sizes
-the dataset, resolves the judge and validates the variants; read its numbers
+the dataset and validates the variants; read its numbers
 with
 [references/worked-calls.md](references/worked-calls.md). The tool's parameter
 descriptions say which requests are eligible and the dataset size bounds;
@@ -141,10 +141,10 @@ repeat them to the user when proposing.
   only concerns it, a tag such as `environment` or a customer segment, a
   latency or cost band. Fields and predicates:
   [references/worked-calls.md](references/worked-calls.md).
-- If the call fails because the use case has no released AI Judge, the user
-  creates one in the app first; there is no tool for that. If it answers that
-  prompt offline experiments are not enabled for the organization, report that
-  as is; model and reasoning variants still work.
+- If the call answers that the use case isn't set up for scoring yet, report
+  that as is; three.dev enables it, and there is no tool for that. If it
+  answers that prompt offline experiments are not enabled for the
+  organization, report that as is; model and reasoning variants still work.
 - A variant must change something: provider and model together, a reasoning
   setting (with provider and model), or the prompt. The tool rejects one that
   changes nothing.
@@ -160,7 +160,7 @@ in a few plain sentences rather than a list, names:
 
 - the name it will be saved under;
 - each variant and what it changes (provider and model, reasoning, prompt);
-- the dataset: the preview's count, the filters used, and the judge;
+- the dataset: the preview's count and the filters used;
 - that replays and judging spend the user's provider and AI Judge budget, with
   the preview's `estimated_cost` as the rough replay figure, judge cost on top;
 - that it takes minutes to hours.
@@ -203,8 +203,8 @@ back to the `three-dev-failure-modes` skill for the next kind of fix.
 ### Existing experiments
 
 "What did we test on this use case?" is `list_offline_experiments`. "Did we
-test model X?" or "which experiments used judge Y?" narrow it with `model` or
-`judge_model` rather than paging through every experiment. It pages, so answer
+test model X?" narrows it with `model` rather than paging through every
+experiment. It pages, so answer
 "no experiment tried X" only once you have paged to the end. "What did
 experiment X show?" is `get_offline_experiment`, read as in Step 4. When the user found a problem
 in production and wants it fixed, not just measured, hand over to the
