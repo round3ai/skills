@@ -37,8 +37,9 @@ Per mode, `per_variant` cells carry `requests` (distinct failed requests) and
 requests, because every replay is judged. `relative_change_vs_control` of −0.4
 means 40% rarer; `new_vs_control` marks a mode the variant introduced;
 `p_fewer_than_control` is the probability the variant has fewer failures of
-that mode. On the mode itself, `origin: existing` means it was already seen
-live and `origin: new` that it was first seen in this experiment.
+that mode. On the mode itself, `origin: existing` means the grouping started
+from a mode three.dev had already named for the use case, and `origin: new`
+that it was first seen in this experiment.
 
 ## Saying what it means
 

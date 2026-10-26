@@ -10,24 +10,22 @@ predicates each field accepts are in the table below.
 | --- | --- | --- | --- |
 | `latency_ms` | `gt`, `gte`, `lt`, `lte` | number | Facets give `min`/`max` |
 | `cost_usd` | `gt`, `gte`, `lt`, `lte` | number | Per request |
-| `judge` | `eq` | `scored`, `unscored`, `pass`, `fail` | Live AI Judge verdict |
+| `scoring` | `eq` | `scored`, `unscored`, `with_issues`, `clean` | Clean is scored with no issue |
 | `provider` | `eq`, `in` | string | `in` takes up to five values |
 | `model` | `eq`, `in` | string | Model requested |
-| `failure_mode` | `eq`, `in` | failure mode id (UUID) | Ids from `list_failure_modes` or the facets |
+| `failure_mode` | `eq`, `in` | failure mode id (UUID) | Ids from `list_failure_modes` or the facets; Unmatched has none, so filter `with_issues` and read `issues` |
 | `tag` | `eq` | string, with `key` | `key` is the tag name |
-| `experiment` | `eq` | experiment slug | Switches the listing to that experiment's traffic and ignores `from`/`to` |
-| `variant` | `eq` | variant slug | Only with `experiment`; `control` is production |
 | `session` | `eq` | a row's `session_id` | The rest of that conversation's turns inside the window; one per call |
 | `status_class` | `eq`, `in` | `2xx`, `4xx`, `5xx` | Provider errors are `4xx`/`5xx` |
-| `content` | `contains` | text, 3+ characters | Case-insensitive, input or output; `from` within the last 30 days; not with `experiment`; one per call |
+| `content` | `contains` | text, 3+ characters | Case-insensitive, input or output; `from` within the last 30 days; one per call |
 
 ## Worked calls
 
-Count the failed scored requests of the last week:
+Count the scored requests with issues of the last week:
 
 ```json
 {"use_case_slug": "support-bot", "from": "2026-09-03T00:00:00Z", "limit": 0,
- "filters": [{"field": "judge", "predicate": "eq", "value": "fail"}]}
+ "filters": [{"field": "scoring", "predicate": "eq", "value": "with_issues"}]}
 ```
 
 Browse one failure mode's traffic for a customer segment:
@@ -46,25 +44,12 @@ Find the conversations that mention a refund:
  "filters": [{"field": "content", "predicate": "contains", "value": "refund"}]}
 ```
 
-Compare a variant's replies with control in an offline experiment:
-
-```json
-{"use_case_slug": "support-bot", "limit": 10,
- "filters": [
-   {"field": "experiment", "predicate": "eq", "value": "gpt-5-vs-sonnet"},
-   {"field": "variant", "predicate": "eq", "value": "sonnet"}]}
-```
-
-Under an experiment each row carries `variant`, `is_replay` and, for a replay,
-`source_request_id`, the production request it re-ran. The control rows list the
-same id, so the two sides pair on it.
-
 ## Reading a row
 
 - `input_preview` and `output_preview` are about 160 characters. Use
   `get_request_conversation` for the rest.
-- Rows sharing a `session_id` are turns of one conversation, and a flagged
-  turn is often mid-conversation. Refilter on `session` to read the turns
+- Rows sharing a `session_id` are turns of one conversation, and a turn with
+  an issue is often mid-conversation. Refilter on `session` to read the turns
   around it; rows with no `session_id` come from traffic that sends none.
 - `total` is the matching count across all pages; do not page to count.
 - To see who or what a row came from (a customer, an environment), ask for
@@ -75,11 +60,19 @@ same id, so the two sides pair on it.
 
 ## Reading a failure mode
 
-- `severity` is `high`, `medium`, `low` or `unknown`. It is assigned when the
-  mode is grouped and people change it in the app, so it is a priority hint and
-  not a measurement; it is `unknown` on most modes.
-- `is_unknown` marks the catch-all group of failures that matched no mode. It
-  is often several problems in one, so read its examples rather than its count.
+- `severity` is `high`, `medium`, `low` or unset. It is assigned when the mode
+  is named and people change it in the app, so it is a priority hint and not a
+  measurement; it is unset on most modes.
+- **Unmatched** is often several problems in one, so its count says little;
+  its examples say what they are.
+- A **dismissed** mode is one the user set aside; a request whose only issues
+  are dismissed is clean.
+- A mode **merged** into another counts under that one; a mode **split** away
+  no longer counts and its parts take its place. Report the modes it went to.
+- An **outdated** request, `catalog_outdated` in `get_request_conversation`,
+  was scored before a mode was created, split or merged: its issues show the
+  failure modes as they stood then, so an Unmatched issue on it may belong to
+  a mode named since.
 
 ## Questions outside the journey
 
@@ -87,9 +80,10 @@ same id, so the two sides pair on it.
   `get_request_facets` for the use case, then `list_requests` with filters copied
   from it and `limit=0`; read `total`, with the grammar above.
 - **"How many of them are X rather than Y?"**: a split inside one failure mode,
-  classified from the judge's reasoning as in Step 3 of the skill.
-- **"Show me bad conversations"**: `list_requests` with a `judge` `fail` filter,
-  then `get_request_conversation` on the ones the user picks.
-- **"What did the judge make of my latest N requests?"**: `list_requests` with
-  `include_assessment=true`, paged until N rows; a pass rate over them is per
-  scored row, not per `total`.
+  classified from its issues as in Step 3 of the skill.
+- **"Show me bad conversations"**: `list_requests` with a `scoring`
+  `with_issues` filter, then `get_request_conversation` on the ones the user
+  picks.
+- **"How did three.dev score my latest N requests?"**: `list_requests` with
+  `include_issues=true`, paged until N rows; a rate of requests with issues
+  over them is per scored row, not per `total`.

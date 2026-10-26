@@ -101,13 +101,13 @@ then decide:
   across files and services.
 - **Separate use cases** when features share no prompt or input and would be
   tuned independently.
-- **The judge test.** Everything downstream is scoped per use case, including
-  its one active AI Judge. If one set of pass/fail criteria could not judge
-  every final output in the group, split it.
+- **The scoring test.** Everything downstream is scoped per use case,
+  including the criteria three.dev scores its traffic against. If one set of
+  criteria could not score every final output in the group, split it.
 - **Never split by segment or environment.** Product line, tenant, plan tier,
   channel, locale, and environment are tags.
 - **When unsure, fewer.** Adding a tag later is one line; splitting a use case
-  later leaves its history, judge, and experiments behind.
+  later leaves its history, scoring, and experiments behind.
 
 Slugs name the feature, not the file, model, or provider, and are constant in
 code. Never build a slug from a runtime value such as a user, tenant, or

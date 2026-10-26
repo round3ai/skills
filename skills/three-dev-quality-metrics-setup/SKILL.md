@@ -12,8 +12,8 @@ when `true` is good, `min` when `true` is bad. Live experiments use it as their
 target.
 
 Not every feature has one, and that is fine. Every use case already has a
-quality signal without any code: Acceptable Response, the AI Judge's pass/fail
-on each output, used by live scoring and offline experiments. A quality metric
+quality signal without any code: three.dev scores a sample of its production
+traffic and groups the issues it finds into failure modes. A quality metric
 adds the business view on top. This skill's first job is to decide whether an
 outcome worth tracking exists; "none fits" is a valid result.
 
@@ -87,8 +87,8 @@ model), direction, the point where `true` is reported, and the point where the
 session definitively ends without it, if the code has one. A funnel with
 several clear stages is one metric per stage.
 
-If nothing passes, wire nothing. Quality is still measured by the AI Judge
-through live scoring (https://docs.three.dev/live-scoring/live-scoring.md).
+If nothing passes, wire nothing. three.dev still scores the use case's
+production traffic (https://docs.three.dev/live-scoring/live-scoring.md).
 
 ### Step 3: Reuse existing slugs
 
