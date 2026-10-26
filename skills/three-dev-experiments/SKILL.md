@@ -25,6 +25,11 @@ If `list_use_cases` returns nothing, traffic is not flowing yet; use the
 or answer that they are not enabled for the organization, say so and stop; do
 not retry or work around it.
 
+Offline experiments are scored pass/fail, unlike the issues three.dev reports
+on production traffic, and the failure modes in their results are the
+experiment's own grouping, not the live ones `list_failure_modes` returns. An
+experiment's replies are read on its page in the app, not with `list_requests`.
+
 ## Where the facts are
 
 | Need | Tool |
@@ -36,7 +41,6 @@ not retry or work around it.
 | Status and results of one experiment | `get_offline_experiment` |
 | The use case's past and running experiments | `list_offline_experiments` |
 | Values a dataset filter can take | `get_request_facets` |
-| The replayed conversations themselves | `list_requests` with an `experiment` filter, then `get_request_conversation` |
 | How three.dev itself works | `search_docs`, then `read_doc` |
 
 ## Ground rules
@@ -174,8 +178,7 @@ handoff that reference describes.
 ### Step 4: Read the results
 
 `get_offline_experiment` takes the experiment's UUID from the create or list
-response; `list_requests` filters take its `slug`, from the same responses.
-Call it on each check while you keep an eye on it, or once when the user
+response. Call it on each check while you keep an eye on it, or once when the user
 comes back.
 `results_ready` means quality, latency and cost are final; do not wait for
 `status: finished`: a run is paused or finished early from its page in the app,
@@ -192,10 +195,8 @@ Read each variant against control with
 which failure modes fell, rose, or are new. A variant that improves the target
 by making another failure mode worse did not win. Answer the Step 0 question in
 two or three sentences with the numbers behind it, then offer the choice from
-the ground rules. The replies to check are `list_requests` with the
-`experiment` and `variant` filters, linked with the link that result returns. Replays
-pair with their production request on `source_request_id`; read a few with
-`get_request_conversation` when the user wants to see them here.
+the ground rules. The replies to check are on the experiment's page, linked
+with its `experiment_url`.
 
 When the experiment tested fixes for a failure mode and none of them won, go
 back to the `three-dev-failure-modes` skill for the next kind of fix.
@@ -222,5 +223,4 @@ in production and wants it fixed, not just measured, hand over to the
 - A control prompt template is copied from a `detail=full` conversation and
   checked against others; a template that does not parse a request silently
   drops it.
-- Experiment ids are UUIDs and experiment slugs are slugs; copy each exactly
-  from a result and use the one the tool asks for.
+- Experiment ids are UUIDs; copy each exactly from a result.

@@ -16,9 +16,8 @@ Present them as:
 | Shape | Requests | Share of the mode | What reached the user |
 
 `What reached the user` is observed, not assumed. Read the tool's response to
-the flagged call, not only the call: in `get_request_conversation` of that
-request, or of the session's next request when the flagged one ends at the
-call. Then read what the user got: data, a wrong answer, a refusal, nothing.
+the call the issue cites, not only the call: in `get_request_conversation` of
+that request, or of the session's next request when it ends at the call. Then read what the user got: data, a wrong answer, a refusal, nothing.
 
 No shape is dismissed because the tools caught it: the whole mode is the
 user's problem. One fix can cover several shapes, and several shapes can need
@@ -37,9 +36,9 @@ Pick the layer the shape points to, top row first:
 | Beyond the model: long reasoning, long context, a skill it lacks | The model or its reasoning setting | Name the alternative and what to compare |
 
 Tighter prompt wording rarely changes which tools a model calls or in what
-order; the interface does. A judge that grades against the system prompt also
-grades a stricter prompt more harshly, so a prompt fix and a tool fix are not
-compared on equal terms.
+order; the interface does. Scoring that reads the system prompt also scores a
+stricter prompt more harshly, so a prompt fix and a tool fix are not compared
+on equal terms.
 
 State the constraints the fix keeps: facts stay in their source of truth, the
 model stays the same unless the cause is capability, and behaviour outside the
@@ -47,8 +46,8 @@ mode does not change.
 
 ## Worked example
 
-A support bot, 83 requests flagged "account access before verification". The
-judge's reasoning splits them into three shapes: verification and a lookup
+A support bot, 83 requests with "account access before verification" issues.
+Their summaries split them into three shapes: verification and a lookup
 issued in the same round (41; the tools refused the lookup, but the bot keeps
 trying), a lookup by an order or serial number the customer typed before any
 verification (32; the data came back), and text turns that mention the account
@@ -80,18 +79,18 @@ The report ends with what should move and how to see it:
 
 - each shape's count now, and the count it should reach;
 - a count taken from the conversations where one exists (lookups before
-  verification per conversation), because it does not depend on the judge;
-- sibling failure modes compared as a union, since the judge moves requests
+  verification per conversation), because it does not depend on scoring;
+- sibling failure modes compared as a union, since scoring moves requests
   between neighbouring modes from one run to the next;
-- the noise: two judge runs on the same outputs disagree on a few percent of
-  verdicts, so a change of a handful of requests in one mode is not a result.
+- the noise: two scoring runs on the same outputs disagree on a few percent of
+  requests, so a change of a handful of requests in one mode is not a result.
 
 An offline experiment replays recorded requests with a changed prompt, model
 or reasoning setting; it cannot replay a tool or code change. For those, the
 check is the mode's rate in a window after the change ships against the same
 length before it. For an experiment, the dataset must hold enough of the
 shape: at its rate, the dataset should include at least about
-twenty flagged requests in control, or a halving cannot be told from noise;
+twenty requests with the mode in control, or a halving cannot be told from noise;
 raise the dataset size when it does not. When even the largest dataset the
 preview accepts holds fewer, say so plainly and let the user choose, as in:
 "This only happens in about 4 of every 2,000 requests, so an experiment would
@@ -100,15 +99,18 @@ just apply the fix and we'll see how it does after you deploy?"
 
 ## After the results
 
-Read each variant on this failure mode first, then on every other mode:
+An offline experiment groups its replies' failures into failure modes of its
+own, scored pass/fail: they are not the live failure modes `list_failure_modes`
+returns and their ids differ, so match this mode to the experiment's by name
+and description. Read each variant on this failure mode first, then on every
+other mode:
 
 - **It worked**: this mode fell, by up to the share of the shapes the variant
   was for, and no other mode rose or appeared. A variant
   whose overall quality went up while another mode got worse did not work.
 - **Compare prompt variants on this mode**, not only on overall quality: when
-  the judge grades against the prompt it is given, a stricter prompt raises its
-  own bar.
-- **Nothing worked**: read the judge's reasoning on the variants' remaining
-  failures of this mode. Where they cluster (short messages, one tool, one
+  scoring reads the prompt it is given, a stricter prompt raises its own bar.
+- **Nothing worked**: read the reasoning on the variants' remaining failures
+  of this mode. Where they cluster (short messages, one tool, one
   kind of request), that is the next variant's angle; where they look like
   the model cannot do it, the next round is a larger model or more reasoning.
