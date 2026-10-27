@@ -1,6 +1,6 @@
 # Designing the fix
 
-Contents: [Shapes](#shapes), [Fix layers](#fix-layers), [Worked example](#worked-example), [Variants](#variants), [Verification plan](#verification-plan), [After the results](#after-the-results).
+Contents: [Shapes](#shapes), [Fix layers](#fix-layers), [Worked example](#worked-example), [Verification plan](#verification-plan).
 
 ## Shapes
 
@@ -58,21 +58,6 @@ renames the tool and says the account stays private until verified, which
 covers the third. What reached the user depends on each app's tools, so read
 its responses rather than this example.
 
-## Variants
-
-An offline experiment holds up to nine variants against the same control, so
-every plausible fix goes into one experiment:
-
-- **Prompt**: two or three variants that fix the shape's mechanism in
-  different ways, such as a rule, a short worked example, or moving the
-  instruction where the model reads it first. Each is a minimal change to the
-  recorded prompt, one idea per variant, so the result says which idea worked.
-- **Model**: a larger model on the recorded prompt, when the shape looks like
-  capability rather than instructions.
-- **Reasoning**: more reasoning effort or extended thinking on the current
-  model, for the same reason.
-
-
 ## Verification plan
 
 The report ends with what should move and how to see it:
@@ -85,32 +70,7 @@ The report ends with what should move and how to see it:
 - the noise: two scoring runs on the same outputs disagree on a few percent of
   requests, so a change of a handful of requests in one mode is not a result.
 
-An offline experiment replays recorded requests with a changed prompt, model
-or reasoning setting; it cannot replay a tool or code change. For those, the
-check is the mode's rate in a window after the change ships against the same
-length before it. For an experiment, the dataset must hold enough of the
-shape: at its rate, the dataset should include at least about
-twenty requests with the mode in control, or a halving cannot be told from noise;
-raise the dataset size when it does not. When even the largest dataset the
-preview accepts holds fewer, say so plainly and let the user choose, as in:
-"This only happens in about 4 of every 2,000 requests, so an experiment would
-give us a hint rather than proof. Would you like to run it anyway, or should I
-just apply the fix and we'll see how it does after you deploy?"
-
-## After the results
-
-An offline experiment groups its replies' failures into failure modes of its
-own, scored pass/fail: they are not the live failure modes `list_failure_modes`
-returns and their ids differ, so match this mode to the experiment's by name
-and description. Read each variant on this failure mode first, then on every
-other mode:
-
-- **It worked**: this mode fell, by up to the share of the shapes the variant
-  was for, and no other mode rose or appeared. A variant
-  whose overall quality went up while another mode got worse did not work.
-- **Compare prompt variants on this mode**, not only on overall quality: when
-  scoring reads the prompt it is given, a stricter prompt raises its own bar.
-- **Nothing worked**: read the reasoning on the variants' remaining failures
-  of this mode. Where they cluster (short messages, one tool, one
-  kind of request), that is the next variant's angle; where they look like
-  the model cannot do it, the next round is a larger model or more reasoning.
+The check is the mode's rate in a window after the change ships against the
+same length before it, on at least about twenty scored requests with the mode
+in the earlier window; with fewer, a halving cannot be told from noise, so say
+so plainly and name the window that will hold enough.

@@ -1,6 +1,6 @@
 ---
 name: three-dev-setup
-description: Adds three.dev to a codebase so its LLM calls are recorded. Finds every LLM call site, groups the calls into use cases, and routes them through the three.dev proxy (gate.three.dev) with use case, session, and environment headers. Use when the user mentions three.dev, gate.three.dev, or X-Three headers, asks to record or monitor their LLM calls, or wants to set up or extend a three.dev integration. Covers OpenAI, Anthropic, Gemini, Azure OpenAI, OpenRouter, Bedrock, and LiteLLM clients. Read the docs before writing code; never guess header values or base URLs. Not for investigating failure modes or reading recorded conversations; that is the three-dev-failure-modes skill. Not for running or reading experiments; that is the three-dev-experiments skill. Not for defining or reporting quality metrics; that is the three-dev-quality-metrics-setup skill.
+description: Adds three.dev to a codebase so its LLM calls are recorded. Finds every LLM call site, groups the calls into use cases, and routes them through the three.dev proxy (gate.three.dev) with use case, session, and environment headers. Use when the user mentions three.dev, gate.three.dev, or X-Three headers, asks to record or monitor their LLM calls, or wants to set up or extend a three.dev integration. Covers OpenAI, Anthropic, Gemini, Azure OpenAI, OpenRouter, Bedrock, and LiteLLM clients. Read the docs before writing code; never guess header values or base URLs. Not for investigating failure modes or reading recorded conversations; that is the three-dev-failure-modes skill.
 ---
 
 # three.dev integration
@@ -16,8 +16,7 @@ headers. The user's provider key (OpenAI, Anthropic, ...) moves to the three.dev
 dashboard, which injects it server-side.
 
 Once traffic flows, reading it belongs to another skill: why a feature fails is
-the `three-dev-failure-modes` skill; testing a change on recorded traffic is the
-`three-dev-experiments` skill. With no access to the user's code, point them at
+the `three-dev-failure-modes` skill. With no access to the user's code, point them at
 https://docs.three.dev/getting-started/quickstart-record-requests.md instead.
 
 ## Where the facts are
@@ -53,7 +52,7 @@ and the code you write from it fails silently.
   the user a menu. Stop only when the code gives no safe answer: no LLM calls
   found, or no worked example for the exact client.
 - **Be brief.** No preamble, no narration, no repeating fetched docs, no diffs
-  in chat. The only message the user needs is the one in Step 6.
+  in chat. The only message the user needs is the one in Step 5.
 - **Secrets never touch the chat or the repo.** Never ask the user to paste a
   key. Never hardcode, print, echo, or commit one.
 - **Keep the SDK and API surface the user already has.** The proxy is a
@@ -107,7 +106,7 @@ then decide:
 - **Never split by segment or environment.** Product line, tenant, plan tier,
   channel, locale, and environment are tags.
 - **When unsure, fewer.** Adding a tag later is one line; splitting a use case
-  later leaves its history, scoring, and experiments behind.
+  later leaves its history and scoring behind.
 
 Slugs name the feature, not the file, model, or provider, and are constant in
 code. Never build a slug from a runtime value such as a user, tenant, or
@@ -132,16 +131,7 @@ session ID. Do not ask the user to confirm the grouping.
 
 Do not commit unless the user asked you to.
 
-### Step 4: Continue with quality metrics
-
-Load the `three-dev-quality-metrics-setup` skill, follow it, then come back
-here. When it cannot be loaded, because the skills were installed during this
-session or you are reading these files directly, read
-`three-dev-quality-metrics-setup/SKILL.md`, the directory next to this skill's
-own, or call `learn` on the three.dev MCP server. Never skip this step. It wires reports only for outcomes that are clear
-and adds nothing otherwise, and never asks the user anything.
-
-### Step 5: Verify
+### Step 4: Verify
 
 The change must build and behave exactly as before, apart from where the calls
 go. No three.dev key exists yet, so verify without calling the proxy.
@@ -163,10 +153,7 @@ go. No three.dev key exists yet, so verify without calling the proxy.
    - No key is logged, printed, hardcoded, or committed.
    - A tag whose value can be missing sends no header rather than an empty or
      `None` value, and no tag carries personal data.
-   - Step 4 ran from the `three-dev-quality-metrics-setup` skill's own text, not
-     from memory. Every metric report it wired is non-blocking, sends the
-     session ID of its LLM calls, and carries `optimize_for`.
-3. **Verify every instruction Step 6 will give:**
+3. **Verify every instruction Step 5 will give:**
    - **Which process calls the LLM.** Trace it from the call sites: a
      backend, a worker, a CLI, not the frontend that talks to it.
    - **How to start it.** Take the command from the repo (README, package
@@ -174,7 +161,7 @@ go. No three.dev key exists yet, so verify without calling the proxy.
      will name, and see that process boot. When using the app needs more than
      one process (a backend and a frontend), check each command.
    - **Where that process reads the key.** Follow `THREE_DEV_API_KEY` from the
-     place Step 6 will name to the running process. A containerized or
+     place Step 5 will name to the running process. A containerized or
      process-managed app does not see a shell `export` unless its
      configuration passes the variable through; name the file or setting it
      actually reads.
@@ -182,13 +169,12 @@ go. No three.dev key exists yet, so verify without calling the proxy.
 4. **Fix what fails and repeat** until the checks, the list, and the
    instructions are clean.
 
-### Step 6: Tell the user how to start sending traffic
+### Step 5: Tell the user how to start sending traffic
 
 Your final message is this template, filled in, with no text before or after
 it. It ends at the last item, apart from the lines listed below: no "things to
 know", notes, or summary. Do not describe what you changed, which files, how
-calls are grouped or tagged, which metrics were wired, what you checked or
-installed, or how the skill or plugin was loaded; the user reads the diff for
+calls are grouped or tagged, what you checked or installed, or how the skill or plugin was loaded; the user reads the diff for
 that. Every command, directory, file, and provider in it was verified in Step
 5.
 
@@ -200,7 +186,7 @@ that. Every command, directory, file, and provider in it was verified in Step
 > 4. Start <the process> with `<verified command>` from `<directory>`, and use the app. Requests appear in three.dev.
 > 5. Restart <your coding agent> and sign in to the three.dev MCP server.
 
-Item 2 is a single copyable action, the one Step 5 traced to the process: "Add
+Item 2 is a single copyable action, the one Step 4 traced to the process: "Add
 `THREE_DEV_API_KEY=<your key>` to `<path>`" when it reads a file, or "Run
 `export THREE_DEV_API_KEY=<your key>` in the terminal where you run step 4"
 when it reads a plain environment variable from that shell. When the location
@@ -222,7 +208,7 @@ is "Connect the three.dev MCP server and sign in."
 Add one line after the list only when it applies:
 
 - A call site left unchanged: "Not connected: `<file>`, <reason in a few words>."
-- A check from Step 5 that could not run: "Not verified: <what, and why in a few words>."
+- A check from Step 4 that could not run: "Not verified: <what, and why in a few words>."
 
 ## Hard rules
 
