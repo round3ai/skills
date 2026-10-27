@@ -2,17 +2,24 @@
 
 # Supported paths
 
-Advanced observability for the Chat Completions, Messages, and Responses APIs, session grouping, and request- and session-level tags.
+Advanced observability for the Chat Completions, Messages, and Responses APIs and Gemini's generateContent API, session grouping, and request- and session-level tags.
 
-By default, the proxy forwards and records any type of LLM request. High-level details are stored and visible in the [Requests](https://app.three.dev/requests) page.
+By default, the proxy forwards and records any type of LLM request. High-level details are stored and visible in the [Requests](https://app.three.dev/requests) page. Embeddings requests are forwarded to the AI provider but not recorded.
 
-The proxy supports **advanced observability** for three interaction types:
+The proxy supports **advanced observability** for four interaction types:
 
 * OpenAI's [Chat Completions API](https://developers.openai.com/api/reference/resources/chat/subresources/completions/methods/create) (`/v1/chat/completions`). This is supported when used from other providers as well, such as [Gemini](https://ai.google.dev/gemini-api/docs/openai) or [Anthropic](https://platform.claude.com/docs/en/api/openai-sdk). If you are [streaming responses](https://developers.openai.com/api/reference/resources/chat/subresources/completions/streaming-events), set the `include_usage` field of the `stream_options` object to `true` to make tokens and cost information available in three.dev.
 * Anthropic's [Messages API](https://platform.claude.com/docs/en/api/python/messages/create) (`/v1/messages`).
 * OpenAI's [Responses API](https://developers.openai.com/api/reference/resources/responses/methods/create) (`/v1/responses`), including streamed responses and reasoning summaries.
+* Gemini's [generateContent API](https://ai.google.dev/api/generate-content) (`/<VERSION>/models/<MODEL>:generateContent` and `:streamGenerateContent`, for the `v1`, `v1beta`, and `v1alpha` versions and for `tunedModels/<MODEL>`), used by Google's GenAI SDKs. This includes streamed responses, tool calls, code execution, thought summaries, and thinking tokens.
 
 When one of these interaction methods is used, additional information appears in the [Requests](https://app.three.dev/requests) page — cost, tokens, and the full messages.
+
+With [Concentrate](https://docs.three.dev/sending-requests/ai-providers-integration.md#concentrate) (`X-Three-AI-Provider: concentrate`), the proxy also records System One calls (`/v1/systemone`), which serve TypeSafe's Jev models, with full details: messages, tokens, and cost.
+
+Other Gemini endpoints, such as `countTokens`, files, cached contents, and batches, are recorded with high-level details only. Live API sessions go through the proxy but are not recorded.
+
+The proxy forwards requests with a body over 10 MB, or a response over 100 MB, without recording them. With Gemini, this applies to calls with large inline images, audio, or video; upload the media with the Files API and reference it instead.
 
 ## Specifying the session ID
 

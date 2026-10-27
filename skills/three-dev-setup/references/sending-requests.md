@@ -35,5 +35,5 @@ Deleting a use case while requests or [metric reports](https://docs.three.dev/ap
 
 ## Next
 
-* [AI Providers Integration](https://docs.three.dev/sending-requests/ai-providers-integration.md) — code examples for OpenAI, Anthropic, Gemini, Azure OpenAI, and LiteLLM.
+* [AI Providers Integration](https://docs.three.dev/sending-requests/ai-providers-integration.md) — code examples for OpenAI, Anthropic, Gemini, Azure OpenAI, OpenRouter, Concentrate, Amazon Bedrock, LiteLLM, the Vercel AI SDK, and LangChain.
 * [Supported paths](https://docs.three.dev/sending-requests/supported-paths.md) — advanced observability, session tagging, and request metadata.
