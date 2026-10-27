@@ -2,9 +2,9 @@
 
 # Overview
 
-Route your LLM requests through the three.dev proxy for observability and experimentation.
+Route your LLM requests through the three.dev proxy for observability.
 
-The three.dev proxy forwards your requests to your AI provider and records them for observability and experimentation. To start using the proxy, make three changes to your application code:
+The three.dev proxy forwards your requests to your AI provider and records them for observability. To start using the proxy, make three changes to your application code:
 
 * **Change your base URL** to `gate.three.dev`. This routes requests through the three.dev proxy, which forwards them to the AI provider.
 * **Authenticate with your three.dev API Key** in the `Authorization` header: `Authorization: Bearer <THREE_DEV_API_KEY>`.
@@ -16,7 +16,7 @@ Before sending requests, add a valid AI Provider Key in [Settings > AI Provider 
 
 ## Creating use cases
 
-There are two ways to create a use case. Both give you the same use case, with the same defaults, including the Acceptable Response quality metric.
+There are two ways to create a use case. Both give you the same use case, with the same defaults.
 
 * **From the UI.** Create the use case on the [**Use Cases**](https://app.three.dev/use-cases) page with a descriptive name and a slug, then send that slug in the `X-Three-Use-Case` header.
 * **From your first request.** Send a slug that does not match any use case in your organization. three.dev creates the use case, named after its slug, and records the request under it. The use case appears in the sidebar as soon as the first request arrives.
@@ -29,9 +29,9 @@ three.dev forwards a request to the AI provider without recording it when:
 
 * The `X-Three-Use-Case` header is missing.
 * The slug is malformed: uppercase letters, underscores, spaces, or more than 64 characters. A well-formed slug with a typo is not malformed, so it creates a use case. Check the sidebar after your first request.
-* Your organization already has 20 use cases that three.dev created automatically, from a first request or from a [metric report](https://docs.three.dev/api-reference/report-metric.md#creating-the-metric-on-first-report). The limit guards against an integration that puts a per-user or per-session value in the header. Use cases created from the **Use Cases** page do not count toward it, and deleting a use case that three.dev created automatically frees a slot.
+* Your organization already has 20 use cases that three.dev created automatically from a first request. The limit guards against an integration that puts a per-user or per-session value in the header. Use cases created from the **Use Cases** page do not count toward it, and deleting a use case that three.dev created automatically frees a slot.
 
-Deleting a use case while requests or [metric reports](https://docs.three.dev/api-reference/report-metric.md#creating-the-metric-on-first-report) with `optimize_for` still arrive under its slug creates it again. Stop sending the slug before you delete the use case.
+Deleting a use case while requests still arrive under its slug creates it again. Stop sending the slug before you delete the use case.
 
 ## Next
 
