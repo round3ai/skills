@@ -9,7 +9,7 @@ shows it:
 > (`<requests>` of `<scored>` scored requests, `<rate>`). `<The two or three
 > largest shapes in plain words, each with its count, what reached the user and
 > a linked example; the rest in one clause.>` `<The fixes that cover them, in one or two sentences.>` `<One
-> question: make the change, or run the experiment with its rough cost.>`
+> question: whether to make the change.>`
 
 One paragraph: no headers, tables or bullets. Numbers go in one parenthesis
 per sentence; caveats and sizing limits go in the detail.
