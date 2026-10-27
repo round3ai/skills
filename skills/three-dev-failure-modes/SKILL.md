@@ -203,7 +203,8 @@ Once the change ships, the check is the mode's rate in a window after it
 against the same length before, as the verification plan in
 [references/fix-design.md](references/fix-design.md) describes; a shape with
 no requests left is fixed, a mode whose rate did not move sends you back to
-Step 3 with the requests that remain.
+Step 3 with the requests that remain. The user sees the same comparison on the
+use case's Overview with **Compare**.
 
 ## Other questions this skill answers
 
