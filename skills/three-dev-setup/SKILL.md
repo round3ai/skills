@@ -1,91 +1,99 @@
 ---
 name: three-dev-setup
-description: Adds three.dev to a codebase so its LLM calls are recorded. Finds every LLM call site, groups the calls into use cases, and routes them through the three.dev proxy (gate.three.dev) with use case, session, and environment headers. Use when the user mentions three.dev, gate.three.dev, or X-Three headers, asks to record or monitor their LLM calls, or wants to set up or extend a three.dev integration. Covers OpenAI, Anthropic, Gemini, Azure OpenAI, OpenRouter, Bedrock, and LiteLLM clients. Read the docs before writing code; never guess header values or base URLs. Not for investigating failure modes or reading recorded conversations; that is the three-dev-failure-modes skill.
+description: Adds three.dev to a codebase so its LLM calls are recorded. Connects the app to the user's three.dev organization with one approval in the browser, finds every LLM call site, groups the calls into use cases, and routes them through the three.dev proxy (gate.three.dev) with the app's own provider key plus use case, session, and environment headers. Use when the user mentions three.dev, gate.three.dev, or X-Three headers, asks to record or monitor their LLM calls, or wants to set up, connect, or extend a three.dev integration. Covers OpenAI, Anthropic, Gemini, Azure OpenAI, OpenRouter, Concentrate, Bedrock, LiteLLM, Vercel AI SDK, and LangChain and LangGraph clients. Not for investigating failure modes or reading recorded conversations; that is the three-dev-failure-modes skill.
+allowed-tools: Bash(curl -sS -X POST https://api.three.dev/api/v1/setup/status *)
 ---
 
 # three.dev integration
 
 three.dev records every LLM call that passes through its proxy at
-`gate.three.dev`. This skill gets a codebase's traffic flowing: it finds the LLM
-calls, groups them into use cases, and wires each call site with a base URL, an
-auth header, and a few `X-Three-*` headers. Nothing else changes.
+`gate.three.dev`. This skill connects the app to the user's three.dev
+organization, finds the LLM calls, groups them into use cases, and wires each
+call site with a base URL and a few `X-Three-*` headers. Nothing else changes.
 
-No three.dev key is needed during the session. A use case is created the first
-time a request arrives under its slug, so the code only has to send the right
-headers. The user's provider key (OpenAI, Anthropic, ...) moves to the three.dev
-dashboard, which injects it server-side.
+The three.dev key arrives during the session: the user approves once in the
+browser and the key goes straight into the app's env file, never through this
+conversation. The provider key stays where the app has it, forwarded untouched.
 
-Once traffic flows, reading it belongs to another skill: why a feature fails is
-the `three-dev-failure-modes` skill. With no access to the user's code, point them at
-https://docs.three.dev/getting-started/quickstart-record-requests.md instead.
+This skill needs a shell and the repository. Without them, say setup runs from
+a coding agent in the app's repository:
+https://docs.three.dev/getting-started/quickstart-record-requests.md
 
 ## Where the facts are
 
-The three.dev docs are the source of truth. If anything in this skill disagrees
-with them, they win.
+Read the live docs page when you can: `search_docs` and `read_doc` on the
+three.dev MCP server, else a fetch tool returning `<page URL>.md` verbatim
+(index: https://docs.three.dev/llms.txt), else the copy under `references/`,
+which may lag. Read the sections for the code's clients, never a summary.
 
-Read the live page when you can, in this order of preference:
-
-1. The three.dev MCP server, if connected: `search_docs` to find a page,
-   `read_doc` to read it in full.
-2. A fetch tool that returns the file verbatim: every docs page is served as
-   Markdown at `<page URL>.md`. The index is https://docs.three.dev/llms.txt.
-3. The copies under `references/`, synced from those pages. Use them when you
-   cannot fetch. They may lag the live docs.
-
-Never work from a summary of a page. A summariser drops the exact base URL
-path, the placeholder in a constructor, and the table of unsupported clients,
-and the code you write from it fails silently.
+The docs win except on where keys and the provider's address go, which
+wiring.md and provider-address.md decide, with how to read them.
 
 | Need | Live page | Local copy |
 | --- | --- | --- |
-| Base URL, auth header, use-case header, how use cases get created | https://docs.three.dev/sending-requests/sending-requests.md | [references/sending-requests.md](references/sending-requests.md) |
-| Per-provider and per-language wiring, accepted `X-Three-AI-Provider` values, unsupported clients | https://docs.three.dev/sending-requests/ai-providers-integration.md | [references/ai-providers-integration.md](references/ai-providers-integration.md) |
+| The connection: every command, its outcomes, the env file | none | [references/connect.md](references/connect.md) |
+| Which key goes where; the provider's address; the diff review and the check call (together, the wiring files) | none | [references/wiring.md](references/wiring.md); [references/provider-address.md](references/provider-address.md); [references/check-request.md](references/check-request.md) |
+| Wiring a client the docs have no example for | none | [references/library-wiring.md](references/library-wiring.md) |
+| What each proxy error code means and how to fix it | none | [references/proxy-errors.md](references/proxy-errors.md) |
+| Use-case header, how use cases get created | https://docs.three.dev/sending-requests/sending-requests.md | [references/sending-requests.md](references/sending-requests.md) |
+| Base URL path per provider and SDK, accepted `X-Three-AI-Provider` values, unsupported clients | https://docs.three.dev/sending-requests/ai-providers-integration.md | [references/ai-providers-integration.md](references/ai-providers-integration.md) |
 | Session and tag headers, which API paths get full observability | https://docs.three.dev/sending-requests/supported-paths.md | [references/supported-paths.md](references/supported-paths.md) |
 | How to split use cases, what a session is, which tags | https://docs.three.dev/getting-started/planning-your-integration.md | [references/planning-your-integration.md](references/planning-your-integration.md) |
 | Choosing session IDs and tag values in code | none | [references/sessions-and-tags.md](references/sessions-and-tags.md) |
 
 ## Ground rules
 
-- **Decide, don't ask.** Apply the recommended option from the docs and this
-  skill for use cases, session IDs, tags, and how the key is read. Never offer
-  the user a menu. Stop only when the code gives no safe answer: no LLM calls
-  found, or no worked example for the exact client.
-- **Be brief.** No preamble, no narration, no repeating fetched docs, no diffs
-  in chat. The only message the user needs is the one in Step 5.
-- **Secrets never touch the chat or the repo.** Never ask the user to paste a
-  key. Never hardcode, print, echo, or commit one.
-- **Keep the SDK and API surface the user already has.** The proxy is a
-  passthrough. Never migrate between SDKs or API surfaces to suit the proxy.
-- **Never guess the wiring.** If the provider page has no worked example for
-  the exact client in the code, leave that call site unchanged and report it.
-  Do not infer a base URL, an auth header, or how an SDK merges per-request
-  headers from a different SDK. A wrong guess forwards the request and records
-  nothing, silently.
-- **Minimal diff.** Base URL, auth header, `X-Three-*` headers, and the key
-  variable. No refactors, no reformatting, no new dependencies. Match the
-  existing style.
+- **Decide, don't ask.** Use the recommended option for use cases, session
+  IDs, tags, and the key; never offer a menu. Ask only for the browser
+  approval and an Azure OpenAI or Bedrock address, and settle the rest by the
+  repository's convention or the smallest change. One question at a time.
+  That question is always asked, after a `decision_needed` report and before its
+  check; no answer is a no. End no turn on another choice you could default.
+- **Talk like a colleague.** What happened first, in plain words. No preamble,
+  no narration, no repeated docs, no diffs in chat. The user sees only what you
+  write, never a command's output. Say only what you saw: a value in a file you
+  cannot open is unknown, so name its setting, never a template's value.
+- **Secrets never touch the chat or the repo.** Never ask for, hardcode, print,
+  echo, or commit a key, or open a file that may hold one (Step 1).
+- **Commands run as printed.** Every command that names the env file or calls
+  three.dev is copied from [references/connect.md](references/connect.md)
+  character for character, one command at a time. If one is blocked or not
+  approved, show the user the exact command and stop; never work around it.
+- **Report how it ended.** Wire all you can first. The last command you run
+  when your work stops, or finishes with a device code, is the report in
+  connect.md, just before your message, which offers no further wiring.
+- **Keep the SDK and API surface the user already has.** Never migrate between
+  SDKs or API surfaces to suit the proxy; the app's own HTTPS mode is fine.
+- **Never guess the wiring.** It comes from the page's worked example for the
+  exact client or, with none, its installed library, kept only if proven.
+- **Minimal diff.** Base URL, `X-Three-*` headers, and the key variable, in
+  the code's style. No refactors, and no dependency but connect.md's loader.
 
 ## Workflow
 
 ### Step 1: Understand the product and find the LLM calls
 
-Read the README, the domain models, and the configuration first: what the
-product does, who uses it, and how the business segments it (plans, markets,
-channels, customer types). Steps 2 and 3 depend on it.
+Run the two listing commands in [files that may hold a key](references/wiring.md#files-that-may-hold-a-key)
+first; until then open no repository file, a README included, and read only
+names (`ls`). Then read the README, domain models, and configuration: what
+the product does, who uses it, and how the business segments it (plans,
+markets, channels, customer types). Steps 2 and 4 depend on it.
 
 Scan for every LLM call site: `openai`, `anthropic`, `@anthropic-ai/sdk`,
-`@google/genai`, `google.generativeai`, `litellm`, `langchain`, the Vercel `ai`
-SDK, agent frameworks built on those SDKs, `bedrock-runtime` and `boto3`
-clients, and raw HTTP to `api.openai.com`, `api.anthropic.com`,
-`generativelanguage.googleapis.com`, Azure OpenAI endpoints, or an existing
-gateway.
+`@google/genai`, `google.genai`, `google.generativeai`, `litellm`, `langchain`,
+`@langchain/*`, `langgraph`, the Vercel `ai` SDK, agent frameworks, other
+providers' SDKs, `bedrock-runtime` and `boto3` clients, the hosts
+`openrouter.ai` and `api.concentrate.ai`, and raw HTTP to a provider, an
+Azure OpenAI endpoint, or a gateway. Put each call site in one of five
+groups; wiring.md and provider-address.md tell them apart:
 
-- Calls that already go through `gate.three.dev` keep their slug; extend the
-  integration around them.
-- Clients the provider page lists as unsupported stay as they are and are
-  reported as skipped.
-- If there are no LLM calls, say so and ask where they are.
+- **Fixed address**: OpenAI, Anthropic, Gemini, OpenRouter, Concentrate.
+- **Own address**: Azure OpenAI, Bedrock, OpenAI's EU host, or an address in a setting.
+- **Already on three.dev**: it calls `gate.three.dev`. Keep it, and its slug.
+- **No worked example**: none on the page. Wire it last, per library-wiring.md.
+- **Unsupported**: a gateway, or ruled out by wiring.md or library-wiring.md. Not connected.
+
+If there are no LLM calls, report `no_llm_calls`, say so, and ask where they are.
 
 ### Step 2: Group the calls into use cases
 
@@ -96,129 +104,145 @@ then decide:
 
 - **Same use case** when a change to one prompt can change another's output:
   a classifier feeding a responder, retrieval feeding generation, agents
-  handing off within one conversation, a multi-step pipeline. This holds
-  across files and services.
+  handing off within one conversation. This holds across files and services.
 - **Separate use cases** when features share no prompt or input and would be
   tuned independently.
-- **The scoring test.** Everything downstream is scoped per use case,
-  including the criteria three.dev scores its traffic against. If one set of
-  criteria could not score every final output in the group, split it.
+- **The criteria test.** Everything downstream is scoped per use case,
+  including how its outputs are scored. If one set of pass/fail criteria could
+  not score every final output in the group, split it.
 - **Never split by segment or environment.** Product line, tenant, plan tier,
   channel, locale, and environment are tags.
 - **When unsure, fewer.** Adding a tag later is one line; splitting a use case
   later leaves its history and scoring behind.
 
 Slugs name the feature, not the file, model, or provider, and are constant in
-code. Never build a slug from a runtime value such as a user, tenant, or
-session ID. Do not ask the user to confirm the grouping.
+code. Never build a slug from a runtime value.
 
-### Step 3: Wire the code
+### Step 3: Connect
 
-1. **Route each call site through the proxy** following the example for that
-   provider and language on the AI Providers Integration page. Send
-   `X-Three-Use-Case` and `X-Three-AI-Provider` in client defaults.
-2. **Read the key like the provider key.** Read `THREE_DEV_API_KEY` through
-   the same mechanism the code already uses for the provider key, usually an
-   environment variable. Never add a loader, a dependency, or a new config
-   layer to read it. If the repo has an env template (`.env.example`,
-   `.env.sample`, or similar), add `THREE_DEV_API_KEY=` to it. If the repo
-   documents a local secrets file, make sure git ignores it. Leave the old
-   provider-key variables in place.
-3. **Tags and session IDs.** Apply [references/sessions-and-tags.md](references/sessions-and-tags.md):
-   a session ID on every call, and every tag that segments the traffic the way
+Skip this step when every call site is already on three.dev. Otherwise follow
+[references/connect.md](references/connect.md) for each command and outcome.
+
+1. **Choose the env file** as connect.md says, which also decides whether to
+   make the app load one, and make sure git ignores it before anything else.
+2. **Start**, open the link, and end your turn on the link and the code, as
+   connect.md prints them.
+3. **Wait** for the decision once the user answers, with the status call
+   every 5 seconds. Change no code until the key has landed.
+4. **Collect** the key straight into the env file, once.
+
+### Step 4: Wire the code
+
+1. **Route each call site through the proxy** as the wiring files say
+   for its group: the base URL from
+   the provider page, the provider key left alone, and `X-Three-Api-Key`,
+   `X-Three-Use-Case`, and `X-Three-AI-Provider` in client defaults.
+2. **Read `THREE_DEV_API_KEY` like the provider key**, through the mechanism
+   the code already uses, or its environment lookup when that reads a file
+   the key cannot go in (YAML, TOML, a secrets file). Without the key, build
+   every client exactly as before. No config layer, loader, or dependency but
+   connect.md's loader; add `THREE_DEV_API_KEY=`, empty, to an env template.
+3. **Tags and session IDs.** Apply
+   [references/sessions-and-tags.md](references/sessions-and-tags.md): a
+   session ID on every call, and every tag that segments the traffic the way
    the business compares it.
-4. Do not change models, prompts, parameters, or behaviour.
+4. Do not change models, prompts, parameters, or behaviour. Do not commit
+   unless the user asked you to.
 
-Do not commit unless the user asked you to.
+### Step 5: Verify
 
-### Step 4: Verify
+1. **Run the repo's own checks.** Type check, build, lint, and the existing
+   tests, with the commands the repo documents. Every command that runs the
+   app's code uses the project's own interpreter or runner (its virtualenv's
+   `python`, its pinned tool), never the system's; an import that prints
+   nothing worked. Install only declared dependencies, the documented way.
+2. **Review the diff** against check-request.md's "Before the check request".
+3. **Send one check request** through the app's client code, as
+   check-request.md says, with `X-Three-Traffic-Type: synthetic` on it only.
+   A 2xx with three.dev's request ID, or a rise in `verified_checks`, proves
+   it. Fix a three.dev error per [proxy-errors.md](references/proxy-errors.md),
+   then resend; report a provider's own error with its status. When no check
+   can be sent, check-request.md says what to tell the user and three.dev.
+4. **Verify every instruction Step 6 will give**, per check-request.md's
+   "Before Step 6".
+5. **Fix what fails and repeat.** If the checks still fail, or the user
+   rejects the changes, say so and stop. Undo only what the references say.
 
-The change must build and behave exactly as before, apart from where the calls
-go. No three.dev key exists yet, so verify without calling the proxy.
+### Step 6: Tell the user how to start sending traffic
 
-1. **Run the repo's own checks.** Type check, compile or build, lint, and the
-   existing tests, using the commands the repo documents. If dependencies are
-   missing, install them only through the repo's documented setup into its own
-   environment: never globally, never a new package.
-2. **Review the diff against this list:**
-   - Every LLM call path goes through the proxy: streaming, retries,
-     fallbacks, background jobs, sync and async clients. No direct provider
-     call is left and none is made twice.
-   - `X-Three-Use-Case` and `X-Three-AI-Provider` are on every client, and
-     every per-call session header passed the merge check from Step 3.
-   - An unset `THREE_DEV_API_KEY` fails the way an unset provider key did
-     before. Nothing crashes at import, and every test that passed before
-     still passes.
-   - Models, prompts, parameters, timeouts, and error handling are unchanged.
-   - No key is logged, printed, hardcoded, or committed.
-   - A tag whose value can be missing sends no header rather than an empty or
-     `None` value, and no tag carries personal data.
-3. **Verify every instruction Step 5 will give:**
-   - **Which process calls the LLM.** Trace it from the call sites: a
-     backend, a worker, a CLI, not the frontend that talks to it.
-   - **How to start it.** Take the command from the repo (README, package
-     scripts, Makefile, Procfile, compose file), run it from the directory you
-     will name, and see that process boot. When using the app needs more than
-     one process (a backend and a frontend), check each command.
-   - **Where that process reads the key.** Follow `THREE_DEV_API_KEY` from the
-     place Step 5 will name to the running process. A containerized or
-     process-managed app does not see a shell `export` unless its
-     configuration passes the variable through; name the file or setting it
-     actually reads.
-   - **Which providers.** Only providers the wired call sites use.
-4. **Fix what fails and repeat** until the checks, the list, and the
-   instructions are clean.
+Run the report connect.md's step 12 has for this ending. Your message is this
+template, filled in, plus only the lines listed below. Do not describe your
+changes or your checks; the user reads the diff.
 
-### Step 5: Tell the user how to start sending traffic
-
-Your final message is this template, filled in, with no text before or after
-it. It ends at the last item, apart from the lines listed below: no "things to
-know", notes, or summary. Do not describe what you changed, which files, how
-calls are grouped or tagged, what you checked or installed, or how the skill or plugin was loaded; the user reads the diff for
-that. Every command, directory, file, and provider in it was verified in Step
-5.
-
-> three.dev is now installed in your app. To start sending traffic:
+> three.dev is connected to organization `<name>` and your app's LLM calls now go through it.
 >
-> 1. Create a three.dev API key: https://app.three.dev/goto/api-keys
-> 2. <One exact action that puts the key where the code reads it.>
-> 3. Add your <provider> API key in three.dev: https://app.three.dev/goto/ai-provider-keys
-> 4. Start <the process> with `<verified command>` from `<directory>`, and use the app. Requests appear in three.dev.
-> 5. Restart <your coding agent> and sign in to the three.dev MCP server.
+> 1. Start `<the process>` with `<verified command>` from `<directory>`, and use the app. Requests appear in three.dev.
+> 2. For production, add `THREE_DEV_API_KEY` to the environment your deployed app runs in: the value in `<env file>`, or a new key from https://app.three.dev/goto/api-keys
+> 3. Restart `<your coding agent>` and sign in to the three.dev MCP server, or connect it first if your agent has none: https://github.com/round3ai/skills#readme
 
-Item 2 is a single copyable action, the one Step 4 traced to the process: "Add
-`THREE_DEV_API_KEY=<your key>` to `<path>`" when it reads a file, or "Run
-`export THREE_DEV_API_KEY=<your key>` in the terminal where you run step 4"
-when it reads a plain environment variable from that shell. When the location
-could not be confirmed, item 2 is "Set `THREE_DEV_API_KEY=<your key>` in the
-environment of the process that calls <provider>."
+Item 1 names each process the app needs; omit "from `<directory>`" at the
+repository root, and say "Start the app and use it" when no command could be
+verified. Item 3 only when the three.dev MCP server is not connected here.
+When the app does not load `<env file>` itself, item 1 is the one in
+connect.md's "The env file".
 
-List every provider in item 3. Item 4 names each process the app needs, one
-clause per verified command; omit "from `<directory>`" when it is the
-repository root. When no command could be verified, item 4 is "Start the app
-and use it."
+Add one line after the list for each that applies; name things, never count:
 
-Item 5 is there only when the three.dev MCP server is not connected in this
-session, for example because it was installed during it; only a restart loads
-it. Name the coding agent you are running in. Add how to sign in only when you
-know that client's own way; otherwise keep "sign in to the three.dev MCP
-server". When the client has no three.dev MCP server configured at all, item 5
-is "Connect the three.dev MCP server and sign in."
+- "Use cases: `<slug>`, `<slug>`.", every slug the wiring sends.
+- "I chose `<choice>` (`<why, in a few words>`); say if you want another.", for
+  each choice of yours that changed what got wired.
+- "Not connected: `<file>`, `<reason in a few words>`."
+- "Not verified: `<what, and why>`." When no check request succeeded, add "Your
+  app's first request is the test: the setup page reads "`<title>`" until it
+  arrives.", with the title connect.md gives.
+- "Git is not protecting `<env file>` here: this folder is not a repository."
+- "Added `<package>` and one line in `<file>` so your app reads `<env file>`."
+- The wiring files' lines, and library-wiring.md's for clients wired from it.
+  Before the report, check each Step 6 line here and in those files in turn,
+  each `<slot>` filled with what this run found, never a generic word.
+  Backticks stay only around names from the code (a file, a setting, a
+  command, a slug); words like a reason or a provider go in plain text.
 
-Add one line after the list only when it applies:
+## Resume an interrupted setup
 
-- A call site left unchanged: "Not connected: `<file>`, <reason in a few words>."
-- A check from Step 4 that could not run: "Not verified: <what, and why in a few words>."
+When asked to finish, resume, or fix a setup, do not start over: a new code
+needs a new approval. Run the status call with this session's device code,
+or by key without one, and follow its outcome. Do Step 4 for what is not
+wired or is wrong, then Step 5; only a key proxy-errors.md calls gone or
+revoked sends you back to Step 3. End with the report and Step 6.
 
 ## Hard rules
 
-- `X-Three-Use-Case` and `X-Three-AI-Provider` go on every request. The
-  accepted provider values are on the AI Providers Integration page; do not
-  invent them.
-- Slugs match `^[a-z0-9]+(?:-[a-z0-9]+)*$` and are at most 64 characters.
-- Per-request headers must merge with client defaults, not replace them. A
-  dropped session header takes the use-case header with it and the request is
-  forwarded but never recorded.
-- An organization records at most 20 use cases created from a first request.
-  Beyond that, new slugs are forwarded but not recorded.
-- SigV4-signed AWS clients cannot be proxied.
+- The three.dev key never enters this conversation. Only connect.md's
+  commands and the wiring files' check request, key check, counts, listings, and
+  filtered reads name a file that may hold a key. Never print, `cat`, `head`,
+  read, or open one; `source` only a file step 2 created, in connect.md's check
+  command. Learn variable names from the code and the templates you may open.
+  Never run `env`, `printenv`, `set`, `export -p`, `set -x`, or a command that
+  prints resolved settings (`docker compose config`). Ask whether a key is set
+  only as `[ -n "${NAME:+x}" ] && echo set || echo unset`, or by the key check.
+- Every command that runs app code or the wiring ends with the filter and
+  prints only what the wiring files list: never a client, its settings, header
+  values, or the environment. Never edit an installed package for a check.
+- Every code is shown: after each start call, your turn ends on its link and
+  code, the second code too; no status call comes before it.
+- Whole lines come only from `git grep -n <pattern> HEAD` through wiring.md's
+  filter, a file wiring.md lets you open, or code you wrote. Any other search
+  prints file names, counts, or the names it matched (`-l`, `-c`, or `-o`
+  anchored at the line's start, stopping before the value), and so does any
+  search outside a repository of a file that may hold a key.
+- The token call runs only as connect.md prints it, with its output going to
+  the env file. Any other form would print the key.
+- The report carries only the parts connect.md prints, with values from its
+  lists. Only its `detail` has your words: no key, name, path, or address.
+- `X-Three-Traffic-Type` goes on the check request only, never in app code.
+- `X-Three-AI-Provider-BaseURL` is an `https` base URL, uncut, from the code,
+  its SDK's default host, or the user, on a host provider-address.md lists.
+- The three.dev key goes in `X-Three-Api-Key`, never in a provider credential,
+  and never where a library saves, logs, or traces it.
+- `X-Three-Use-Case` and `X-Three-AI-Provider` go on every request, with a
+  provider value from the AI Providers Integration page, never invented.
+- Slugs match `^[a-z0-9]+(?:-[a-z0-9]+)*$`, at most 64 characters. At most
+  20 per organization come from first requests; later new ones go unrecorded.
+- Per-request headers merge with client defaults, never replace them: a
+  request that loses its use-case header is forwarded but never recorded.
