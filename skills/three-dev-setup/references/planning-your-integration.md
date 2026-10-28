@@ -18,7 +18,7 @@ A use case is one AI feature with one goal — the thing you want to know is wor
 
 **Do not split a use case by environment.** See [Do I need a separate API key per environment?](#do-i-need-a-separate-api-key-per-environment).
 
-**Do not build the slug from a runtime value.** three.dev creates a use case for every new slug it sees, so a header filled from a user ID, tenant, or session ID creates one use case per value. three.dev stops recording after 20 use cases created this way. Keep the slug a constant per AI feature, and send the varying value as a tag. See [Creating use cases](https://docs.three.dev/sending-requests/sending-requests.md#creating-use-cases).
+**Do not build the slug from a runtime value.** three.dev creates a use case for every new slug it sees, so a header filled from a user ID, tenant, or session ID creates one use case per value. three.dev stops recording after 100 use cases created this way. Keep the slug a constant per AI feature, and send the varying value as a tag. See [Creating use cases](https://docs.three.dev/sending-requests/sending-requests.md#creating-use-cases).
 
 When in doubt, start with fewer use cases. Adding a tag to existing requests is a one-line change. Splitting a use case later leaves its history and failure modes behind.
 
