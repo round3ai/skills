@@ -31,7 +31,11 @@ feature's goal:
 
 ## Where headers go
 
-- The session ID goes in per-call options.
+- The session ID and the tags go in per-call options, only when that call
+  goes through three.dev, as [wiring.md](wiring.md#every-wired-client) says:
+  without the key, or when a setting sends the client to another host, the
+  call sends none of them. In a LangGraph agent, only as
+  [wiring.md](wiring.md#langchain-and-langgraph) says.
 - Check the merge hard rule in the installed SDK's source. If the SDK is not
   installed, set it up as Step 5 allows and check then. Only if it still
   cannot be confirmed, leave the session header out of that call site.

@@ -520,7 +520,7 @@ func main() {
 
 Specify the AI provider for each request with the `X-Three-AI-Provider` header. Accepted values are `openai`, `anthropic`, `gemini`, `azure_openai`, `amazon_bedrock_runtime`, `amazon_bedrock_mantle`, `openrouter`, and `concentrate`.
 
-Add your provider's API key in [Settings > AI Provider Keys](https://app.three.dev/settings/ai-provider-keys). One key can be marked as the Default Provider — used when no `X-Three-AI-Provider` header is specified. If a provider is specified but no key exists for it in three.dev, the request fails with an authentication error, unless the request carries [your app's own provider key](#using-your-apps-own-provider-key).
+Add your provider's API key in [Settings > AI Provider Keys](https://app.three.dev/settings/ai-provider-keys?ref=docs-ai-providers-integration). One key can be marked as the Default Provider — used when no `X-Three-AI-Provider` header is specified. If a provider is specified but no key exists for it in three.dev, the request fails with an authentication error, unless the request carries [your app's own provider key](#using-your-apps-own-provider-key).
 
 ## Using your app's own provider key
 
@@ -630,7 +630,7 @@ The proxy refuses the request with `400` and one of these codes:
 
 ## Azure OpenAI
 
-Azure OpenAI is supported as a separate provider. When configuring an Azure OpenAI provider key in [Settings > AI Provider Keys](https://app.three.dev/settings/ai-provider-keys), specify both your API key and your Azure resource endpoint URL (for example, `https://my-resource.openai.azure.com`).
+Azure OpenAI is supported as a separate provider. When configuring an Azure OpenAI provider key in [Settings > AI Provider Keys](https://app.three.dev/settings/ai-provider-keys?ref=docs-ai-providers-integration), specify both your API key and your Azure resource endpoint URL (for example, `https://my-resource.openai.azure.com`).
 
 To keep the Azure key in your app instead, send your resource's address in `X-Three-AI-Provider-BaseURL`. See [Sending your provider's address](#sending-your-providers-address).
 
@@ -716,7 +716,7 @@ func main() {
 
 ## OpenRouter
 
-[OpenRouter](https://openrouter.ai) exposes an OpenAI-compatible API, so the integration matches the OpenAI example — point the OpenAI SDK at `gate.three.dev/v1` and set `X-Three-AI-Provider: openrouter`. Add your OpenRouter key in [Settings > AI Provider Keys](https://app.three.dev/settings/ai-provider-keys).
+[OpenRouter](https://openrouter.ai) exposes an OpenAI-compatible API, so the integration matches the OpenAI example — point the OpenAI SDK at `gate.three.dev/v1` and set `X-Three-AI-Provider: openrouter`. Add your OpenRouter key in [Settings > AI Provider Keys](https://app.three.dev/settings/ai-provider-keys?ref=docs-ai-providers-integration).
 
 Use OpenRouter's `<VENDOR>/<MODEL>` naming for the `model` parameter. This is a convenient way to reach open-weight models — the examples below call `z-ai/glm-5.2`.
 
@@ -987,7 +987,7 @@ For the Responses API, Chat Completions, and the Messages API, three.dev records
 
 ## Amazon Bedrock
 
-Amazon Bedrock is supported through two provider types: **Runtime** (available now) and **Mantle** (coming soon). When configuring a Bedrock provider key in [Settings > AI Provider Keys](https://app.three.dev/settings/ai-provider-keys), select "Amazon Bedrock", choose Runtime, select your AWS region, and enter your Bedrock API key. The endpoint URL is derived automatically — no need to look it up.
+Amazon Bedrock is supported through two provider types: **Runtime** (available now) and **Mantle** (coming soon). When configuring a Bedrock provider key in [Settings > AI Provider Keys](https://app.three.dev/settings/ai-provider-keys?ref=docs-ai-providers-integration), select "Amazon Bedrock", choose Runtime, select your AWS region, and enter your Bedrock API key. The endpoint URL is derived automatically — no need to look it up.
 
 To keep the Bedrock API key in your app instead, send `https://bedrock-runtime.<AWS_REGION>.amazonaws.com` in `X-Three-AI-Provider-BaseURL`. See [Sending your provider's address](#sending-your-providers-address).
 
@@ -1419,7 +1419,7 @@ Keep `apiKey: "default"`. Without it, `createAzure` reads `AZURE_API_KEY` from t
 
 ## LangChain and LangGraph
 
-[LangChain](https://www.langchain.com) chat model classes, such as `ChatOpenAI` and `ChatAnthropic`, take an API key, a base URL, and headers when you create them. Create the model with your three.dev API key and the three.dev headers, then use it as before: `invoke`, `stream`, `bind_tools`, `with_structured_output`, and [LangGraph agents](#langgraph-agents) all go through the proxy. three.dev uses the provider keys stored in [Settings > AI Provider Keys](https://app.three.dev/settings/ai-provider-keys). The Python examples work with `langchain` 0.3 and 1.x and `langgraph` 0.6 and 1.x. The TypeScript examples work with LangChain.js 1.x.
+[LangChain](https://www.langchain.com) chat model classes, such as `ChatOpenAI` and `ChatAnthropic`, take an API key, a base URL, and headers when you create them. Create the model with your three.dev API key and the three.dev headers, then use it as before: `invoke`, `stream`, `bind_tools`, `with_structured_output`, and [LangGraph agents](#langgraph-agents) all go through the proxy. three.dev uses the provider keys stored in [Settings > AI Provider Keys](https://app.three.dev/settings/ai-provider-keys?ref=docs-ai-providers-integration). The Python examples work with `langchain` 0.3 and 1.x and `langgraph` 0.6 and 1.x. The TypeScript examples work with LangChain.js 1.x.
 
 {% tabs %}
 {% tab title="OpenAI" %}
