@@ -8,17 +8,17 @@ The three.dev proxy forwards your requests to your AI provider and records them 
 
 * **Change your base URL** to `gate.three.dev`. This routes requests through the three.dev proxy, which forwards them to the AI provider.
 * **Authenticate with your three.dev API Key** in the `Authorization` header: `Authorization: Bearer <THREE_DEV_API_KEY>`.
-* **Add the `X-Three-Use-Case` header** with your use case slug. Slugs follow the pattern `^[a-z0-9]+(?:-[a-z0-9]+)*$` and are at most 64 characters long — for example, `hotel-booking-assistant` or `code-review-assistant`. Create the use case on the [**Use Cases**](https://app.three.dev/use-cases?ref=docs-sending-requests) page and send its slug, or send a new slug and three.dev creates the use case on the first request. See [Creating use cases](#creating-use-cases).
+* **Add the `X-Three-Use-Case` header** with your use case slug. Slugs follow the pattern `^[a-z0-9]+(?:-[a-z0-9]+)*$` and are at most 64 characters long — for example, `hotel-booking-assistant` or `code-review-assistant`. Create the use case on the [**Use Cases**](https://app.three.dev/goto/use-cases?ref=docs-sending-requests) page and send its slug, or send a new slug and three.dev creates the use case on the first request. See [Creating use cases](#creating-use-cases).
 
 {% hint style="info" %}
-Before sending requests, add a valid AI Provider Key in [Settings > AI Provider Keys](https://app.three.dev/settings/ai-provider-keys?ref=docs-sending-requests). See [Quickstart: Record your requests](https://docs.three.dev/getting-started/quickstart-record-requests.md) for a step-by-step guide.
+Before sending requests, add a valid AI Provider Key in [Settings > AI Provider Keys](https://app.three.dev/goto/ai-provider-keys?ref=docs-sending-requests). See [Quickstart: Record your requests](https://docs.three.dev/getting-started/quickstart-record-requests.md) for a step-by-step guide.
 {% endhint %}
 
 ## Creating use cases
 
 There are two ways to create a use case. Both give you the same use case, with the same defaults.
 
-* **From the UI.** Create the use case on the [**Use Cases**](https://app.three.dev/use-cases?ref=docs-sending-requests) page with a descriptive name and a slug, then send that slug in the `X-Three-Use-Case` header.
+* **From the UI.** Create the use case on the [**Use Cases**](https://app.three.dev/goto/use-cases?ref=docs-sending-requests) page with a descriptive name and a slug, then send that slug in the `X-Three-Use-Case` header.
 * **From your first request.** Send a slug that does not match any use case in your organization. three.dev creates the use case, named after its slug, and records the request under it. The use case appears in the sidebar as soon as the first request arrives.
 
 A request under an existing use case is recorded under that use case; three.dev never modifies an existing use case.
