@@ -243,6 +243,6 @@ revoked sends you back to Step 3. End with the report and Step 6.
 - `X-Three-Use-Case` and `X-Three-AI-Provider` go on every request, with a
   provider value from the AI Providers Integration page, never invented.
 - Slugs match `^[a-z0-9]+(?:-[a-z0-9]+)*$`, at most 64 characters. At most
-  20 per organization come from first requests; later new ones go unrecorded.
+  100 per organization come from first requests; later new ones go unrecorded.
 - Per-request headers merge with client defaults, never replace them: a
   request that loses its use-case header is forwarded but never recorded.

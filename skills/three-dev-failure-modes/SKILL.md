@@ -98,10 +98,13 @@ so and carry on below.
 
 If the user named a use case, use the slug that matches it exactly and name
 any near-identical slugs in one line; with no exact match, call
-`list_use_cases` and ask by number among the close ones. Otherwise call
-`list_use_cases`; with one result use it, with several ask by number. If the
+`list_use_cases` with a `query` from their words and ask by number among the
+close ones. Otherwise call `list_use_cases`; with one result use it, with
+several ask by number. With `has_more`, ask which use case they mean and search
+for it with `query` rather than paging through every use case. If the
 question is about one request id, go straight to Step 4; it also needs the use
-case slug, so try the use cases in turn when it is unknown.
+case slug, so ask the user which use case the request came from, and when they
+don't know, try only the five with the latest `last_request_at`.
 
 If `list_failure_modes` answers that failure modes are not available for the
 use case, report that message as is and stop.

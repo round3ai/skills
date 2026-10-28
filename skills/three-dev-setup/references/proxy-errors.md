@@ -48,7 +48,7 @@ they reach you only when the user reads one out.
 | --- | --- | --- |
 | `missing_use_case` | A request arrived with no `X-Three-Use-Case`. | A call site sends no use-case header, or a per-call header replaced the client defaults. Find it and fix the merge. |
 | `invalid_use_case` | The slug is malformed. | Make it match `^[a-z0-9]+(?:-[a-z0-9]+)*$`, at most 64 characters. |
-| `use_case_limit_reached` | The organization already has 20 use cases created from a first request. | Tell the user to delete unused ones, or to create this one on the Use Cases page. Check that no slug is built from a runtime value. |
+| `use_case_limit_reached` | The organization already has 100 use cases created from a first request. | Tell the user to delete unused ones, or to create this one on the Use Cases page. Check that no slug is built from a runtime value. |
 | `upstream_<status>` | The provider answered with that status. | The provider's own error; the app saw the same response. |
 
 ## On the approval page
