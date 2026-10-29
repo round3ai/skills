@@ -260,11 +260,6 @@ call sites is fine.
 | `expired` | The first time: tell the user in one line, as reply text, run step 5 again, and do step 6 again with the new code: open it, write its message, end your turn. The second time: stop and offer to start again. |
 | `collected` | Write `approved`'s organization line first, as reply text, if you have not in this conversation. The key was already delivered for this code. Go to step 11. From then on the answer also has `verified_checks`: how many check requests made with this key went through three.dev and got a 2xx answer, and `first_request`: whether three.dev has taken a request with this key as the app's first real one. When you run the call later only to read them, do nothing else on this row. |
 
-If the user says the page reads "Not available for this organization", the
-status stays `pending`: tell them to switch organization on that page, or to
-ask three.dev to enable setup for theirs. The same code keeps working until it
-expires.
-
 **Not the user's organization.** When the user says the organization is not
 theirs, the key belongs to someone else: three.dev cannot revoke it for them,
 and whatever the app sends with it lands there. Stop wiring and send no check

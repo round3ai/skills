@@ -50,9 +50,3 @@ they reach you only when the user reads one out.
 | `invalid_use_case` | The slug is malformed. | Make it match `^[a-z0-9]+(?:-[a-z0-9]+)*$`, at most 64 characters. |
 | `use_case_limit_reached` | The organization already has 100 use cases created from a first request. | Tell the user to delete unused ones, or to create this one on the Use Cases page. Check that no slug is built from a runtime value. |
 | `upstream_<status>` | The provider answered with that status. | The provider's own error; the app saw the same response. |
-
-## On the approval page
-
-`setup_agent_not_enabled` is shown to the user in the browser as "Not
-available for this organization", never to you. What to tell them is in
-[connect.md](connect.md), under Wait.
