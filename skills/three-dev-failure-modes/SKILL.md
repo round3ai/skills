@@ -38,8 +38,9 @@ format your client prescribes; never compose an app URL yourself.
 ## What the numbers mean
 
 - **Only a sample is scored.** Live scoring runs on a sampling rate (often 1% or
-  less). A mode's rate is its `request_count / totals.scored_requests`; the use
-  case's is `totals.requests_with_issues / totals.scored_requests`.
+  less), lowered on a busy use case so its daily cap lasts the day. A mode's
+  rate is its `request_count / totals.scored_requests`; the use case's is
+  `totals.requests_with_issues / totals.scored_requests`.
   Never divide by `total_requests` and never report an issue count as if it
   were the share of all traffic.
 - **Issues and requests differ**: a request can hold several issues, so the
