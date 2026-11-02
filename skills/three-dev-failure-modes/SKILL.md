@@ -48,7 +48,7 @@ format your client prescribes; never compose an app URL yourself.
 - **Windows** are RFC3339, `to` exclusive; none means the last 14 days, and
   `to` alone means the 7 days before it. Report the `window` a result returns.
 - **A request with no failure mode is not necessarily clean.**
-  Read `scored` first: clean is scored with no issue, and a request whose only
+  Read `scored` first: `no_issues` is scored with no issue, and a request whose only
   issues are Unmatched has no failure mode either.
 - **Dismissed modes are left out** of every count. Ask for them only when the
   user asks about one they dismissed; dismissed, merged, split and outdated
@@ -169,7 +169,7 @@ recent 150, as a sample. Name the shapes and count them, largest first, as
 
 Call `get_request_conversation` on two requests of each of the two or three
 largest shapes, different-looking ones, and on one clean request with the same
-kind of input when the failure looks input-dependent (a `scoring` `clean`
+kind of input when the failure looks input-dependent (a `scoring` `no_issues`
 filter finds one). Conversations can be long; if a client hands you a large
 result as a file, read the file. Read the system prompt and the tool names
 once, then the turns its issue's citations quote; ask for `detail=full` or
