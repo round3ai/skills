@@ -10,7 +10,7 @@ predicates each field accepts are in the table below.
 | --- | --- | --- | --- |
 | `latency_ms` | `gt`, `gte`, `lt`, `lte` | number | Facets give `min`/`max` |
 | `cost_usd` | `gt`, `gte`, `lt`, `lte` | number | Per request |
-| `scoring` | `eq` | `scored`, `unscored`, `with_issues`, `clean` | Clean is scored with no issue |
+| `scoring` | `eq` | `scored`, `unscored`, `with_issues`, `no_issues` | `no_issues` is scored with no issue that counts |
 | `provider` | `eq`, `in` | string | `in` takes up to five values |
 | `model` | `eq`, `in` | string | Model requested |
 | `failure_mode` | `eq`, `in` | failure mode id (UUID) | Ids from `list_failure_modes` or the facets; Unmatched has none, so filter `with_issues` and read `issues` |
