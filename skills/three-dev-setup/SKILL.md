@@ -1,6 +1,6 @@
 ---
 name: three-dev-setup
-description: Adds three.dev to a codebase so its LLM calls are recorded. Connects the app to the user's three.dev organization with one approval in the browser, finds every LLM call site, groups the calls into use cases, and routes them through the three.dev proxy (gate.three.dev) with the app's own provider key plus use case, session, and environment headers. Use when the user mentions three.dev, gate.three.dev, or X-Three headers, asks to record or monitor their LLM calls, or wants to set up, connect, or extend a three.dev integration. Covers OpenAI, Anthropic, Gemini, Azure OpenAI, OpenRouter, Concentrate, Bedrock, LiteLLM, Vercel AI SDK, and LangChain and LangGraph clients. Not for investigating failure modes or reading recorded conversations; that is the three-dev-failure-modes skill.
+description: Adds three.dev to a codebase so its LLM calls are recorded. Connects the app to the user's three.dev organization with one approval in the browser, finds every LLM call site, groups the calls into use cases, and routes them through the three.dev proxy (gate.three.dev) with the app's own provider key plus use case, session, and environment headers. Use when the user mentions three.dev, gate.three.dev, or X-Three headers, asks to record or monitor their LLM calls, or wants to set up, connect, or extend a three.dev integration. Covers OpenAI, Anthropic, Gemini, Azure OpenAI, OpenRouter, Concentrate, Portkey, Bedrock, LiteLLM, Vercel AI SDK, and LangChain and LangGraph clients. Not for investigating failure modes or reading recorded conversations; that is the three-dev-failure-modes skill.
 allowed-tools: Bash(curl -sS -X POST https://api.three.dev/api/v1/setup/status *)
 ---
 
@@ -86,14 +86,15 @@ markets, channels, customer types). Steps 2 and 4 depend on it.
 
 Scan for every LLM call site: `openai`, `anthropic`, `@anthropic-ai/sdk`,
 `@google/genai`, `google.genai`, `google.generativeai`, `litellm`, `langchain`,
-`@langchain/*`, `langgraph`, the Vercel `ai` SDK, agent frameworks, other
-providers' SDKs, `bedrock-runtime` and `boto3` clients, the hosts
-`openrouter.ai` and `api.concentrate.ai`, and raw HTTP to a provider, an
-Azure OpenAI endpoint, or a gateway. Put each call site in one of five
-groups; wiring.md and provider-address.md tell them apart:
+`@langchain/*`, `langgraph`, the Vercel `ai` SDK, Portkey's SDK (`portkey_ai`,
+`portkey-ai`), agent frameworks, other providers' SDKs, `bedrock-runtime` and
+`boto3` clients, the hosts `openrouter.ai`, `api.concentrate.ai`,
+`api.portkey.ai` and `aigw.portkey.ai`, and raw HTTP to a provider, an Azure
+OpenAI endpoint, or a gateway. Put each call site in one of five groups;
+wiring.md and provider-address.md tell them apart:
 
-- **Fixed address**: OpenAI, Anthropic, Gemini, OpenRouter, Concentrate.
-- **Own address**: Azure OpenAI, Bedrock, OpenAI's EU host, or an address in a setting.
+- **Fixed address**: OpenAI, Anthropic, Gemini, OpenRouter, Concentrate, Portkey.
+- **Own address**: Azure OpenAI, Bedrock, OpenAI's EU host, Portkey's `aigw.portkey.ai`, or an address in a setting.
 - **Already on three.dev**: it calls `gate.three.dev`. Keep it, and its slug.
 - **No worked example**: none on the page. Wire it last, per library-wiring.md.
 - **Unsupported**: a gateway, or ruled out by wiring.md or library-wiring.md. Not connected.

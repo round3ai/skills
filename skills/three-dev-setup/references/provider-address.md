@@ -8,16 +8,17 @@ Everything in [wiring.md](wiring.md) holds here too.
 
 ## The provider's address
 
-For Azure OpenAI, Bedrock, and OpenAI's EU host, the request says where the
-provider is in `X-Three-AI-Provider-BaseURL`. The proxy forwards only to each
-provider's own hosts, on the default port, and only under that provider's
-`X-Three-AI-Provider` value:
+For Azure OpenAI, Bedrock, OpenAI's EU host, and Portkey's `aigw.portkey.ai`,
+the request says where the provider is in `X-Three-AI-Provider-BaseURL`. The
+proxy forwards only to each provider's own hosts, on the default port, and
+only under that provider's `X-Three-AI-Provider` value:
 
 | `X-Three-AI-Provider` | Hosts the header may name |
 | --- | --- |
 | `openai` | `api.openai.com`, `eu.api.openai.com` |
 | `azure_openai` | `<resource>.openai.azure.com`, `<resource>.services.ai.azure.com`, `<resource>.cognitiveservices.azure.com` |
 | `amazon_bedrock_runtime` | `bedrock-runtime.<region>.amazonaws.com` |
+| `portkey` | `api.portkey.ai`, `aigw.portkey.ai` |
 
 `<resource>` and `<region>` are one DNS label each. Any other base URL cannot
 go through three.dev: a company gateway, a host that speaks a provider's API
