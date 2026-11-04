@@ -6,6 +6,8 @@ Configure the three.dev proxy for OpenAI, Anthropic, Gemini, Azure OpenAI, OpenR
 
 The three.dev proxy supports multiple AI providers. Point your SDK at `gate.three.dev`, authenticate with your three.dev API key, and set the `X-Three-AI-Provider` header to route to the right backend. See [Overview](https://docs.three.dev/sending-requests/sending-requests.md) for the three changes every integration requires.
 
+This page covers [Provider examples](#provider-examples), [Choosing the target AI provider](#choosing-the-target-ai-provider), [Using your app's own provider key](#using-your-apps-own-provider-key), [Azure OpenAI](#azure-openai), [OpenRouter](#openrouter), [Concentrate](#concentrate), [Amazon Bedrock](#amazon-bedrock), [Using LiteLLM](#using-litellm), [Vercel AI SDK](#vercel-ai-sdk), and [LangChain and LangGraph](#langchain-and-langgraph).
+
 ## Provider examples
 
 {% tabs %}
@@ -518,7 +520,7 @@ func main() {
 
 ## Choosing the target AI provider
 
-Specify the AI provider for each request with the `X-Three-AI-Provider` header. Accepted values are `openai`, `anthropic`, `gemini`, `azure_openai`, `amazon_bedrock_runtime`, `amazon_bedrock_mantle`, `openrouter`, and `concentrate`.
+Specify the AI provider for each request with the `X-Three-AI-Provider` header. Supported values are `openai`, `anthropic`, `gemini`, `azure_openai`, `amazon_bedrock_runtime`, `openrouter`, and `concentrate`.
 
 Add your provider's API key in [Settings > AI Provider Keys](https://app.three.dev/goto/ai-provider-keys?ref=docs-ai-providers-integration). One key can be marked as the Default Provider — used when no `X-Three-AI-Provider` header is specified. If a provider is specified but no key exists for it in three.dev, the request fails with an authentication error, unless the request carries [your app's own provider key](#using-your-apps-own-provider-key).
 
@@ -987,7 +989,7 @@ For the Responses API, Chat Completions, and the Messages API, three.dev records
 
 ## Amazon Bedrock
 
-Amazon Bedrock is supported through two provider types: **Runtime** (available now) and **Mantle** (coming soon). When configuring a Bedrock provider key in [Settings > AI Provider Keys](https://app.three.dev/goto/ai-provider-keys?ref=docs-ai-providers-integration), select "Amazon Bedrock", choose Runtime, select your AWS region, and enter your Bedrock API key. The endpoint URL is derived automatically — no need to look it up.
+Amazon Bedrock is supported through Bedrock Runtime. three.dev does not support Amazon Bedrock Mantle. When configuring a Bedrock provider key in [Settings > AI Provider Keys](https://app.three.dev/goto/ai-provider-keys?ref=docs-ai-providers-integration), select "Amazon Bedrock", choose Runtime, select your AWS region, and enter your Bedrock API key. The endpoint URL is derived automatically — no need to look it up.
 
 To keep the Bedrock API key in your app instead, send `https://bedrock-runtime.<AWS_REGION>.amazonaws.com` in `X-Three-AI-Provider-BaseURL`. See [Sending your provider's address](#sending-your-providers-address).
 
@@ -1166,12 +1168,6 @@ curl -X POST https://gate.three.dev/model/openai.gpt-oss-120b:0/invoke \
 
 {% endtab %}
 {% endtabs %}
-
-### Bedrock Mantle
-
-{% hint style="info" %}
-**Coming soon.** Amazon Bedrock Mantle support is not yet available.
-{% endhint %}
 
 ### Model ID format
 
