@@ -240,10 +240,10 @@ only on a last chunk, and only when the request asks for it; without it
 three.dev records the call with no tokens and no cost. A streamed call
 (`chat.completions.create(..., stream=True)`, the SDK's
 `chat.completions.stream(...)`, or raw HTTP to `/chat/completions` with
-`"stream": true`) to OpenAI, OpenRouter, or Concentrate gets `stream_options`
-with `include_usage` set to true, only when the call goes through three.dev:
-under the same test that points the client at `gate.three.dev`, not the key
-alone.
+`"stream": true`) to OpenAI, OpenRouter, Concentrate, or Portkey gets
+`stream_options` with `include_usage` set to true, only when the call goes
+through three.dev: under the same test that points the client at
+`gate.three.dev`, not the key alone.
 
 ```python
 stream = client.chat.completions.create(
@@ -259,8 +259,8 @@ for chunk in stream:
 
 - `through_three_dev` is the flag [above](#every-wired-client). When the
   same call site can also reach Azure OpenAI or Gemini through three.dev,
-  test the provider too: the option goes only to OpenAI, OpenRouter, and
-  Concentrate. In TypeScript, add
+  test the provider too: the option goes only to OpenAI, OpenRouter,
+  Concentrate, and Portkey. In TypeScript, add
   `...(throughThreeDev ? { stream_options: { include_usage: true } } : {})`
   to the call's options; in raw HTTP, set the field in the body under the
   same test.
@@ -513,6 +513,8 @@ page's example for the exact client shows it.
 | Gemini through its OpenAI-compatible URL | `https://gate.three.dev/v1beta/openai` | none | nothing |
 | OpenRouter: `https://openrouter.ai/api/v1` | `https://gate.three.dev/v1` | none | nothing |
 | Concentrate: `https://api.concentrate.ai`, with any path | `https://gate.three.dev`, with the same path | none | nothing |
+| Portkey: `https://api.portkey.ai`, with any path, or the Portkey SDK's `PORTKEY_GATEWAY_URL` constant (`https://api.portkey.ai/v1`) | `https://gate.three.dev`, with the same path | none | nothing |
+| Portkey on `https://aigw.portkey.ai`, with any path | `https://gate.three.dev`, with the same path | `X-Three-AI-Provider-BaseURL` with the app's base URL as it is: `https://aigw.portkey.ai/v1` with an OpenAI SDK, `https://aigw.portkey.ai` with the Anthropic SDK | nothing |
 | Azure OpenAI with an OpenAI client: `base_url="https://my-resource.openai.azure.com/openai/v1"` | `https://gate.three.dev/v1` | `X-Three-AI-Provider-BaseURL: https://my-resource.openai.azure.com/openai/v1` | to approve the address |
 | Azure OpenAI with the `AzureOpenAI` classes or LangChain's `AzureChatOpenAI`: `azure_endpoint="https://my-resource.openai.azure.com"` | `azure_endpoint="https://gate.three.dev"`, nothing else changed; in LangChain.js, `azureOpenAIBasePath: "https://gate.three.dev/openai/deployments"`, which comes before an endpoint or instance name and before `AZURE_OPENAI_BASE_PATH` | `X-Three-AI-Provider-BaseURL: https://my-resource.openai.azure.com` | to approve the address |
 | Azure OpenAI with the Vercel AI SDK: `createAzure({ resourceName: "my-resource" })` | `baseURL: "https://gate.three.dev/v1"`, nothing else changed | `X-Three-AI-Provider-BaseURL: https://my-resource.openai.azure.com/openai`, or the app's `baseURL` as it is | to approve the address |
@@ -531,6 +533,20 @@ OpenRouter needs no address header, and its client path is `/v1`, not
 Concentrate is a provider three.dev knows, wired by its fixed address: its
 `X-Three-AI-Provider` is `concentrate` whichever SDK calls it, the Anthropic
 SDK included, and it needs no address header and no question.
+
+Portkey is a provider three.dev knows, wired by its fixed address: its
+`X-Three-AI-Provider` is `portkey` whichever SDK calls it, and it needs no
+question. Only an app on `aigw.portkey.ai` also sends the address header, so
+its calls keep that host. The Portkey key stays where the app sends it today,
+and the proxy forwards it unchanged: the SDK key with an OpenAI SDK, or an
+`Authorization: Bearer` or `x-portkey-api-key` default header beside a
+placeholder SDK key, which is how Portkey has the Anthropic SDK send it (that
+SDK sends its own key as `x-api-key`). Never move the key into or out of the
+SDK key. Every other `x-portkey-*` header (config, provider, virtual key,
+trace ID, metadata) and `@<provider-slug>/<model>` model name stays as the
+app has it. Step 6 gets "three.dev records your Portkey calls' tokens, but not
+their cost: Portkey does not report it." A Portkey the company runs on its own
+host is a gateway: not connected.
 
 **Google's GenAI SDKs.** The app's Gemini key stays the SDK's key, sent as
 `x-goog-api-key`. The base URL and the `X-Three-*` headers are added to the

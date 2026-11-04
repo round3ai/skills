@@ -26,7 +26,7 @@ A client is wired this way when all of these hold:
 - The code can set its base URL and add headers, or give it an HTTP client
   or a `fetch` the wiring builds.
 - It sends the provider key in a header (`Authorization`, `x-api-key`,
-  `api-key`, `x-goog-api-key`), never in the URL.
+  `api-key`, `x-goog-api-key`, `x-portkey-api-key`), never in the URL.
 
 Everything else is unsupported, left unchanged, and reported as not connected:
 
@@ -36,8 +36,8 @@ Everything else is unsupported, left unchanged, and reported as not connected:
 - local or private addresses (Ollama on `localhost`, a host on the internal
   network): the proxy cannot reach them;
 - a gateway or a host that speaks a provider's API, such as Vercel's AI
-  Gateway: three.dev does not forward to them. OpenRouter and Concentrate are
-  providers on the page, not gateways;
+  Gateway: three.dev does not forward to them. OpenRouter, Concentrate and
+  Portkey are providers on the page, not gateways;
 - WebSocket, gRPC, and other non-HTTP transports, unless the app's own code
   has an HTTPS mode for that client, as [wiring.md](wiring.md#every-wired-client)
   says;
