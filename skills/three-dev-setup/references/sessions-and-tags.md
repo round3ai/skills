@@ -3,7 +3,7 @@
 Header names, path coverage, and examples are on the Supported paths page
 ([live](https://docs.three.dev/sending-requests/supported-paths.md),
 [local copy](supported-paths.md)). This file holds the rules for choosing
-values in a codebase. Apply them without asking the user.
+values in a codebase. Apply them as written.
 
 ## Session ID
 

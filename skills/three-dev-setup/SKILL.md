@@ -69,6 +69,11 @@ wiring.md and provider-address.md decide, with how to read them.
 - **Minimal diff.** Base URL, `X-Three-*` headers, and the key variable, in
   the code's style. No refactors, and no dependency but connect.md's loader.
 
+- **Say what leaves the machine, first.** Before your first three.dev call,
+  tell the user in one line, as reply text: "Setting up three.dev. This sends
+  three.dev this machine's name, this folder's name, and a short report of
+  how the setup ended. No code, no keys." Once per conversation.
+
 ## Workflow
 
 ### Step 1: Understand the product and find the LLM calls
