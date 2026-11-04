@@ -165,7 +165,7 @@ else:
   test may be stricter than the proxy, never looser: an address it does not
   match goes there, so a gateway's address never reaches three.dev and the
   app never gets a refusal. These branches are the only logic the wiring may
-  add: no parsing, and no cutting of the value.
+  add: no parsing, and the value is used whole.
 - Write the pattern in the language's own regular expressions, matching the
   whole value, at most 512 bytes: one pattern for the SDK's default
   provider's fixed address, which gets no header, and one for the hosts in

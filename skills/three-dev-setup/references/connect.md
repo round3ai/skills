@@ -58,8 +58,8 @@ script, or a framework's convention (`.env.local` for Next.js) name another.
 | Loads none, but an env file git ignores already holds the provider key | That file; see below |
 | Loads none, and no such file: keys come from the shell, a secrets manager, the platform, or a config or secrets file of the app's own | `.env.threedev`; you create it below |
 
-**When the app loads none**, decide first whether to make it load one. Do
-not ask the user: the repository decides, from the README you read in Step 1
+**When the app loads none**, decide first whether to make it load one. The
+repository decides, from the README you read in Step 1
 and any setup page it points to.
 
 | The repository | Do |
@@ -375,7 +375,8 @@ as shell, and an error could print part of a value.
 
 ## Report
 
-**12. Say how the work ended.** This is the last command you run each time
+**12. Say how the work ended.** The user was told at the start that this
+report is sent (SKILL.md, "Say what leaves the machine"). This is the last command you run each time
 your work stops, or finishes with a device code, just before your message to
 the user. There are three commands. Which one you run depends only on
 whether step 5 has answered with a device code, here or in an earlier
@@ -528,7 +529,7 @@ characters; for a client, the library the code imports, whose package name is
 the one thing from the code it may carry. Use only letters, digits, spaces,
 and `. , - _ @ /`. Never a name, a path, code, an address, a key, or anything
 copied from the user's files. Good: `imports google-generativeai with async
-calls`. Bad: `OPENAI_API_KEY in /home/ana/app/.env set by src/llm.py`. With
+calls`. Bad: a variable name with the file that sets it. With
 no `other`, send no `detail`: three.dev refuses it. One `detail` per report
 covers every `other` in it. With `reason=other`, the three commands read:
 
