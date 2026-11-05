@@ -21,9 +21,8 @@ claude plugin install three-dev@three-dev
 
 ```bash
 codex plugin marketplace add round3ai/skills
+codex plugin add three-dev@three-dev
 ```
-
-Then start `codex`, enter `/plugins`, and install the `three-dev` plugin.
 
 ### Cursor, GitHub Copilot, Kiro, Cline, and others
 
