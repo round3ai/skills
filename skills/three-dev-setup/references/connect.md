@@ -276,7 +276,7 @@ there is nothing to resume, so start again from step 5. The key goes
 from `<env file>` straight into a header and is never printed:
 
 ```bash
-sed -n 's/^THREE_DEV_API_KEY=/X-Three-Api-Key: /p' <env file> | curl -sS -X POST https://api.three.dev/api/v1/setup/status -H @-
+sed -n 's/^THREE_DEV_API_KEY=/X-Three-Api-Key: /p' <env file> | curl -sS -X POST https://api.three.dev/api/v1/setup/status -H @- -d ''
 ```
 
 Use it wherever this file or check-request.md says step 7's call, and follow the
