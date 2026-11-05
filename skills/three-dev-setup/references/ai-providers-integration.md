@@ -2,11 +2,11 @@
 
 # AI Providers Integration
 
-Configure the three.dev proxy for OpenAI, Anthropic, Gemini, Azure OpenAI, OpenRouter, Concentrate, Amazon Bedrock, LiteLLM, the Vercel AI SDK, and LangChain, with code examples per provider and langu
+Configure the three.dev proxy for OpenAI, Anthropic, Gemini, Azure OpenAI, OpenRouter, Concentrate, Portkey, Amazon Bedrock, LiteLLM, the Vercel AI SDK, and LangChain, with code examples per provider
 
 The three.dev proxy supports multiple AI providers. Point your SDK at `gate.three.dev`, authenticate with your three.dev API key, and set the `X-Three-AI-Provider` header to route to the right backend. See [Overview](https://docs.three.dev/sending-requests/sending-requests.md) for the three changes every integration requires.
 
-This page covers [Provider examples](#provider-examples), [Choosing the target AI provider](#choosing-the-target-ai-provider), [Using your app's own provider key](#using-your-apps-own-provider-key), [Azure OpenAI](#azure-openai), [OpenRouter](#openrouter), [Concentrate](#concentrate), [Amazon Bedrock](#amazon-bedrock), [Using LiteLLM](#using-litellm), [Vercel AI SDK](#vercel-ai-sdk), and [LangChain and LangGraph](#langchain-and-langgraph).
+This page covers [Provider examples](#provider-examples), [Choosing the target AI provider](#choosing-the-target-ai-provider), [Using your app's own provider key](#using-your-apps-own-provider-key), [Azure OpenAI](#azure-openai), [OpenRouter](#openrouter), [Concentrate](#concentrate), [Portkey](#portkey), [Amazon Bedrock](#amazon-bedrock), [Using LiteLLM](#using-litellm), [Vercel AI SDK](#vercel-ai-sdk), and [LangChain and LangGraph](#langchain-and-langgraph).
 
 ## Provider examples
 
@@ -520,7 +520,7 @@ func main() {
 
 ## Choosing the target AI provider
 
-Specify the AI provider for each request with the `X-Three-AI-Provider` header. Supported values are `openai`, `anthropic`, `gemini`, `azure_openai`, `amazon_bedrock_runtime`, `openrouter`, and `concentrate`.
+Specify the AI provider for each request with the `X-Three-AI-Provider` header. Supported values are `openai`, `anthropic`, `gemini`, `azure_openai`, `amazon_bedrock_runtime`, `openrouter`, `concentrate`, and `portkey`.
 
 Add your provider's API key in [Settings > AI Provider Keys](https://app.three.dev/goto/ai-provider-keys?ref=docs-ai-providers-integration). One key can be marked as the Default Provider — used when no `X-Three-AI-Provider` header is specified. If a provider is specified but no key exists for it in three.dev, the request fails with an authentication error, unless the request carries [your app's own provider key](#using-your-apps-own-provider-key).
 
@@ -549,11 +549,11 @@ client = genai.Client(
 
 {% endcode %}
 
-The proxy rejects the request with `400 three_key_in_provider_header` when `Authorization`, `x-api-key`, `api-key`, or `x-goog-api-key` holds a three.dev API key alongside `X-Three-Api-Key`.
+The proxy rejects the request with `400 three_key_in_provider_header` when `Authorization`, `x-api-key`, `api-key`, `x-goog-api-key`, or `x-portkey-api-key` holds a three.dev API key alongside `X-Three-Api-Key`.
 
 ### Sending your provider's address
 
-When your app keeps its own provider key and calls Azure OpenAI, Amazon Bedrock Runtime, or OpenAI's EU host, send the base URL it calls today, path included, in the `X-Three-AI-Provider-BaseURL` header. Send it with `X-Three-Api-Key` and `X-Three-AI-Provider`.
+When your app keeps its own provider key and calls Azure OpenAI, Amazon Bedrock Runtime, OpenAI's EU host, or Portkey on `aigw.portkey.ai`, send the base URL it calls today, path included, in the `X-Three-AI-Provider-BaseURL` header. Send it with `X-Three-Api-Key` and `X-Three-AI-Provider`.
 
 The header accepts only each provider's own hosts, over `https`:
 
@@ -562,6 +562,7 @@ The header accepts only each provider's own hosts, over `https`:
 | `openai`                 | `api.openai.com`, `eu.api.openai.com`                                                                                      |
 | `azure_openai`           | `<RESOURCE_NAME>.openai.azure.com`, `<RESOURCE_NAME>.services.ai.azure.com`, `<RESOURCE_NAME>.cognitiveservices.azure.com` |
 | `amazon_bedrock_runtime` | `bedrock-runtime.<AWS_REGION>.amazonaws.com`                                                                               |
+| `portkey`                | `api.portkey.ai`, `aigw.portkey.ai`                                                                                        |
 
 Other providers need no header. The proxy refuses any other host, such as a company gateway or a service that speaks a provider's API; keep the app calling those directly. Keep query parameters such as `api-version` in the SDK's options, not in the header.
 
@@ -986,6 +987,135 @@ See Concentrate's [System One reference](https://concentrate.ai/docs/api-referen
 ### Cost
 
 For the Responses API, Chat Completions, and the Messages API, three.dev records the cost Concentrate reports in its response, on the final event when streaming, split into input, cache, and output. No price table is involved, so the cost matches Concentrate's bill. A call Concentrate serves on your own vendor key (Concentrate's BYOK) is recorded with no cost, not as free. Concentrate reports no cost for System One calls, so three.dev prices Jev at TypeSafe's list price, with output tokens free.
+
+## Portkey
+
+[Portkey](https://portkey.ai) is an AI gateway: one key routes requests to the providers and models in your Portkey Model Catalog. three.dev records Portkey's Chat Completions, Responses API, and Anthropic's Messages API.
+
+An app that calls Portkey points the OpenAI SDK at `https://api.portkey.ai/v1` and uses its Portkey API key as the SDK's API key. To send its requests through three.dev, make these changes:
+
+* Replace `https://api.portkey.ai` with `https://gate.three.dev` and keep the rest of the base URL: `https://gate.three.dev/v1` for OpenAI SDKs.
+* Set the `X-Three-AI-Provider: portkey` header. The proxy knows Portkey's address, so no provider base URL is needed, unless your app calls `aigw.portkey.ai`: then send that address as [Sending your provider's address](#sending-your-providers-address) says.
+* Keep the Portkey key as the SDK's API key and send your three.dev API key in the `X-Three-Api-Key` header. The proxy forwards the Portkey key unchanged, and three.dev never stores a Portkey key. See [Using your app's own provider key](#using-your-apps-own-provider-key).
+* Send the `X-Three-Use-Case` header with your use case slug, as every integration does. See [Sending Requests](https://docs.three.dev/sending-requests/sending-requests.md).
+
+Keep your Portkey model strings, such as `@openai-prod/gpt-5`, where `@openai-prod` is a provider slug from your Model Catalog. The proxy forwards your other `x-portkey-*` headers unchanged, so a Portkey config (`x-portkey-config`), trace ID, or metadata keeps working.
+
+{% tabs %}
+{% tab title="Python" %}
+{% code overflow="wrap" %}
+
+```python
+from openai import OpenAI
+
+client = OpenAI(
+    api_key="<PORTKEY_API_KEY>",
+    base_url="https://gate.three.dev/v1",
+    default_headers={
+        "x-three-api-key": "<THREE_DEV_API_KEY>",
+        "x-three-use-case": "<USE_CASE_SLUG>",
+        "x-three-ai-provider": "portkey",
+    },
+)
+
+response = client.chat.completions.create(
+    model="@openai-prod/gpt-5",
+    messages=[{"role": "user", "content": "Hello!"}],
+)
+```
+
+{% endcode %}
+{% endtab %}
+
+{% tab title="TypeScript" %}
+{% code overflow="wrap" %}
+
+```typescript
+import OpenAI from "openai";
+
+const client = new OpenAI({
+    apiKey: "<PORTKEY_API_KEY>",
+    baseURL: "https://gate.three.dev/v1",
+    defaultHeaders: {
+        "x-three-api-key": "<THREE_DEV_API_KEY>",
+        "x-three-use-case": "<USE_CASE_SLUG>",
+        "x-three-ai-provider": "portkey",
+    },
+});
+
+const response = await client.chat.completions.create({
+    model: "@openai-prod/gpt-5",
+    messages: [{ role: "user", content: "Hello!" }],
+});
+```
+
+{% endcode %}
+{% endtab %}
+{% endtabs %}
+
+### Messages API
+
+For Anthropic's Messages API (`/v1/messages`), use the Anthropic SDK. Point it at `https://gate.three.dev`, without `/v1`: the SDK adds `/v1/messages` itself. Put the Portkey key in the `x-portkey-api-key` header and give the SDK a placeholder API key, as Portkey's own Anthropic SDK example does. The proxy forwards both unchanged:
+
+{% tabs %}
+{% tab title="Python" %}
+{% code overflow="wrap" %}
+
+```python
+import anthropic
+
+client = anthropic.Anthropic(
+    api_key="dummy",
+    base_url="https://gate.three.dev",
+    default_headers={
+        "x-portkey-api-key": "<PORTKEY_API_KEY>",
+        "x-three-api-key": "<THREE_DEV_API_KEY>",
+        "x-three-use-case": "<USE_CASE_SLUG>",
+        "x-three-ai-provider": "portkey",
+    },
+)
+
+message = client.messages.create(
+    model="@anthropic-prod/claude-sonnet-4-5",
+    max_tokens=1024,
+    messages=[{"role": "user", "content": "Hello!"}],
+)
+```
+
+{% endcode %}
+{% endtab %}
+
+{% tab title="TypeScript" %}
+{% code overflow="wrap" %}
+
+```typescript
+import Anthropic from "@anthropic-ai/sdk";
+
+const client = new Anthropic({
+    apiKey: "dummy",
+    baseURL: "https://gate.three.dev",
+    defaultHeaders: {
+        "x-portkey-api-key": "<PORTKEY_API_KEY>",
+        "x-three-api-key": "<THREE_DEV_API_KEY>",
+        "x-three-use-case": "<USE_CASE_SLUG>",
+        "x-three-ai-provider": "portkey",
+    },
+});
+
+const message = await client.messages.create({
+    model: "@anthropic-prod/claude-sonnet-4-5",
+    max_tokens: 1024,
+    messages: [{ role: "user", content: "Hello!" }],
+});
+```
+
+{% endcode %}
+{% endtab %}
+{% endtabs %}
+
+### Cost
+
+Portkey reports no cost in its responses. three.dev records the tokens of each Portkey request, but not its cost.
 
 ## Amazon Bedrock
 

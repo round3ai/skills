@@ -35,5 +35,5 @@ Deleting a use case while requests still arrive under its slug creates it again.
 
 ## Next
 
-* [AI Providers Integration](https://docs.three.dev/sending-requests/ai-providers-integration.md) — code examples for OpenAI, Anthropic, Gemini, Azure OpenAI, OpenRouter, Concentrate, Amazon Bedrock, LiteLLM, the Vercel AI SDK, and LangChain.
+* [AI Providers Integration](https://docs.three.dev/sending-requests/ai-providers-integration.md) — code examples for OpenAI, Anthropic, Gemini, Azure OpenAI, OpenRouter, Concentrate, Portkey, Amazon Bedrock, LiteLLM, the Vercel AI SDK, and LangChain.
 * [Supported paths](https://docs.three.dev/sending-requests/supported-paths.md) — advanced observability, session tagging, and request metadata.
