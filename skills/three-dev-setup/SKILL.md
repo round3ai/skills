@@ -31,6 +31,7 @@ wiring.md and provider-address.md decide, with how to read them.
 
 | Need | Live page | Local copy |
 | --- | --- | --- |
+| Installing the three.dev plugin and MCP server, per agent | https://docs.three.dev/getting-started/install.md | [references/install.md](references/install.md) |
 | The connection: every command, its outcomes, the env file | none | [references/connect.md](references/connect.md) |
 | Which key goes where; the provider's address; the diff review and the check call (together, the wiring files) | none | [references/wiring.md](references/wiring.md); [references/provider-address.md](references/provider-address.md); [references/check-request.md](references/check-request.md) |
 | Wiring a client the docs have no example for | none | [references/library-wiring.md](references/library-wiring.md) |
@@ -68,13 +69,27 @@ wiring.md and provider-address.md decide, with how to read them.
   exact client or, with none, its installed library, kept only if proven.
 - **Minimal diff.** Base URL, `X-Three-*` headers, and the key variable, in
   the code's style. No refactors, and no dependency but connect.md's loader.
-
 - **Say what leaves the machine, first.** Before your first three.dev call,
   tell the user in one line, as reply text: "Setting up three.dev. This sends
   three.dev this machine's name, this folder's name, and a short report of
   how the setup ended. No code, no keys." Once per conversation.
 
 ## Workflow
+
+### Step 0: Install the plugin
+
+Skip it when three.dev's MCP tools (`search_docs`, `read_doc`) are among yours
+or `learn` served this skill. Otherwise, in Claude Code and without asking,
+unless `claude plugin list` lists `three-dev@three-dev`, run
+`claude plugin marketplace add round3ai/skills` (already added is fine), then
+`claude plugin install three-dev@three-dev`. In Codex, first read
+[references/codex.md](references/codex.md) and follow it instead. Other agents
+install nothing here.
+Never clone the skills repository into this repository or copy its files here:
+a copy has no MCP server and lands in the user's diff. Delete any copy you
+made here this session just before Step 6's report, never one git tracks.
+If a command is blocked or fails, go on; the plugin loads when the agent
+restarts, so keep to this file.
 
 ### Step 1: Understand the product and find the LLM calls
 
@@ -184,12 +199,14 @@ changes or your checks; the user reads the diff.
 >
 > 1. Start `<the process>` with `<verified command>` from `<directory>`, and use the app. Requests appear in three.dev.
 > 2. For production, add `THREE_DEV_API_KEY` to the environment your deployed app runs in: the value in `<env file>`, or a new key from https://app.three.dev/goto/api-keys
-> 3. Restart `<your coding agent>` and sign in to the three.dev MCP server, or connect it first if your agent has none: https://github.com/round3ai/skills#readme
+> 3. Restart `<your coding agent>` and sign in to the three.dev MCP server.
 
 Item 1 names each process the app needs; omit "from `<directory>`" at the
 repository root, and say "Start the app and use it" when no command could be
-verified. Item 3 only when the three.dev MCP server is not connected here.
-When the app does not load `<env file>` itself, item 1 is the one in
+verified. Item 3 only when the three.dev MCP server is not connected here;
+without the plugin installed (another agent, or a failed Step 0), it opens
+"Install the three.dev plugin with `<install.md's commands for your agent>`,
+then". When the app does not load `<env file>` itself, item 1 is the one in
 connect.md's "The env file".
 
 Add one line after the list for each that applies; name things, never count:
