@@ -1,6 +1,6 @@
 {
   "name": "three-dev",
-  "description": "Integrate three.dev into a codebase and work with recorded LLM traffic: route calls through the proxy, define use cases and quality metrics, investigate failure modes, and test prompt or model changes with offline experiments, using the three.dev MCP server.",
+  "description": "Integrate three.dev into a codebase and work with recorded LLM traffic: route calls through the proxy with use cases, investigate the failure modes the AI Judge finds, and fix them with your coding agent, using the three.dev MCP server.",
   "author": {
     "name": "round3",
     "url": "https://three.dev"
@@ -13,7 +13,6 @@
     "llm",
     "proxy",
     "observability",
-    "experiments",
     "evaluation",
     "ai-judge",
     "mcp"
@@ -22,8 +21,8 @@
   "mcpServers": "./mcp.json",
   "interface": {
     "displayName": "three.dev",
-    "shortDescription": "Set up three.dev, triage failures, run experiments",
-    "longDescription": "Integrate three.dev into a codebase and work with recorded LLM traffic. The three-dev skill wires OpenAI, Anthropic, Gemini, Azure OpenAI, OpenRouter, Bedrock or LiteLLM clients through the three.dev proxy with use cases, sessions, tags and quality metrics. With the three.dev MCP server, the three-dev-failure-modes skill surfaces the failure modes the AI Judge detected in recorded conversations, and the three-dev-experiments skill tests a prompt, model or reasoning change on recorded traffic with an offline experiment.",
+    "shortDescription": "Set up three.dev, triage failures, fix them",
+    "longDescription": "Integrate three.dev into a codebase and work with recorded LLM traffic. The three-dev-setup skill wires OpenAI, Anthropic, Gemini, Azure OpenAI, OpenRouter, Bedrock or LiteLLM clients through the three.dev proxy with use cases, sessions and tags. With the three.dev MCP server, the three-dev-failure-modes skill surfaces the failure modes the AI Judge detected in recorded conversations, reads the conversations behind them and proposes a fix.",
     "developerName": "round3",
     "category": "Developer Tools",
     "capabilities": [
