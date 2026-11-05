@@ -20,14 +20,15 @@ claude plugin install three-dev@three-dev
 
 # Codex
 codex plugin marketplace add round3ai/skills
-codex plugin install three-dev
+codex plugin add three-dev@three-dev
 
 # Any other agent: cursor, github-copilot, kiro-cli, cline, ...
 npx skills add round3ai/skills -y --agent <agent>
 ```
 
 The Claude Code and Codex plugins also set up the three.dev MCP server. Sign in
-when your client asks, or run `/mcp` in Claude Code.
+when your client asks, or run `/mcp` in Claude Code or
+`codex mcp login three-dev` in Codex.
 
 If you installed with `npx skills`, add the MCP server to your client's config:
 
