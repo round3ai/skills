@@ -129,6 +129,17 @@ else
   status=1
 fi
 
+# The OpenAI directory needs a semantic version on the Codex manifests. Claude
+# Code's has none, so its installs follow each commit instead of a pinned copy.
+check_same "Codex version" \
+  "plugin.json:.version" \
+  ".codex-plugin/plugin.json:.version"
+if version=$(read_field "plugin.json:.version"); then
+  [[ "$version" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]] || fail "plugin.json: version $version is not a semantic version"
+fi
+jq -e 'has("version") | not' .claude-plugin/plugin.json >/dev/null \
+  || fail ".claude-plugin/plugin.json: a version pins Claude Code users until it changes; leave it out"
+
 check_same_json "keywords" \
   "plugin.json:.keywords" \
   ".claude-plugin/plugin.json:.keywords" \
