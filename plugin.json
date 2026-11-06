@@ -6,7 +6,7 @@
     "name": "round3",
     "url": "https://round3.ai"
   },
-  "homepage": "https://three.dev",
+  "homepage": "https://three.dev/?ref=plugin",
   "repository": "https://github.com/round3ai/skills",
   "license": "MIT",
   "keywords": [
@@ -30,7 +30,7 @@
           "Interactive",
           "Read"
         ],
-        "websiteURL": "https://three.dev",
+        "websiteURL": "https://three.dev/?ref=plugin-codex",
         "privacyPolicyURL": "https://three.dev/privacy",
         "termsOfServiceURL": "https://three.dev/terms",
         "logo": "./assets/icon.png",
