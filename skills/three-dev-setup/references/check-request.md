@@ -10,8 +10,9 @@ It follows the wiring in [wiring.md](wiring.md) and
 
 Review the diff against this list:
 
-- Every LLM call path goes through the proxy: streaming, retries, fallbacks,
-  background jobs, sync and async clients. None is made twice.
+- Every LLM call path goes through the proxy: streaming, retries, backup
+  models and providers, background jobs, sync and async clients. None is
+  made twice.
 - `X-Three-Api-Key`, `X-Three-Use-Case`, and `X-Three-AI-Provider` are on
   every wired client, and every per-call session header merges with them.
 - The provider key is where it was. The three.dev key is in no provider

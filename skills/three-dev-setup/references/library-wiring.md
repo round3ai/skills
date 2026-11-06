@@ -70,8 +70,8 @@ the check shows whether the request survives.
 ## What to write
 
 Everything in [wiring.md](wiring.md) holds: the same `X-Three-*` headers and
-values, the unset-key fallback, the key rule, and the minimal diff. Only the
-code's shape comes from the library.
+values, the client built as before without the key, the key rule, and the
+minimal diff. Only the code's shape comes from the library.
 
 - **Wire where the client is built**, so every call goes through it. A
   separate async client, or a second place that builds one, is its own
