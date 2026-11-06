@@ -8,8 +8,8 @@ the code in the `x-three-error-code` response header:
   "type": "error",
   "error": {
     "type": "authentication_error",
-    "code": "missing_api_key",
-    "message": "Missing three.dev API key.",
+    "code": "three_dev_api_key_missing",
+    "message": "three.dev API key missing: send it in the X-Three-Api-Key header.",
     "param": null
   },
   "request_id": "0199..."
@@ -24,8 +24,8 @@ provider: three.dev passed it through unchanged.
 
 | `error.code` | Status | What happened | Fix |
 | --- | --- | --- | --- |
-| `missing_api_key` | 401 | The request carried no three.dev key and no credential the proxy could read as one. | `X-Three-Api-Key` is missing from that client's default headers, or `THREE_DEV_API_KEY` is empty in the process. Check the header is set and that the process loads the env file. Never open the file to look. |
-| `invalid_api_key` | 401 | The proxy did not recognise the three.dev key it read. | First check the client sends `X-Three-Api-Key` and that `THREE_DEV_API_KEY` reaches the process: when that header is missing or empty, the proxy reads the provider's key in `Authorization` as the three.dev key and answers this code. Only when the header is there is the key itself the problem: it was revoked, often because a later setup replaced it. Then run Step 3 again for another one. |
+| `three_dev_api_key_missing` | 401 | The request carried no three.dev key: no `X-Three-Api-Key`, and no other credential that is one. The provider's own key, where the proxy reads a key without that header, counts as none. | `X-Three-Api-Key` is missing from that client's default headers, or `THREE_DEV_API_KEY` is empty in the process. Check the header is set and that the process loads the env file. Never open the file to look. |
+| `three_dev_api_key_invalid` | 401 | The three.dev key is unknown or was revoked, or `X-Three-Api-Key` holds something that is not a three.dev key. | When the header carries a placeholder (`undefined`, `None`, an empty template), the variable is unset where the header is built: fix how `THREE_DEV_API_KEY` reaches that code. Otherwise the key was revoked, often because a later setup replaced it. Then run Step 3 again for another one. Never touch the provider key for this code. |
 | `three_key_in_provider_header` | 400 | The three.dev key is where the provider's key belongs (the SDK's key, `Authorization`, `x-api-key`, `api-key`, `x-goog-api-key`, or `x-portkey-api-key`). | Put the provider's key back where the app sent it before, as the SDK's key or, for Portkey, where [wiring.md](wiring.md#by-kind-of-app) puts it, and send the three.dev key in `X-Three-Api-Key` only. |
 | `ai_provider_key_missing` | 401 | The proxy could not tell where to send the request. | On a client wired with `X-Three-Api-Key`, the cause is a missing `X-Three-AI-Provider` header, or, for Azure OpenAI and Bedrock, a missing `X-Three-AI-Provider-BaseURL`. Add the missing header. Only an app that sends the three.dev key as its provider key needs a provider key stored in three.dev: https://app.three.dev/goto/ai-provider-keys |
 | `invalid_ai_provider` | 400 | The `X-Three-AI-Provider` value is not one the proxy knows. | Use a value from the AI Providers Integration page, spelled exactly. |

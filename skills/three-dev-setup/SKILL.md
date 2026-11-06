@@ -36,6 +36,7 @@ wiring.md and provider-address.md decide, with how to read them.
 | Which key goes where; the provider's address; the diff review and the check call (together, the wiring files) | none | [references/wiring.md](references/wiring.md); [references/provider-address.md](references/provider-address.md); [references/check-request.md](references/check-request.md) |
 | Wiring a client the docs have no example for | none | [references/library-wiring.md](references/library-wiring.md) |
 | What each proxy error code means and how to fix it | none | [references/proxy-errors.md](references/proxy-errors.md) |
+| What the app's calls do when three.dev or the provider fails, and how to go around three.dev | https://docs.three.dev/sending-requests/failure-behavior.md | [references/failure-behavior.md](references/failure-behavior.md) |
 | Use-case header, how use cases get created | https://docs.three.dev/sending-requests/sending-requests.md | [references/sending-requests.md](references/sending-requests.md) |
 | Base URL path per provider and SDK, accepted `X-Three-AI-Provider` values, unsupported clients | https://docs.three.dev/sending-requests/ai-providers-integration.md | [references/ai-providers-integration.md](references/ai-providers-integration.md) |
 | Session and tag headers, which API paths get full observability | https://docs.three.dev/sending-requests/supported-paths.md | [references/supported-paths.md](references/supported-paths.md) |
@@ -219,6 +220,9 @@ Add one line after the list for each that applies; name things, never count:
   app's first request is the test: the setup page reads "`<title>`" until it
   arrives.", with the title connect.md gives.
 - "Git is not protecting `<env file>` here: this folder is not a repository."
+- "If the three.dev proxy goes down, these calls fail. Unset
+  `THREE_DEV_API_KEY` and restart the app, and they go straight to <provider>
+  as before, unrecorded."
 - "Added `<package>` and one line in `<file>` so your app reads `<env file>`."
 - The wiring files' lines, and library-wiring.md's for clients wired from it.
   Before the report, check each Step 6 line here and in those files in turn,
