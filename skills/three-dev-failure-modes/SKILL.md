@@ -13,13 +13,32 @@ and example requests. An issue no failure mode describes is **Unmatched**. This 
 takes the user from "what is going wrong" to a root cause and a fix, doing every
 step itself.
 
+## When the three.dev tools are missing
+
+If your tools include the three.dev tools (`list_use_cases` and the rest, a
+deferred name counts), skip this section: check nothing and do not load this
+skill again; make the call the prompt names, or start at Step 0.
+
+With none of them in your tools (an `authenticate` tool alone means signed
+out), stop: make no edits, and do not search the code or the web for the ids.
+Never install the server, sign in or edit its configuration yourself, and
+never call `authenticate`. Tell the user what to do:
+
+- In Codex, run `codex mcp list`. If `three-dev` is listed, whatever its Auth
+  column says, ask the user to run `codex mcp login three-dev`, restart Codex
+  and paste the prompt again.
+- In Claude Code, when `three-dev` needs sign-in, ask the user to sign in with
+  `/mcp` and paste the prompt again.
+- With no `three-dev` server, point to
+  https://github.com/round3ai/skills#install-by-hand.
+
 If the user's code is not sending traffic through three.dev yet, or `list_use_cases`
 returns nothing, stop and use the `three-dev-setup` skill first.
 
 ## Where the facts are
 
-Everything comes from the three.dev MCP server. If it is not connected, say so and
-stop; do not answer from the prompt or the code alone. The tools:
+Everything comes from the three.dev MCP server; without it, see above, and do
+not answer from the prompt or the code alone. The tools:
 
 | Need | Tool |
 | --- | --- |
