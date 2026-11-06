@@ -1,23 +1,22 @@
 {
   "name": "three-dev",
   "displayName": "three.dev",
-  "description": "Integrate three.dev into a codebase and work with recorded LLM traffic: route calls through the proxy with use cases, investigate the failure modes the AI Judge finds, and fix them with your coding agent, using the three.dev MCP server.",
+  "description": "Official three.dev plugin, by round3. Adds three.dev to a codebase so its LLM calls are recorded, then investigates the failure modes three.dev finds in that traffic and proposes a fix, through the three.dev MCP server.",
   "author": {
-    "name": "round3",
-    "url": "https://three.dev"
+    "name": "round3"
   },
-  "homepage": "https://docs.three.dev",
+  "homepage": "https://three.dev",
   "repository": "https://github.com/round3ai/skills",
   "license": "MIT",
   "keywords": [
     "three.dev",
     "llm",
+    "llm-observability",
+    "failure-modes",
     "proxy",
-    "observability",
-    "evaluation",
-    "ai-judge",
     "mcp"
   ],
+  "logo": "assets/icon.png",
   "skills": "./skills/",
   "mcpServers": "./mcp.json"
 }

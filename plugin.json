@@ -1,21 +1,46 @@
 {
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "three-dev",
-  "description": "Integrate three.dev into a codebase and work with recorded LLM traffic: route calls through the proxy with use cases, investigate the failure modes the AI Judge finds, and fix them with your coding agent, using the three.dev MCP server.",
+  "description": "Official three.dev plugin, by round3. Adds three.dev to a codebase so its LLM calls are recorded, then investigates the failure modes three.dev finds in that traffic and proposes a fix, through the three.dev MCP server.",
   "author": {
     "name": "round3",
-    "url": "https://three.dev"
+    "url": "https://round3.ai"
   },
-  "homepage": "https://docs.three.dev",
+  "homepage": "https://three.dev",
   "repository": "https://github.com/round3ai/skills",
   "license": "MIT",
   "keywords": [
     "three.dev",
     "llm",
+    "llm-observability",
+    "failure-modes",
     "proxy",
-    "observability",
-    "evaluation",
-    "ai-judge",
     "mcp"
-  ]
+  ],
+  "extensions": {
+    "com.openai": {
+      "onboardingSkill": "skills/three-dev-setup/SKILL.md",
+      "interface": {
+        "displayName": "three.dev",
+        "shortDescription": "Record LLM calls, fix failures",
+        "longDescription": "Official three.dev plugin, by round3. The three-dev-setup skill routes OpenAI, Anthropic, Gemini, Azure OpenAI, OpenRouter, Bedrock, LiteLLM, Vercel AI SDK and LangChain calls through the three.dev proxy, with use cases, sessions and tags. The three-dev-failure-modes skill reads the failure modes three.dev finds in recorded traffic, opens the conversations behind them and proposes a prompt, model, tool or code fix. The three.dev MCP server connects your agent to three.dev.",
+        "developerName": "round3",
+        "category": "Developer Tools",
+        "capabilities": [
+          "Interactive",
+          "Read"
+        ],
+        "websiteURL": "https://three.dev",
+        "privacyPolicyURL": "https://three.dev/privacy",
+        "termsOfServiceURL": "https://three.dev/terms",
+        "logo": "./assets/icon.png",
+        "composerIcon": "./assets/icon.png",
+        "defaultPrompt": [
+          "Add three.dev to this codebase",
+          "What are the worst failure modes in my LLM feature this week?",
+          "Why is my LLM feature failing in production?"
+        ]
+      }
+    }
+  }
 }
