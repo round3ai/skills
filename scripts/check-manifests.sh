@@ -35,6 +35,10 @@ pointers=(
   ".cursor-plugin/plugin.json:.mcpServers"
   ".codex-plugin/plugin.json:.skills"
   ".codex-plugin/plugin.json:.mcpServers"
+  ".claude-plugin/plugin.json:.icon"
+  ".cursor-plugin/plugin.json:.logo"
+  'plugin.json:.extensions["com.openai"].interface.logo'
+  'plugin.json:.extensions["com.openai"].interface.composerIcon'
 )
 
 read_field() {
