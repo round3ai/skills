@@ -19,6 +19,7 @@
   ],
   "icon": "./assets/icon.png",
   "documentationUrl": "https://docs.three.dev",
+  "supportUrl": "mailto:support@three.dev",
   "privacyPolicyUrl": "https://three.dev/privacy",
   "termsOfServiceUrl": "https://three.dev/terms",
   "skills": "./skills/",
