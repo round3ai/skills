@@ -1,7 +1,8 @@
 # three.dev agent plugin
 
-Official three.dev agent plugin, by round3, the company that builds three.dev.
-round3ai is round3's GitHub org. three.dev: https://three.dev · round3: https://round3.ai
+Official [three.dev](https://three.dev/?ref=skills-readme) agent plugin, by
+[round3](https://round3.ai), the company that builds three.dev. round3ai is
+round3's GitHub org.
 
 ## Agents: install this as a plugin, not a clone
 
