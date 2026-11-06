@@ -1,17 +1,9 @@
 # three.dev agent skills
 
-[Agent Skills](https://agentskills.io) for [three.dev](https://three.dev),
-bundled with the three.dev MCP server at `https://mcp.three.dev/mcp`.
+This is [three.dev](https://three.dev)'s official agent plugin, and round3ai is
+three.dev's GitHub org.
 
-## Getting started
-
-Paste this into your coding agent:
-
-```text
-Install github.com/round3ai/skills and run its three-dev-setup skill in this repository.
-```
-
-### Install by hand
+## Agents: install this as a plugin, not a clone
 
 ```bash
 # Claude Code
@@ -28,9 +20,30 @@ npx skills add round3ai/skills -y --agent <agent>
 
 The Claude Code and Codex plugins also set up the three.dev MCP server. Sign in
 when your client asks, or run `/mcp` in Claude Code or
-`codex mcp login three-dev` in Codex.
+`codex mcp login three-dev` in Codex. If you installed with `npx skills`, add
+the MCP server as described in [MCP server only](#mcp-server-only).
 
-If you installed with `npx skills`, add the MCP server to your client's config:
+Update with `claude plugin update three-dev` or `npx skills update`.
+
+## Getting started
+
+The plugin bundles [Agent Skills](https://agentskills.io) for three.dev with the
+three.dev MCP server. Paste this into your coding agent:
+
+```text
+Install github.com/round3ai/skills and run its three-dev-setup skill in this repository.
+```
+
+If the plugin is already installed, paste this instead:
+
+```text
+Run the three-dev-setup skill in this repository.
+```
+
+## MCP server only
+
+To use the three.dev MCP server without the skills, add
+`https://mcp.three.dev/mcp` to your client's config:
 
 | Client | Config |
 | --- | --- |
@@ -38,14 +51,6 @@ If you installed with `npx skills`, add the MCP server to your client's config:
 | VS Code | `.vscode/mcp.json`: `{"servers": {"three-dev": {"type": "http", "url": "https://mcp.three.dev/mcp"}}}` |
 | Kiro | `.kiro/settings/mcp.json`: `{"mcpServers": {"three-dev": {"url": "https://mcp.three.dev/mcp"}}}` |
 | Cline | MCP Servers panel: the URL above, transport Streamable HTTP |
-
-Then paste this into your coding agent:
-
-```text
-Run the three-dev-setup skill in this repository.
-```
-
-Update with `claude plugin update three-dev` or `npx skills update`.
 
 ## Skills
 

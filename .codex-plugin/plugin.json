@@ -1,6 +1,6 @@
 {
   "name": "three-dev",
-  "description": "Integrate three.dev into a codebase and work with recorded LLM traffic: route calls through the proxy with use cases, investigate the failure modes the AI Judge finds, and fix them with your coding agent, using the three.dev MCP server.",
+  "description": "three.dev's official agent plugin: the three-dev-setup skill adds three.dev to a codebase, the three-dev-failure-modes skill investigates failures in the LLM traffic three.dev records, and the three.dev MCP server connects your agent to three.dev.",
   "author": {
     "name": "round3",
     "url": "https://three.dev"
@@ -13,8 +13,7 @@
     "llm",
     "proxy",
     "observability",
-    "evaluation",
-    "ai-judge",
+    "failure-modes",
     "mcp"
   ],
   "skills": "./skills/",
@@ -22,7 +21,7 @@
   "interface": {
     "displayName": "three.dev",
     "shortDescription": "Set up three.dev, triage failures, fix them",
-    "longDescription": "Integrate three.dev into a codebase and work with recorded LLM traffic. The three-dev-setup skill wires OpenAI, Anthropic, Gemini, Azure OpenAI, OpenRouter, Bedrock or LiteLLM clients through the three.dev proxy with use cases, sessions and tags. With the three.dev MCP server, the three-dev-failure-modes skill surfaces the failure modes the AI Judge detected in recorded conversations, reads the conversations behind them and proposes a fix.",
+    "longDescription": "three.dev's official agent plugin. The three-dev-setup skill wires OpenAI, Anthropic, Gemini, Azure OpenAI, OpenRouter, Bedrock or LiteLLM clients through the three.dev proxy with use cases, sessions and tags. The three-dev-failure-modes skill investigates failures in the LLM traffic three.dev records, reads the conversations behind them and proposes a fix. The three.dev MCP server connects your agent to three.dev.",
     "developerName": "round3",
     "category": "Developer Tools",
     "capabilities": [
@@ -32,7 +31,7 @@
     "defaultPrompt": [
       "Add three.dev to this codebase",
       "What are the worst failure modes for my use case this week?",
-      "Would a cheaper model keep the same quality on my recorded traffic?"
+      "Why is my LLM feature failing in production?"
     ]
   }
 }
