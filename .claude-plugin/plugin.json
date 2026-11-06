@@ -6,7 +6,7 @@
     "name": "round3",
     "url": "https://round3.ai"
   },
-  "homepage": "https://three.dev",
+  "homepage": "https://three.dev/?ref=plugin-claude",
   "repository": "https://github.com/round3ai/skills",
   "license": "MIT",
   "keywords": [
@@ -18,7 +18,7 @@
     "mcp"
   ],
   "icon": "./assets/icon.png",
-  "documentationUrl": "https://docs.three.dev",
+  "documentationUrl": "https://docs.three.dev/?ref=plugin-claude",
   "supportUrl": "mailto:support@three.dev",
   "privacyPolicyUrl": "https://three.dev/privacy",
   "termsOfServiceUrl": "https://three.dev/terms",
