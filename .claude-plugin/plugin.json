@@ -17,7 +17,7 @@
     "proxy",
     "mcp"
   ],
-  "icon": "./assets/icon.png",
+  "icon": "./assets/icon.svg",
   "documentationUrl": "https://docs.three.dev/?ref=plugin-claude",
   "supportUrl": "mailto:support@three.dev",
   "privacyPolicyUrl": "https://three.dev/privacy",
