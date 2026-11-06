@@ -125,9 +125,9 @@ None of these lines changes the report's reason.
 ## Reading the provider page
 
 The AI Providers Integration page ([live](https://docs.three.dev/sending-requests/ai-providers-integration.md),
-[local copy](ai-providers-integration.md)) shows the three.dev key as the
-SDK's key, with the provider key stored in three.dev. Take from its example
-for the exact client in the code:
+[local copy](ai-providers-integration.md)) shows the app's own provider key
+as the SDK's key and the three.dev key in `X-Three-Api-Key`, the form you
+write. Take from its example for the exact client in the code:
 
 - the base URL and its path,
 - the `X-Three-AI-Provider` value,
@@ -137,12 +137,15 @@ for the exact client in the code:
 A client it has no example for is wired from its own library, as
 [library-wiring.md](library-wiring.md) says.
 
-Do not take from it where the keys go. Wherever an example sets the SDK's key
-or an `Authorization` header to `<THREE_DEV_API_KEY>`, or a placeholder key
-such as `default`, leave the app's own provider credential exactly as it is
-and add `X-Three-Api-Key` instead. Ignore its instruction to add a provider
-key in three.dev's settings. Its section "Using your app's own provider key"
-shows this form, for Google's GenAI SDK.
+The page writes the provider key as a placeholder such as `<OPENAI_API_KEY>`:
+leave the app's own provider credential exactly as the code has it. Ignore
+the page's section "Storing your provider key in three.dev". Wherever an
+example sets the SDK's key or an `Authorization` header to
+`<THREE_DEV_API_KEY>`, or a placeholder key such as `default`, it shows that
+stored-key form, which an older local copy may still have: leave the app's
+own provider credential exactly as it is and add `X-Three-Api-Key` instead.
+For LangChain, where the key goes is decided
+[below](#langchain-and-langgraph), not by the page.
 
 For a client whose provider has its own address, take the client's URL and
 the address header from this file, not from the page. The page may show the
@@ -155,9 +158,13 @@ The page's OpenAI example:
 
 ```python
 client = OpenAI(
-    api_key="<THREE_DEV_API_KEY>",
+    api_key="<OPENAI_API_KEY>",
     base_url="https://gate.three.dev/v1",
-    default_headers={"x-three-use-case": "<USE_CASE_SLUG>", "x-three-ai-provider": "openai"},
+    default_headers={
+        "x-three-api-key": "<THREE_DEV_API_KEY>",
+        "x-three-use-case": "<USE_CASE_SLUG>",
+        "x-three-ai-provider": "openai",
+    },
 )
 ```
 
@@ -370,7 +377,9 @@ does not save:
 - Python's `ChatAnthropic`: the model is built as before. The three.dev
   branch then gives it Anthropic SDK clients built from its own client
   settings (`_client_params`), with the proxy address and every `X-Three-*`
-  header added, as its `_client` and `_async_client`. Give both the
+  header added, as its `_client` and `_async_client`. Its settings'
+  `default_headers` is `None` when the model has none (langchain-anthropic
+  0.3), so merge it as `or {}`. Give both the
   model's `anthropic_proxy`, which it may read from `ANTHROPIC_PROXY`,
   through the SDK's `DefaultHttpxClient` and `DefaultAsyncHttpxClient`. The
   installed class's source must show those three names and its calls going
@@ -389,6 +398,12 @@ does not save:
   [library-wiring.md](library-wiring.md#what-to-write) says, the way the
   places above were found: an SDK or HTTP client the model takes or holds
   and LangChain does not save.
+
+The provider page differs here, since a reader cannot check the installed
+source: it puts Python `ChatAnthropic`'s three.dev key in `default_headers`,
+and sends Gemini through `ChatOpenAI` on Gemini's OpenAI-compatible address.
+Do neither. Keep the app's class, and put the key on a client the wiring
+builds, as above.
 
 Only when the installed source shows no such place (`ChatGoogleGenerativeAI`
 below 4.x, an installed `openai` with no `DefaultHttpxClient`, a Python model
@@ -455,7 +470,7 @@ if three_dev_key:
         **client_params,
         "base_url": "https://gate.three.dev",
         "default_headers": {
-            **client_params["default_headers"],
+            **(client_params["default_headers"] or {}),
             "X-Three-Api-Key": three_dev_key,
             "X-Three-Use-Case": "support-assistant",
             "X-Three-AI-Provider": "anthropic",
