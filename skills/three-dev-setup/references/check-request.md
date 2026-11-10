@@ -61,8 +61,8 @@ nothing worked.
   database, cache, queue, storage, or auth setting), may get placeholder
   values in front of the check command, such as
   `DATABASE_URL=postgres://placeholder/x`, never in a file. Never the
-  provider key, the three.dev key, or an address, except the provider key
-  placeholder [library-wiring.md](library-wiring.md#the-check) gives.
+  provider key, the three.dev key, or an address, on any command, a test
+  run or an import included.
 - No check can be sent only when importing that piece fails by itself: it
   connects to a database or a running service at import, or only the
   framework's running server can resolve its imports. Creating a database or
@@ -194,8 +194,8 @@ set -o pipefail; <command> 2>&1 | sed -E 's#^[A-Za-z0-9+/=]{40,}$#[redacted]#; s
   which changes no reason: "Not verified: `<provider>`, `<provider>`; your
   settings here use `<provider>`." When you checked another than the one the
   settings choose, that one gets "Not verified: `<provider>`, whose key is not
-  set here; I checked `<provider>` instead." The reason is `no_provider_key`
-  only when no wired provider has its key here.
+  set here; I checked `<provider>` instead." The question in "No provider
+  key here" comes only when no wired provider has its key here.
 
 **Is the provider key there?** Follow the key the client gets back to where
 it comes from: its argument, then the variable, config field, or settings
@@ -265,12 +265,13 @@ When no check can be sent, do not look for another way to send one. Give the
 user the line below, and three.dev the reason, in the report of
 [connect.md](connect.md). A client wired from its library never gets these
 lines: [library-wiring.md](library-wiring.md#the-check) says what happens to
-it.
+it, and when no wired provider has its key here, it waits for the user's
+answer like any other.
 
 | Why | The user's line | Reason |
 | --- | --- | --- |
 | No route above can load the file the key is in | "Not verified: your app does not load `<env file>` by itself." | `key_not_visible` |
-| The provider key is in none of the places the app reads it from, its own config loader included: a key only that loader sees is there | "Not verified: `<the variable or setting the key is read from>` is not set on this machine." | `no_provider_key` |
+| The provider key is in none of the places the app reads it from, its own config loader included: a key only that loader sees is there | None yet: ask, as "No provider key here" below says | `provider_key_needed`, then the answer's |
 | The module that builds the client cannot be run here, even in the project's own environment | "Not verified: `<what could not run, in a few words>`." | `app_not_runnable` |
 | The code path logs request headers by itself | "Not verified: the app logs request headers." | `check_skipped` |
 | The traffic header cannot go on the check by any route in "Where the traffic header goes" | "Not verified: `<file>`'s check request could not be marked as a test." | `check_skipped` |
@@ -281,8 +282,35 @@ request ID, is `test_failed`: "Not verified: the check request failed with
 `<code or status>`.", or "Not verified: the check request went straight to the
 provider." A provider's 401 or 403 that says the key is invalid or revoked,
 not missing, is `test_failed` too, whatever the key check printed, never
-`no_provider_key`: "Not verified:
+the question in "No provider key here": "Not verified:
 `<provider>` refused the key your app reads from `<source>` (`<status>`)."
+
+**No provider key here.** When no wired provider has its key where the app
+reads it, send no check, with no key or a made-up one, and keep every call
+site you wired, library clients included. Run `cksum <file>` on each file
+you edited and keep what it prints. Report `provider_key_needed` as
+[connect.md](connect.md#report) says, then end your turn on this message,
+filled in:
+
+> Your code is wired for three.dev, but I can't find `<each missing key's variable or setting>` here, so I can't test it. What should I do?
+>
+> 1. **Set the key** `<where the app reads it, so I can see it>`, never in this chat, then tell me to go on. I'll send one test request.
+> 2. **Continue without testing.** The code stays wired, and your app's first real request completes the setup.
+> 3. **Revert.** I put your code back as it was.
+
+`<where…>` is "exported in the shell you start me from" for the
+environment, or "in `<file>`" for a file the app reads. Until the user
+answers, the code stays wired.
+
+| The answer | Do |
+| --- | --- |
+| The key is set | Ask "Is the provider key there?" again, and send the check as for any client. Still not found: report `provider_key_needed` and end your turn on the same message, opening with "I still can't see `<names>` from here; a key set in another terminal doesn't reach me." Not found a second time: report `finished` with `provider_key_not_seen`, and Step 6 as for "continue", with "Not verified: I still can't see `<the variable or setting>` here." and "Once `<names>` is set where I can see it, tell me and I'll send the test request." |
+| Continue without testing | Report `finished` with `continued_untested`. Step 6, with "Not verified: `<the variable or setting>` is not set on this machine.", its line about the app's first request, and its line on unsetting `THREE_DEV_API_KEY`. |
+| Revert | Put back every call site, loader, dependency and env template line this setup added, as [library-wiring.md](library-wiring.md#putting-it-back) says. Keep `<env file>`, its key and the ignore lines. Every file back: report `stopped` with `reverted`, and say instead of Step 6: "I put your code back as it was. The three.dev key stays in `<env file>`; revoke it at https://app.three.dev/goto/api-keys if you won't use it." A file left because it changed: report `stopped` with `revert_incomplete`, and say: "I put back `<file>`. I left `<file>` as it is, three.dev lines included, because it changed after I wired it. Remove those lines by hand, or tell me to take them out and I'll keep your changes. Until then, unsetting `THREE_DEV_API_KEY` makes it call <provider> directly." |
+
+Revert only when the user says so in words: "revert", "undo", "put it
+back", "remove three.dev". "No", "stop", or an answer you can't place is not
+a revert: the code stays wired.
 
 ## Before Step 6
 

@@ -46,11 +46,14 @@ wiring.md and provider-address.md decide, with how to read them.
 ## Ground rules
 
 - **Decide, don't ask.** Use the recommended option for use cases, session
-  IDs, tags, and the key; never offer a menu. Ask only for the browser
-  approval and an Azure OpenAI or Bedrock address, and settle the rest by the
-  repository's convention or the smallest change. One question at a time.
-  That question is always asked, after a `decision_needed` report and before its
-  check; no answer is a no. End no turn on another choice you could default.
+  IDs, tags, and the key; never offer a menu but the missing provider key's
+  three choices. Ask only for the browser approval, an Azure OpenAI or
+  Bedrock address, and what to do when no provider key is here, and settle
+  the rest by the repository's convention or the smallest change. One
+  question at a time, each after its report: `decision_needed` for an
+  address, asked before its check, where no answer is a no;
+  `provider_key_needed` for the key, where no answer leaves the code wired.
+  End no turn on another choice you could default.
 - **Talk like a colleague.** What happened first, in plain words. No preamble,
   no narration, no repeated docs, no diffs in chat. The user sees only what you
   write, never a command's output. Say only what you saw: a value in a file you
@@ -184,7 +187,8 @@ Skip this step when every call site is already on three.dev. Otherwise follow
    A 2xx with three.dev's request ID, or a rise in `verified_checks`, proves
    it. Fix a three.dev error per [proxy-errors.md](references/proxy-errors.md),
    then resend; report a provider's own error with its status. When no check
-   can be sent, check-request.md says what to tell the user and three.dev.
+   can be sent, check-request.md says what to tell the user and three.dev,
+   and, when no provider key is here, what to ask first.
 4. **Verify every instruction Step 6 will give**, per check-request.md's
    "Before Step 6".
 5. **Fix what fails and repeat.** If the checks still fail, or the user
@@ -193,8 +197,9 @@ Skip this step when every call site is already on three.dev. Otherwise follow
 ### Step 6: Tell the user how to start sending traffic
 
 Run the report connect.md's step 12 has for this ending. Your message is this
-template, filled in, plus only the lines listed below. Do not describe your
-changes or your checks; the user reads the diff.
+template, filled in, plus only the lines listed below; after a revert,
+check-request.md gives it instead. Do not describe your changes or your
+checks; the user reads the diff.
 
 > three.dev is connected to organization `<name>` and your app's LLM calls now go through it.
 >
