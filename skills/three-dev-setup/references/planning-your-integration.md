@@ -4,7 +4,7 @@
 
 Decisions to make before wiring in the proxy — how many use cases to create, whether environments need separate keys, what a session is for your feature, and which tags to send.
 
-The proxy needs three headers to record a request: your API key, a use case slug, and a session ID. You can create a use case from the **Use Cases** page or let three.dev create it on the first request under a new slug; either way, the decisions on this page are about which slugs your code sends.
+The proxy needs three headers to record a request: your three.dev API key in `X-Three-Api-Key`, a use case slug in `X-Three-Use-Case`, and your provider in `X-Three-AI-Provider`. A session ID in `X-Three-Session-ID` is optional, and groups the requests of one interaction into a session. You can create a use case from the **Use cases** page or let three.dev create it on the first request under a new slug; either way, the decisions on this page are about which slugs your code sends.
 
 ## How many use cases should I create?
 
@@ -14,7 +14,7 @@ A use case is one AI feature with one goal — the thing you want to know is wor
 
 **Split into separate use cases when features are independent and you tune them separately.** A ticket summarizer that shares no prompt or input with the support assistant is its own use case.
 
-**Do not split a use case by segment.** If one support assistant serves 20 product lines, create one use case and send the product line as a tag. The Requests and Sessions pages filter by tag, so you get the per-segment view without 20 copies of every use case and its settings. See [Which tags should I send?](#which-tags-should-i-send).
+**Do not split a use case by segment.** If one support assistant serves 20 product lines, create one use case and send the product line as a tag. The Requests and Sessions tabs filter by tag, so you get the per-segment view without 20 copies of every use case and its settings. See [Which tags should I send?](#which-tags-should-i-send).
 
 **Do not split a use case by environment.** See [Do I need a separate API key per environment?](#do-i-need-a-separate-api-key-per-environment).
 
@@ -34,11 +34,11 @@ X-Three-Tag-Environment: production
 
 Use the tag key `environment` exactly, and the value `production` for production traffic. Pick short lowercase values for the rest, such as `staging` and `local`, and use the same ones everywhere. Then narrow any view to one environment with a filter expression such as `tag["environment"] == "production"`.
 
-Live scoring and failure modes span every environment in the use case. Send the tag on every request, including local ones, so you can tell which environment a failure came from.
+Live scoring and failure modes span every environment in the use case. Send the tag on every request, including local ones, so you can tell which environment an issue came from.
 
 ## What should a session be for my feature?
 
-A session is how three.dev shows one interaction as a whole: the Sessions page reads it as one conversation, and the failures live scoring finds in its requests appear together on it. The session must identify exactly one interaction.
+A session is how three.dev shows one interaction as a whole: the Sessions tab reads it as one conversation, and the issues live scoring finds in its requests appear together on it. The session must identify exactly one interaction.
 
 | Feature shape                                                       | One session is                                                                   |
 | ------------------------------------------------------------------- | -------------------------------------------------------------------------------- |
@@ -50,7 +50,7 @@ For one-shot features, generate a fresh UUID immediately before the request and 
 
 ### Every session must end
 
-three.dev expects a session to finish, even when your product never marks an end. A session that runs forever turns months of separate interactions into one endless conversation: the Sessions page can no longer show where one attempt ended and the next began, and a failure in one chat is read alongside every other chat the customer ever had.
+three.dev expects a session to finish, even when your product never marks an end. A session that runs forever turns months of separate interactions into one endless conversation: the Sessions tab can no longer show where one attempt ended and the next began, and a failure in one chat is read alongside every other chat the customer ever had.
 
 Bound each session to one attempt at the goal:
 
