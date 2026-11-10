@@ -1,25 +1,42 @@
 <!-- Synced from https://docs.three.dev/sending-requests/failure-behavior.md. Do not edit; the live page wins. -->
 
-# Failure Behavior
+# Failure behavior
 
-What your app's LLM calls do when three.dev or your AI provider fails, and how to keep them working when the three.dev proxy cannot be reached.
+What your app's LLM calls do when three.dev or your AI provider fails or your plan's limits are reached, and how to keep them working when the three.dev proxy cannot be reached.
 
-The three.dev proxy sits between your app and your AI provider, so a failure on either side reaches your app's calls. This page covers [What your app sees](#what-your-app-sees), [Telling the proxy's errors from your provider's](#telling-the-proxys-errors-from-your-providers), and [Keeping your app working when the proxy cannot be reached](#keeping-your-app-working-when-the-proxy-cannot-be-reached).
+The three.dev proxy sits between your app and your AI provider, so a failure on either side reaches your app's calls. This page covers [What your app sees](#what-your-app-sees), [Plan limits](#plan-limits), [Telling the proxy's errors from your provider's](#telling-the-proxys-errors-from-your-providers), and [Keeping your app working when the proxy cannot be reached](#keeping-your-app-working-when-the-proxy-cannot-be-reached).
 
 ## What your app sees
 
-| What fails | Your app's call | Recorded |
-| --- | --- | --- |
-| The request has no three.dev API key | Fails with `401` and `three_dev_api_key_missing` | No |
-| The three.dev API key is unknown or was revoked | Fails with `401` and `three_dev_api_key_invalid` | No |
-| The proxy cannot be reached | Fails with a connection error, or a `5xx` from the load balancer in front of the proxy | No |
-| The proxy cannot check the key with three.dev's API, and the request sends [your app's own provider key](https://docs.three.dev/sending-requests/ai-providers-integration.md#using-your-apps-own-provider-key) | Goes through to your provider | No |
-| The proxy cannot check the key with three.dev's API, and the request uses the provider key stored in three.dev | Goes through for up to 15 minutes on the proxy's last check of the key, then fails with `502` and `unknown_error` | Best effort |
-| The proxy cannot reach your AI provider | Fails with `502` and `unknown_error` | No |
-| Your AI provider answers with an error | Gets the provider's error, unchanged | Yes |
-| Your plan's limits are reached | Goes through. Past a limit, three.dev stops storing or scoring requests, never forwarding them | Up to the limit |
+| What fails                                                                                                                                                                               | Your app's call                                                                                                     | Recorded                       |
+| ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------- | ------------------------------ |
+| The request has no three.dev API key                                                                                                                                                     | Fails with `401` and `three_dev_api_key_missing`                                                                    | No                             |
+| The three.dev API key is unknown or was revoked                                                                                                                                          | Fails with `401` and `three_dev_api_key_invalid`                                                                    | No                             |
+| The proxy cannot be reached                                                                                                                                                              | Fails with a connection error, or a `5xx` from the load balancer in front of the proxy                              | No                             |
+| The proxy cannot check the key with three.dev's API, and the request sends [your app's own provider key](https://docs.three.dev/sending-requests/ai-providers-integration.md#using-your-apps-own-provider-key) | Goes through to your provider                                                                                       | No                             |
+| The proxy cannot check the key with three.dev's API, and the request uses the provider key stored in three.dev                                                                           | Goes through for up to 15 minutes on the proxy's last check of the key, then fails with a `5xx` and `unknown_error` | Best effort                    |
+| The proxy cannot reach your AI provider                                                                                                                                                  | Fails with `502` and `unknown_error`                                                                                | No                             |
+| Your AI provider answers with an error                                                                                                                                                   | Gets the provider's error, unchanged                                                                                | Yes                            |
+| Your organization reaches a plan limit                                                                                                                                                   | Goes through. See [Plan limits](#plan-limits)                                                                       | Up to the processed data limit |
+
+A request with no `X-Three-Api-Key` header, and a provider key where the SDK sends its key, has no three.dev API key. The proxy refuses it with `401` and `three_dev_api_key_missing`, and the error message says to send the three.dev API key in `X-Three-Api-Key`.
 
 A request that sends your app's own provider key also names its provider in `X-Three-AI-Provider`, and for Azure OpenAI and Amazon Bedrock sends its address in `X-Three-AI-Provider-BaseURL`, so the proxy can forward it without three.dev's API. The setup in [Onboard with an AI agent](https://docs.three.dev/getting-started/onboard-with-an-ai-agent.md) wires every client this way.
+
+## Plan limits
+
+Reaching a plan limit never blocks your app's calls. The proxy forwards every request to your AI provider and records it afterward. Two plan limits apply to that traffic, and each one stops only what three.dev does with it:
+
+| Limit reached   | Your app's call | Recorded | Scored |
+| --------------- | --------------- | -------- | ------ |
+| Processed data  | Goes through    | No       | No     |
+| Requests scored | Goes through    | Yes      | No     |
+
+Each limit counts over a calendar month in UTC, and recording and scoring resume on the first day of the next month. three.dev never goes back to record the requests it forwarded while recording was paused. To resume sooner, contact three.dev. For what each plan includes, see [three.dev pricing](https://three.dev/pricing?ref=docs-failure-behavior).
+
+While a limit applies, a banner across the top of the app names what paused and when it resumes, for example **Scoring paused until Dec 1, 2026.** Past the requests scored limit, each new request reads **Plan limit** on the Requests page.
+
+This holds for plan limits only. A missing or revoked three.dev API key, or a proxy your app cannot reach, fails your app's calls. See [What your app sees](#what-your-app-sees).
 
 ## Telling the proxy's errors from your provider's
 
@@ -63,5 +80,5 @@ else:
 
 ## Next
 
-- [Using your app's own provider key](https://docs.three.dev/sending-requests/ai-providers-integration.md#using-your-apps-own-provider-key) — send the three.dev API key in `X-Three-Api-Key` and keep your provider key in your app.
-- [AI Providers Integration](https://docs.three.dev/sending-requests/ai-providers-integration.md) — code examples for every supported SDK.
+* [Using your app's own provider key](https://docs.three.dev/sending-requests/ai-providers-integration.md#using-your-apps-own-provider-key): send the three.dev API key in `X-Three-Api-Key` and keep your provider key in your app.
+* [AI Providers Integration](https://docs.three.dev/sending-requests/ai-providers-integration.md): code examples for every supported SDK.

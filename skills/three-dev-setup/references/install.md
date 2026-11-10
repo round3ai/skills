@@ -2,9 +2,9 @@
 
 # Install the plugin and MCP server
 
-Install three.dev's official agent plugin and MCP server in Claude Code, Codex, Cursor, GitHub Copilot, Kiro, Cline, and other coding agents. round3ai is three.dev's GitHub organization.
+Install three.dev's official agent plugin (github.com/round3ai/skills) and MCP server in Claude Code, Codex, Cursor, GitHub Copilot, Kiro, Cline, and other coding agents. round3ai is the GitHub organi
 
-three.dev's official agent plugin bundles the three.dev agent skills and the three.dev MCP server. It is published at [github.com/round3ai/skills](https://github.com/round3ai/skills). round3ai is three.dev's GitHub organization.
+three.dev's official agent plugin bundles the three.dev agent skills and the three.dev MCP server. It is published at [github.com/round3ai/skills](https://github.com/round3ai/skills). round3ai is the GitHub organization of round3, the company that builds three.dev.
 
 Install it with your agent's own commands. Do not clone the repository or copy its files by hand: a copy has no MCP server and does not update.
 

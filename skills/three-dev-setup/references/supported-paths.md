@@ -4,20 +4,20 @@
 
 Advanced observability for the Chat Completions, Messages, and Responses APIs and Gemini's generateContent API, session grouping, and request- and session-level tags.
 
-By default, the proxy forwards and records any type of LLM request. High-level details are stored and visible in the [Requests](https://app.three.dev/goto/requests?ref=docs-supported-paths) page. Embeddings requests are forwarded to the AI provider but not recorded.
+By default, the proxy forwards and records any type of LLM request, embeddings included. High-level details are stored and visible in the [Requests](https://app.three.dev/goto/requests?ref=docs-supported-paths) page.
 
 The proxy supports **advanced observability** for four interaction types:
 
 * OpenAI's [Chat Completions API](https://developers.openai.com/api/reference/resources/chat/subresources/completions/methods/create) (`/v1/chat/completions`). This is supported when used from other providers as well, such as [Gemini](https://ai.google.dev/gemini-api/docs/openai) or [Anthropic](https://platform.claude.com/docs/en/api/openai-sdk). If you are [streaming responses](https://developers.openai.com/api/reference/resources/chat/subresources/completions/streaming-events), set the `include_usage` field of the `stream_options` object to `true` to make tokens and cost information available in three.dev.
 * Anthropic's [Messages API](https://platform.claude.com/docs/en/api/python/messages/create) (`/v1/messages`).
-* OpenAI's [Responses API](https://developers.openai.com/api/reference/resources/responses/methods/create) (`/v1/responses`), including streamed responses and reasoning summaries.
+* OpenAI's [Responses API](https://developers.openai.com/api/reference/resources/responses/methods/create) (`/v1/responses`), including streamed responses and reasoning summaries. A call that continues an earlier one, with `previous_response_id` or `conversation`, is recorded with high-level details only, because its request does not hold the earlier messages.
 * Gemini's [generateContent API](https://ai.google.dev/api/generate-content) (`/<VERSION>/models/<MODEL>:generateContent` and `:streamGenerateContent`, for the `v1`, `v1beta`, and `v1alpha` versions and for `tunedModels/<MODEL>`), used by Google's GenAI SDKs. This includes streamed responses, tool calls, code execution, thought summaries, and thinking tokens.
 
-When one of these interaction methods is used, additional information appears in the [Requests](https://app.three.dev/goto/requests?ref=docs-supported-paths) page — cost, tokens, and the full messages.
+When one of these interaction methods is used, additional information appears in the [Requests](https://app.three.dev/goto/requests?ref=docs-supported-paths) page: cost, tokens, and the full messages.
 
 With [Concentrate](https://docs.three.dev/sending-requests/ai-providers-integration.md#concentrate) (`X-Three-AI-Provider: concentrate`), the proxy also records System One calls (`/v1/systemone`), which serve TypeSafe's Jev models, with full details: messages, tokens, and cost.
 
-Other Gemini endpoints, such as `countTokens`, files, cached contents, and batches, are recorded with high-level details only. Live API sessions go through the proxy but are not recorded.
+Gemini's `countTokens` and cached contents endpoints are recorded with high-level details only. Gemini files and batches go through the proxy but are not recorded. Live API sessions go through the proxy but are not recorded.
 
 The proxy forwards requests with a body over 10 MB, or a response over 100 MB, without recording them. With Gemini, this applies to calls with large inline images, audio, or video; upload the media with the Files API and reference it instead.
 
@@ -37,12 +37,14 @@ Send an `environment` tag on every request. three.dev groups data by use case, n
 
 Tag the whole session rather than a single request using the `X-Three-Session-Tag-<TAG_KEY>: <TAG_VALUE>` header syntax. Send the header alongside `X-Three-Session-ID` on any request in the session.
 
-Use session tags for attributes that describe the conversation rather than one call — the plan a customer is on, or the surface the conversation started from. For example:
+Use session tags for attributes that describe the conversation rather than one call, such as the plan a customer is on or the surface the conversation started from. For example:
 
 ```bash
 curl https://gate.three.dev/v1/chat/completions \
-  -H "Authorization: Bearer <THREE_DEV_API_KEY>" \
+  -H "Authorization: Bearer <OPENAI_API_KEY>" \
+  -H "X-Three-Api-Key: <THREE_DEV_API_KEY>" \
   -H "X-Three-Use-Case: <USE_CASE_SLUG>" \
+  -H "X-Three-AI-Provider: openai" \
   -H "X-Three-Session-ID: <SESSION_ID>" \
   -H "X-Three-Session-Tag-Plan: enterprise" \
   -H "X-Three-Session-Tag-Channel: mobile" \
@@ -59,12 +61,15 @@ Both tag types are filterable. See [Filtering](https://docs.three.dev/exploring-
 
 three.dev records the reasoning configuration you send and normalizes it across providers, so you can compare reasoning behavior across requests that target different vendors.
 
-| Provider                     | What you send            | Recorded as                                      |
-| ---------------------------- | ------------------------ | ------------------------------------------------ |
-| OpenAI, Azure OpenAI, Gemini | `reasoning_effort`       | Effort                                           |
-| Anthropic                    | `thinking.type`          | Mechanism (`enabled`, `disabled`, or `adaptive`) |
-| Anthropic                    | `thinking.budget_tokens` | Budget                                           |
+| Provider                     | What you send                   | Recorded as                                                                                  |
+| ---------------------------- | ------------------------------- | -------------------------------------------------------------------------------------------- |
+| OpenAI, Azure OpenAI, Gemini | `reasoning_effort`              | Effort                                                                                       |
+| Anthropic                    | `thinking.type`                 | Mechanism (`enabled`, `disabled`, or `adaptive`)                                             |
+| Anthropic                    | `thinking.budget_tokens`        | Budget                                                                                       |
+| Anthropic                    | `output_config.effort`          | Effort                                                                                       |
+| Gemini                       | `thinkingConfig.thinkingLevel`  | Effort                                                                                       |
+| Gemini                       | `thinkingConfig.thinkingBudget` | Mechanism (`0` is `disabled`, `-1` is `adaptive`, a positive number is `enabled`) and budget |
 
-Reasoning tokens are counted separately from output tokens and appear in the request details. Filter on `reasoning_effort` and `reasoning_mechanism` to isolate reasoning traffic — see [Filtering](https://docs.three.dev/exploring-your-data/filtering.md).
+Reasoning tokens are counted inside output tokens, not shown separately. To isolate reasoning traffic, filter on `reasoning_effort` and `reasoning_mechanism`. See [Filtering](https://docs.three.dev/exploring-your-data/filtering.md).
 
 Accepted `reasoning_effort` values depend on the provider and the model. The proxy forwards what you send and leaves the decision to the provider.
