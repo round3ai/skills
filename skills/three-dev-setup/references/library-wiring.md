@@ -8,10 +8,11 @@ Contents: [Which clients](#which-clients) ·
 [What the user and three.dev hear](#what-the-user-and-threedev-hear)
 
 When the provider page has no worked example for the exact client in the
-code, work the wiring out from the library itself. It stays only when its check
-request proves it, as [the check](#the-check) says; otherwise the original
-code comes back and the client is reported as not connected, as before. No
-check sent means no proof: such wiring is never kept as "not verified". Wire
+code, work the wiring out from the library itself. It stays when its check
+request proves it, as [the check](#the-check) says, or when no provider key
+is here and the user keeps it, as check-request.md's "No provider key here"
+says. Otherwise the original code comes back and the client is reported as
+not connected, as before. No other check left unsent keeps it. Wire
 these last, once every client with a worked example is wired and checked. A
 missing example is never by itself a reason to leave a client out.
 
@@ -110,20 +111,16 @@ The check request of [wiring.md](check-request.md#the-check-request), with these
 differences:
 
 - **Ask check-request.md's "Is the provider key there?" first**, as for any client.
-- **Without the provider key here**, send it anyway, with the provider key
-  variable set to `three_dev_check` in front of the command, never in a file.
-  This is the only placeholder a provider key may get, and only when the app
-  reads that variable from its environment and that question found the key
-  in none of the places it reads. The provider refuses the placeholder. That
-  refusal, carrying three.dev's request ID, proves the request went through
-  three.dev to the provider; the request's path proves it went to the right
-  place, since many providers refuse a bad key before they look at the path.
+- **Without the provider key here**, send no check, and never give a
+  provider key a made-up value, on a command or in a file. When no wired
+  provider has its key here, the client stays and waits for the user's
+  answer, as check-request.md's "No provider key here" says; otherwise it is
+  put back.
 - **Print what proves it**: the status, the request's path without its
   query, `x-three-request-id`, and `x-three-error-code`, from the response
   or from the response the library's error holds. A library that cannot
   show `x-three-request-id` is proven only by three.dev's count, as
-  [wiring.md](check-request.md#the-check-request) says. A placeholder check never
-  raises it, so such a client without the provider key is put back.
+  [wiring.md](check-request.md#the-check-request) says.
 - **In Go**, write the check as a `main` package in a new
   `three_dev_check/` directory at the module root, or inside the directory
   that holds the `internal/` the imported package sits under, so it can
@@ -134,12 +131,19 @@ differences:
 | The check | The client |
 | --- | --- |
 | Succeeds, with `x-three-request-id` or `verified_checks` one higher | Stays |
-| Is refused by the provider, with `x-three-request-id`, no `x-three-error-code`, and the path the provider's API documents for that call: a 401 or 403, or a 400 that says the key is not valid | Stays, when the key was the placeholder |
-| Is anything else: a code from [proxy-errors.md](proxy-errors.md), a 404 or other answer that the path does not exist, another path, no request ID, or a refusal of a real key | Gets one fix for what the answer points to and one more check; then put back |
-| Cannot be sent | Put back |
+| Is anything else: a code from [proxy-errors.md](proxy-errors.md), a 404 or other answer that the path does not exist, another path, no request ID, or a refusal of the key | Gets one fix for what the answer points to and one more check; then put back |
+| Cannot be sent because no wired provider has its key here | Stays, unless the user chooses "revert" |
+| Cannot be sent for another reason | Put back |
 
 ## Putting it back
 
+- For a revert the user chose, run `cksum <file>` first. When it prints
+  something other than it did just before the question, the file changed
+  after you wired it: leave it exactly as it is, wiring included, unless the
+  user asks in words to take three.dev out and keep their changes. Then
+  write back the original text only where your wiring is still exactly as
+  you wrote it, and leave every line the user changed, even inside your
+  wiring; a wiring line left that way keeps the file among those left.
 - Write back the exact text you replaced, and delete any file the wiring
   added. Never `git checkout`, `git restore`, or `git stash`: the app's tree
   may hold the user's own changes.
@@ -153,10 +157,9 @@ wired this way, whatever the check, and the others when they apply:
 
 - Kept, after a real check: "`<library>` in `<file>` was wired from its own
   code, not from three.dev's docs. Its check request went through three.dev."
-- Kept, after the placeholder check: "`<library>` in `<file>` was wired from
-  its own code, not from three.dev's docs. Its check request reached
-  `<provider>` through three.dev, which refused the placeholder key as it
-  should. Your app's first real request is the full test."
+- Kept untested, when no provider key was here: "`<library>` in `<file>` was
+  wired from its own code, not from three.dev's docs, and could not be
+  tested here. Your app's first real request is its test."
 - Put back: "Not connected: `<file>`. `<library>` has no worked example, and
   its wiring could not be proven here."
 - When its calls use a path the Supported paths page does not list, also:
@@ -170,9 +173,9 @@ wired this way, whatever the check, and the others when they apply:
 is built in, both always: "`async-openai` in `src/llm.rs` was wired from
 its own code, not from three.dev's docs."
 
-No "Not verified" line is ever given for these clients. A placeholder check
-is not an answer for the report: when no other check succeeded, the reason is
-`no_provider_key`, and Step 6's line about the app's first request follows.
+No "Not verified" line is ever given for these clients. One kept untested
+gets its reason from check-request.md's "No provider key here", and Step 6's
+line about the app's first request follows.
 In the report, a client put back is a client with no worked example, named
 as [connect.md](connect.md) says; a client wired this way is wired like any
 other.

@@ -431,7 +431,8 @@ sed -n 's/^THREE_DEV_API_KEY=/X-Three-Api-Key: /p' <env file> | curl -sS -X POST
 ```
 
 `outcome=stopped`, always with a reason and `partial=false`: the app is not
-wired, or, with `decision_needed`, not yet.
+wired; with `decision_needed` or `provider_key_needed`, not yet; with
+`revert_incomplete`, only in the files left.
 
 | What happened | `reason` |
 | --- | --- |
@@ -445,7 +446,10 @@ wired, or, with `decision_needed`, not yet.
 | The user told you to stop | `cancelled` |
 | The user denied access in the browser | `denied` |
 | The code expired twice | `expired` |
-| You end your turn on a question the user must answer before you can go on | `decision_needed` |
+| You end your turn on any other question the user must answer before you can go on | `decision_needed` |
+| You end your turn on check-request.md's question about a missing provider key | `provider_key_needed` |
+| The user chose "revert" at that question, and every file is back | `reverted` |
+| The user chose "revert" at that question, and you left a file that changed after you wired it | `revert_incomplete` |
 | three.dev cannot be reached, or is not taking setups | `three_dev_unavailable` |
 | Step 11 counted more than `1` | `key_ambiguous` |
 | Anything else | `other` |
@@ -454,9 +458,10 @@ When nothing was wired for several of these reasons, report the first that
 applies of `decision_needed`, `provider_address_declined`,
 `address_unsupported`, `client_unsupported`.
 
-`decision_needed` is your stop; `provider_address_declined`,
-`changes_rejected`, and `cancelled` are the user's answer.
-Report it when your turn ends on a question the user must answer before the
+`decision_needed` and `provider_key_needed` are your stops;
+`provider_address_declined`, `changes_rejected`, `reverted`,
+`revert_incomplete`, and `cancelled` are the user's answer.
+Report a stop when your turn ends on a question the user must answer before the
 work can go on: one this skill asks, or a choice no rule here settles. It
 makes no question allowed: SKILL.md's ground rules say which you may ask.
 With a device code it goes with `outcome=stopped` and `partial=false`, even
@@ -471,7 +476,8 @@ your message has a "Not connected" line, `false` otherwise.
 | --- | --- | --- |
 | One succeeded through three.dev with the app's own provider key: the status call's `verified_checks` is above 0 | none | |
 | Was not sent: the app does not load the file the key is in | `key_not_visible` | Your app can't see the key yet |
-| Had no provider key: no wired provider's key is in the places the app reads it from, its own config loader included, a check answered that the key is missing, or a check only reached the provider with library-wiring.md's placeholder key | `no_provider_key` | No provider key on this machine |
+| Was not sent: no wired provider's key is here, and the user chose to continue without testing | `continued_untested` | Wired, waiting for your first request |
+| Was not sent: the user said the key was set, and it still could not be found after the question was asked again | `provider_key_not_seen` | Your app can't see the provider key |
 | Was not sent: the app or its client cannot be run here | `app_not_runnable` | Your agent could not run the app |
 | Was not sent: the app logs request headers, or its client cannot mark the check as a test | `check_skipped` | Your agent sent no test request |
 | Was sent and failed, with a three.dev error, the provider's other than a missing key (a refusal of a key the key check found included), or an answer without three.dev's request ID | `test_failed` | The test request failed |
@@ -479,7 +485,7 @@ your message has a "Not connected" line, `false` otherwise.
 The reason follows the check requests in check-request.md, one per provider, and
 nothing else. Run step 7's status call, or the one by key, once before the report and read
 `verified_checks`, the only proof of success here: a refusal that carries
-three.dev's request ID, the placeholder's among them, never raises it.
+three.dev's request ID never raises it.
 Checks are counted a few seconds after they answer: when one succeeded with
 three.dev's request ID and the count is still 0, run the call again every 5
 seconds, waiting as step 7 says, for 30 seconds at most. Once one has
