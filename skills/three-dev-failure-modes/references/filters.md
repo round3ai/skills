@@ -61,12 +61,12 @@ Find the conversations that mention a refund:
 ## Reading a failure mode
 
 - `severity` is `high`, `medium`, `low` or unset. It is assigned when the mode
-  is named and people change it in the app, so it is a priority hint and not a
+  is named and people change it afterwards, so it is a priority hint and not a
   measurement; it is unset on most modes.
 - **Unmatched** is often several problems in one, so its count says little;
   its examples say what they are.
-- A **dismissed** mode is one the user set aside; a request whose only issues
-  are dismissed is clean.
+- A **dismissed** mode is one the user set aside as not worth acting on; it
+  is not fixed and not gone.
 - A mode **merged** into another counts under that one; a mode **split** away
   no longer counts and its parts take its place. Report the modes it went to.
 - An **outdated** request, `catalog_outdated` in `get_request_conversation`,
