@@ -1,6 +1,6 @@
 ---
 name: three-dev-failure-modes
-description: Investigates production quality problems in an LLM feature that three.dev already records. Takes the worst failure mode, classifies the requests with its issues, reads the conversations to find the root cause, and proposes a prompt, model, tool or code fix. Use when the user asks why an LLM feature is failing, how to fix or improve its worst failure mode, what its top failure modes or quality problems are, whether a problem is growing or started after a deploy, or wants to see bad conversations or count or segment requests. Also when the user arrives with a three.dev conversation id, to continue an investigation started in the three.dev chat. Needs the three.dev MCP server. Not for setting up three.dev or routing calls through the proxy; that is the three-dev-setup skill.
+description: Investigates production quality problems in an LLM feature that three.dev already records. Takes the worst failure mode, classifies the requests with its issues, reads the conversations to find the root cause, and proposes a prompt, model, tool or code fix. Use when the user asks why an LLM feature is failing, how to fix or improve its worst failure mode, what its top failure modes or quality problems are, whether a problem is growing or started after a deploy, wants to see bad conversations or count or segment requests, or wants to set a failure mode's severity or dismiss or restore one. Also when the user arrives with a three.dev conversation id, to continue an investigation started in the three.dev chat. Needs the three.dev MCP server. Not for setting up three.dev or routing calls through the proxy; that is the three-dev-setup skill.
 ---
 
 # three.dev failure-mode investigation
@@ -45,6 +45,7 @@ not answer from the prompt or the code alone. The tools:
 | Which use cases exist, their slugs | `list_use_cases` |
 | Failure modes of a use case in a window, with counts and denominators | `list_failure_modes` |
 | One failure mode in depth, with example requests | `get_failure_mode` |
+| Set a failure mode's severity, dismiss it or restore it | `update_failure_mode` |
 | Count, segment or browse requests, with each row's issues | `list_requests` |
 | The full conversation behind one request | `get_request_conversation` |
 | What the requests can be filtered by, and the values present | `get_request_facets` |
@@ -69,9 +70,9 @@ format your client prescribes; never compose an app URL yourself.
 - **A request with no failure mode is not necessarily clean.**
   Read `scored` first: `no_issues` is scored with no issue, and a request whose only
   issues are Unmatched has no failure mode either.
-- **Dismissed modes are left out** of every count. Ask for them only when the
-  user asks about one they dismissed; dismissed, merged, split and outdated
-  are read as in [references/filters.md](references/filters.md).
+- **Dismissed modes**: ask for them only when the user asks about one they
+  dismissed; dismissed, merged, split and outdated are read as in
+  [references/filters.md](references/filters.md).
 - **No lifecycle.** Fixed means the mode's rate dropped in a later window.
 
 ## Ground rules
@@ -146,10 +147,11 @@ further. Otherwise take the mode the user named, or pick one:
   When severities are set but none is `high`, say that and take the most
   frequent.
 - **No mode has a severity**: ask as a short numbered list, or the client's
-  multiple-choice tool, each mode linked: set severities first on the Failure
-  modes page (its "Open in three.dev" link where you have one, never one mode's
-  page); the mode that looks most severe, with a few words of why; the most
-  frequent, with its rate (two options when they coincide).
+  multiple-choice tool, each mode linked: set severities first, by telling you
+  each one or on the Failure modes page (its "Open in three.dev" link where
+  you have one, never one mode's page); the mode that looks most severe, with
+  a few words of why; the most frequent, with its rate (two options when they
+  coincide).
   Most severe is what costs the user or business most: exposed data, wrong
   facts or promises, money, then failed tasks, then style. Take the reason from
   its description once `get_failure_mode` shows its examples match it.
@@ -234,6 +236,12 @@ use case's Overview with **Compare**.
 Counting, segmenting, "show me bad conversations" and "how did three.dev score
 my latest requests" are answered as in
 [references/filters.md](references/filters.md).
+
+When the user asks to set a failure mode's severity, to dismiss one or to
+restore one, call `update_failure_mode` and confirm in one sentence with the
+mode's link. A mode that looks like noise is theirs to dismiss: say what you
+would do and let them decide. To restore, find the mode by asking
+`list_failure_modes` for the dismissed ones.
 
 ## Hard rules
 
