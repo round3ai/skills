@@ -18,8 +18,14 @@ Review the diff against this list:
 - The provider key is where it was. The three.dev key is in no provider
   credential setting.
 - With `THREE_DEV_API_KEY` unset or empty, every client is built exactly as
-  before: same address, same headers, no error. Every test that passed still
-  passes.
+  before: same address, same headers, no error. Check it with one import of
+  the module, run once, with `env -u THREE_DEV_API_KEY` in front, printing
+  `through_three_dev` and nothing else; it must be false. Nothing else goes
+  in front but the placeholders "The check request" allows for settings the
+  call does not use: no provider key variable, set, emptied or unset,
+  whether or not you know the key is there. If the import fails, or the
+  wiring sets no flag, judge this from the diff, and never run it again.
+  Every test that passed still passes.
 - Models, prompts, parameters, timeouts, and error handling are unchanged.
 - No key is logged, printed, hardcoded, or committed.
 - A tag whose value can be missing sends no header rather than an empty or
@@ -75,7 +81,7 @@ and has the keys only if it gets them the way the app does:
 
 | The app gets its keys from | Send the check |
 | --- | --- |
-| Any route, with the three.dev key in a file step 2 of connect.md created | Inside the command [connect.md](connect.md#collect) prints for it, on this machine. |
+| Any route, with the three.dev key in a file connect.md's loading command may load | Inside the command [connect.md](connect.md#collect) prints for it, on this machine. |
 | A loading line in its code or its start script (`load_dotenv()`, `import "dotenv/config"`, a `config({ path })` call, `--env-file`, `dotenv -e`) | With that same loading first, copied from the app as it is, then the import of the client. Change only a relative path, so it names the same file from the directory the check runs in. When the line builds its path from the module's own location, run the command from that module's directory. |
 | Its framework, runner, compose file, or process manager | Through that route's own way to run one command, inside the service when there is one, when it is up or the repository's documented command brings it up. |
 | Its own config loader, from a file or store the app manages (settings saved from its own dashboard or settings screen) | With that loader first, imported as the app's start does, and its resolution (the manager or factory that hands the key to the client), then the client: the key reaches the client as it does in the app, never printed. The three.dev key comes by the row that fits it. |
@@ -83,7 +89,7 @@ and has the keys only if it gets them the way the app does:
 | Anything else, with no such parser | No check can be sent; see the table below. |
 
 You never choose a file to load: only the app's own loading, connect.md's
-command for a file step 2 created, or a parser given `<env file>` or the
+command for a file it may load, or a parser given `<env file>` or the
 provider key's file may load one. Never `source` another env file, and never
 name a file the app does not name, other than `<env file>`.
 
@@ -123,8 +129,12 @@ three.dev.
 
 - An answer counts only with an `x-three-request-id` response header, read
   through the SDK's raw-response option. The proxy adds it to every
-  response; without it the request went straight to the provider, so find
-  why the client took its old path and send the check again.
+  response; without it the request went straight to the provider. When the
+  settings here name an address three.dev does not forward to, as "The
+  setting" in [provider-address.md](provider-address.md) says, the client
+  kept its old path on purpose: change nothing, and it is `test_failed`, with
+  the line below for that case. Otherwise find why the client took its old
+  path and send the check again.
 - When the client shows no response headers, through its own option or the
   SDK client it wraps, three.dev's count is the proof. Run connect.md's
   status call just before the check and after it, every 5 seconds, waiting
@@ -280,7 +290,10 @@ A check that was sent and still fails after the fixes in
 [proxy-errors.md](proxy-errors.md), or still answers without three.dev's
 request ID, is `test_failed`: "Not verified: the check request failed with
 `<code or status>`.", or "Not verified: the check request went straight to the
-provider." A provider's 401 or 403 that says the key is invalid or revoked,
+provider.", or, when the settings here name an address three.dev does not
+forward to, "Not verified: `<setting>` here names `<the public provider it
+belongs to, or the kind of address>`, which three.dev does not forward to, so
+the check went straight there." A provider's 401 or 403 that says the key is invalid or revoked,
 not missing, is `test_failed` too, whatever the key check printed, never
 the question in "No provider key here": "Not verified:
 `<provider>` refused the key your app reads from `<source>` (`<status>`)."
