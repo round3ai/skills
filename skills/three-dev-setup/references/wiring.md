@@ -226,6 +226,10 @@ response = client.chat.completions.create(
   client the wiring builds. Never in per-call options, model settings, or a
   config object a framework records. [LangChain](#langchain-and-langgraph) is
   the case to know.
+- When the app's own code logs request headers (an HTTP client hook, a
+  middleware), mask `X-Three-Api-Key` there in the code's own style, and
+  nothing else in that log. Step 6 gets: "Your app logs request headers, so
+  I masked `X-Three-Api-Key` in `<file>`."
 - A client whose transport the app's own code picks from a setting, such as
   WebSocket by default and HTTPS when a base URL or a mode is set, is wired
   on that HTTPS path: the three.dev branch takes it in code, the way the

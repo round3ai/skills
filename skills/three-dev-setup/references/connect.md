@@ -25,8 +25,10 @@ the app's env file. Run everything from the repository root.
   a value; a changed one can. Searching the code for setting names follows
   SKILL.md's hard rule on what a command prints.
 - `<env file>` goes into each command as it is, unquoted. A path with a
-  space or a quote cannot be used: stop and tell the user, before you ask
-  for a code.
+  space or a quote cannot be used: before you ask for a code, stop with
+  `other` and a `detail` such as `the env file path has a space`, and tell
+  the user that once the path has none, they can ask you to set up
+  three.dev again. Offer to rename or move nothing.
 - The token call in [Collect](#collect) is never run without its `>>`.
   Without it the key is printed.
 - If a command is blocked or not approved, show the user the exact command and
@@ -55,8 +57,8 @@ script, or a framework's convention (`.env.local` for Next.js) name another.
 | Loads an env file, and it exists | That file |
 | Loads an env file, and it does not exist yet | That file; you create it below |
 | Loads none, and you make it load one | The file its new loader reads; see below |
-| Loads none, but an env file git ignores already holds the provider key | That file; see below |
-| Loads none, and no such file: keys come from the shell, a secrets manager, the platform, or a config or secrets file of the app's own | `.env.threedev`; you create it below |
+| Loads none, but the search under "Whether or not you add it" finds the provider key in an env file git ignores | That file; see below |
+| Loads none, and that search finds no such file: keys come from the shell, a secrets manager, the platform, or a config or secrets file of the app's own | `.env.threedev`; you create it below |
 
 **When the app loads none**, decide first whether to make it load one. The
 repository decides, from the README you read in Step 1
@@ -358,9 +360,21 @@ grep -cE '^(export +)?THREE_DEV_API_KEY *=' <env file>
 | `0` anywhere else | The rule of the section that sent you here. |
 | More than `1`, or an error | Tell the user the count and stop. |
 
-**Loading the env file for the check request.** Only when step 2 created
-`<env file>` in this setup, so that its only content is what the token call
-wrote, and only for the check request in
+**Loading the env file for the check request.** Only for a file whose only
+content is what the token call wrote: one step 2 created in this
+conversation, or, in a setup resumed in a new conversation, one for which
+each of these prints `1`:
+
+```bash
+grep -c . <env file>
+```
+
+```bash
+grep -cxE 'THREE_DEV_API_KEY=[A-Za-z0-9_]+' <env file>
+```
+
+Any other output: do not load it this way; the check follows
+check-request.md's other rows. Use it only for the check request in
 [check-request.md](check-request.md#the-check-request). `<path to env file>`
 starts with `./` or `../`, from the directory the check runs in. It prints nothing, the
 key ends with the subshell, and the filter hides a key the check's output
@@ -370,8 +384,7 @@ might show:
 ( set -a; . <path to env file>; set +a; <check command> ) 2>&1 | sed -E 's#^[A-Za-z0-9+/=]{40,}$#[redacted]#; s#(://[^/:@[:space:]]+:)[^@[:space:]]+@#\1[redacted]@#g; s/([Ss][Ee][Cc][Rr][Ee][Tt]|[Pp][Aa][Ss][Ss][Ww]([Oo][Rr])?[Dd]|[Tt][Oo][Kk][Ee][Nn]|[Kk][Ee][Yy])([^A-Za-z0-9[:space:]:=]?[[:space:]]*[:=][[:space:]]*[^A-Za-z0-9[:space:]]?)[A-Za-z0-9+/=_-]*[a-z0-9+/][A-Za-z0-9+/=_-]*([^A-Za-z0-9+/=_.([-]|$)/\1\3[redacted]\4/g; s/(^|[^A-Za-z0-9_-])((sk-|r3_sk_|gsk_|xai-|AIza)[A-Za-z0-9_-]{8,}|(AKIA|ASIA)[A-Z0-9]{8,}|[a-z]{2}_(live|test)_[A-Za-z0-9]{8,}|xox[abpr]-[A-Za-z0-9-]{8,}|fw_[A-Za-z0-9]{8,})/\1[redacted]/g; s/[A-Za-z0-9]{32,}/[redacted]/g'
 ```
 
-Never use it with a file that existed before step 2: its own lines would run
-as shell, and an error could print part of a value.
+Never use it with any other file: its own lines would run as shell, and an error could print part of a value.
 
 ## Report
 
@@ -395,20 +408,20 @@ page. Never run step 5 only to have a device code to report with. Work that
 finishes without a device code, because every call site was already on
 three.dev, sends no report.
 
-| What happened | `reason` |
-| --- | --- |
-| The repository has no LLM calls. Run it just before you ask where they are | `no_llm_calls` |
-| Call sites exist, and every one is unsupported | `client_unsupported` |
-| A command was blocked or not approved | `command_refused` |
-| The user said no to the provider's address, and no call site is left | `provider_address_declined` |
-| Every call site left calls an address three.dev does not forward to (a gateway, another provider's host, a private address); a library's own local server, such as Ollama, is `client_unsupported` instead | `address_unsupported` |
-| Every call site was already on three.dev, and the repository's checks fail after your change | `checks_failed` |
-| Every call site was already on three.dev, and the user rejected the changes | `changes_rejected` |
-| The user told you to stop | `cancelled` |
-| You end your turn on a question the user must answer before you can go on | `decision_needed` |
-| The env file is committed or read-only (steps 1 and 3) | `env_file_unwritable` |
-| three.dev cannot be reached, or is not taking setups | `three_dev_unavailable` |
-| Anything else | `other` |
+| What happened | `reason` | Its `detail` says |
+| --- | --- | --- |
+| The repository has no LLM calls. Run it just before you ask where they are | `no_llm_calls` | |
+| Call sites exist, and every one is unsupported | `client_unsupported` | |
+| A command was blocked or not approved | `command_refused` | The kind of command: an install, a network call, writing a file, running the app |
+| The user said no to the provider's address, and no call site is left | `provider_address_declined` | |
+| Every call site left calls an address three.dev does not forward to (a gateway, another provider's host, a private address); a library's own local server, such as Ollama, is `client_unsupported` instead | `address_unsupported` | The kind of address, and the provider or gateway it belongs to when it is a public service: `a host of another provider, Groq`, `a gateway, LiteLLM`, `a private address` |
+| Every call site was already on three.dev, and the repository's checks fail after your change | `checks_failed` | The kind of check that fails: tests, lint, types, build |
+| Every call site was already on three.dev, and the user rejected the changes | `changes_rejected` | |
+| The user told you to stop | `cancelled` | |
+| You end your turn on a question the user must answer before you can go on | `decision_needed` | What the question is about |
+| The env file is committed or read-only (steps 1 and 3) | `env_file_unwritable` | |
+| three.dev cannot be reached, or is not taking setups | `three_dev_unavailable` | |
+| Anything else | `other` | What happened |
 
 **With a device code**, from the moment step 5 answered. With two device
 codes, use the newer:
@@ -434,25 +447,25 @@ sed -n 's/^THREE_DEV_API_KEY=/X-Three-Api-Key: /p' <env file> | curl -sS -X POST
 wired; with `decision_needed` or `provider_key_needed`, not yet; with
 `revert_incomplete`, only in the files left.
 
-| What happened | `reason` |
-| --- | --- |
-| A command was blocked or not approved | `command_refused` |
-| Step 8 or 9 failed, step 10 kept failing, or step 11 counted `0` or failed | `key_not_saved` |
-| Every call site is unsupported or has no worked example | `client_unsupported` |
-| The user said no to the provider's address, and no call site is left | `provider_address_declined` |
-| Every call site left calls an address three.dev does not forward to (a gateway, another provider's host, a private address); a library's own local server, such as Ollama, is `client_unsupported` instead | `address_unsupported` |
-| The repository's checks fail after the change and you could not fix them | `checks_failed` |
-| The user rejected the changes | `changes_rejected` |
-| The user told you to stop | `cancelled` |
-| The user denied access in the browser | `denied` |
-| The code expired twice | `expired` |
-| You end your turn on any other question the user must answer before you can go on | `decision_needed` |
-| You end your turn on check-request.md's question about a missing provider key | `provider_key_needed` |
-| The user chose "revert" at that question, and every file is back | `reverted` |
-| The user chose "revert" at that question, and you left a file that changed after you wired it | `revert_incomplete` |
-| three.dev cannot be reached, or is not taking setups | `three_dev_unavailable` |
-| Step 11 counted more than `1` | `key_ambiguous` |
-| Anything else | `other` |
+| What happened | `reason` | Its `detail` says |
+| --- | --- | --- |
+| A command was blocked or not approved | `command_refused` | The kind of command: an install, a network call, writing a file, running the app |
+| Step 8 or 9 failed, step 10 kept failing, or step 11 counted `0` or failed | `key_not_saved` | What failed, by what it does rather than its step number: counting or removing the old key line, collecting the key, or the count after it |
+| Every call site is unsupported or has no worked example | `client_unsupported` | |
+| The user said no to the provider's address, and no call site is left | `provider_address_declined` | |
+| Every call site left calls an address three.dev does not forward to (a gateway, another provider's host, a private address); a library's own local server, such as Ollama, is `client_unsupported` instead | `address_unsupported` | The kind of address, and the provider or gateway it belongs to when it is a public service: `a host of another provider, Groq`, `a gateway, LiteLLM`, `a private address` |
+| The repository's checks fail after the change and you could not fix them | `checks_failed` | The kind of check that fails: tests, lint, types, build |
+| The user rejected the changes | `changes_rejected` | |
+| The user told you to stop | `cancelled` | |
+| The user denied access in the browser | `denied` | |
+| The code expired twice | `expired` | |
+| You end your turn on any other question the user must answer before you can go on | `decision_needed` | What the question is about |
+| You end your turn on check-request.md's question about a missing provider key | `provider_key_needed` | |
+| The user chose "revert" at that question, and every file is back | `reverted` | |
+| The user chose "revert" at that question, and you left a file that changed after you wired it | `revert_incomplete` | |
+| three.dev cannot be reached, or is not taking setups | `three_dev_unavailable` | |
+| Step 11 counted more than `1` | `key_ambiguous` | |
+| Anything else | `other` | What happened |
 
 When nothing was wired for several of these reasons, report the first that
 applies of `decision_needed`, `provider_address_declined`,
@@ -472,15 +485,19 @@ when that work ends.
 `outcome=finished`: at least one call site is wired. `partial` is `true` when
 your message has a "Not connected" line, `false` otherwise.
 
-| The check request | `reason` | The setup page reads |
-| --- | --- | --- |
-| One succeeded through three.dev with the app's own provider key: the status call's `verified_checks` is above 0 | none | |
-| Was not sent: the app does not load the file the key is in | `key_not_visible` | Your app can't see the key yet |
-| Was not sent: no wired provider's key is here, and the user chose to continue without testing | `continued_untested` | Wired, waiting for your first request |
-| Was not sent: the user said the key was set, and it still could not be found after the question was asked again | `provider_key_not_seen` | Your app can't see the provider key |
-| Was not sent: the app or its client cannot be run here | `app_not_runnable` | Your agent could not run the app |
-| Was not sent: the app logs request headers, or its client cannot mark the check as a test | `check_skipped` | Your agent sent no test request |
-| Was sent and failed, with a three.dev error, the provider's other than a missing key (a refusal of a key the key check found included), or an answer without three.dev's request ID | `test_failed` | The test request failed |
+| The check request | `reason` | The setup page reads | Its `detail` says |
+| --- | --- | --- | --- |
+| One succeeded through three.dev with the app's own provider key: the status call's `verified_checks` is above 0 | none | | |
+| Was not sent: the app does not load the file the key is in | `key_not_visible` | Your app can't see the key yet | How the app loads its config, so the env file does not reach it |
+| Was not sent: no wired provider's key is here, and the user chose to continue without testing | `continued_untested` | Wired, waiting for your first request | |
+| Was not sent: the user said the key was set, and it still could not be found after the question was asked again | `provider_key_not_seen` | Your app can't see the provider key | The kind of place the user said the key is in: another terminal, a secrets manager, the hosting platform |
+| Was not sent: the app or its client cannot be run here | `app_not_runnable` | Your agent could not run the app | What stopped it: a missing dependency, a service it needs, a build that fails, an app that cannot run in a terminal |
+| Was not sent: the app logs request headers, or its client cannot mark the check as a test | `check_skipped` | Your agent sent no test request | Which of the two: the app logs request headers, or its client cannot mark the check as a test |
+| Was sent and failed, with a three.dev error, the provider's other than a missing key (a refusal of a key the key check found included), or an answer without three.dev's request ID | `test_failed` | The test request failed | |
+
+A finished report never uses `other`: when nothing above fits, the check that
+was sent and did not count is `test_failed`, a check that went straight to the
+address the settings here name included.
 
 The reason follows the check requests in check-request.md, one per provider, and
 nothing else. Run step 7's status call, or the one by key, once before the report and read
@@ -529,30 +546,39 @@ only names clients in the report; it says nothing about which can be wired:
 | Mastra, Genkit, Pydantic AI, LlamaIndex, Haystack, Agno, AutoGen, Google ADK, Strands, Semantic Kernel, Spring AI, LangChain4j, RubyLLM, Microsoft.Extensions.AI | `mastra`, `genkit`, `pydantic_ai`, `llamaindex`, `haystack`, `agno`, `autogen`, `google_adk`, `strands`, `semantic_kernel`, `spring_ai`, `langchain4j`, `ruby_llm`, `microsoft_extensions_ai` |
 | Anything else, or when unsure | `other`, with a `detail` naming the library the code imports |
 
-**Say what `other` means.** Every `other`, as the reason or as a client,
-comes with one `detail`: what happened, in your own words, in at most 120
-characters; for a client, the library the code imports, whose package name is
-the one thing from the code it may carry. Use only letters, digits, spaces,
-and `. , - _ @ /`. Never a name, a path, code, an address, a key, or anything
-copied from the user's files. Good: `imports google-generativeai with async
-calls`. Bad: a variable name with the file that sets it. With
-no `other`, send no `detail`: three.dev refuses it. One `detail` per report
-covers every `other` in it. With `reason=other`, the three commands read:
+**Explain the reason.** A reason whose row above says what its `detail`
+says, and a client `other`, always come with a `detail`. No other reason, and
+no report without a reason, ever carries one: three.dev refuses it. One
+`detail` per report covers everything in it. With a reason that takes one and
+a client `other`, the reason's cause comes first, then `, client <package>`;
+with only a client `other`, it names the package, as the client table says.
+It says why, in your own words, in at most 120 characters, and names the
+kind of thing, never which one: never a name, a path, code, an address, a
+key, a value, or anything copied from the user's files or from your
+message's "Not verified" line. A client's package name, as the code imports
+it, and the public provider or gateway an `address_unsupported` row allows
+are the only names it may carry. Use only letters, digits, spaces, and
+`. , - _ @ /`: no apostrophe, so `does not`, never `doesn't`. Good: `the build
+needs a private package registry`, `config comes from a vault loader, not
+env files`, `imports google-generativeai with async calls`. Bad: a variable
+name with the file that sets it.
+
+The `detail` is the last part, after any client part. With a reason that
+takes one, the three commands read:
 
 ```bash
-curl -sS -X POST https://api.three.dev/api/v1/setup/report -d "outcome=stopped" -d "reason=other" --data-urlencode "detail=<detail>"
+curl -sS -X POST https://api.three.dev/api/v1/setup/report -d "outcome=stopped" -d "reason=<reason>" --data-urlencode "detail=<detail>"
 ```
 
 ```bash
-curl -sS -X POST https://api.three.dev/api/v1/setup/report -d "device_code=<device code>" -d "outcome=stopped" -d "reason=other" -d "partial=false" --data-urlencode "detail=<detail>"
+curl -sS -X POST https://api.three.dev/api/v1/setup/report -d "device_code=<device code>" -d "outcome=<finished or stopped>" -d "reason=<reason>" -d "partial=<true or false>" --data-urlencode "detail=<detail>"
 ```
 
 ```bash
-sed -n 's/^THREE_DEV_API_KEY=/X-Three-Api-Key: /p' <env file> | curl -sS -X POST https://api.three.dev/api/v1/setup/report -H @- -d "outcome=stopped" -d "reason=other" -d "partial=false" --data-urlencode "detail=<detail>"
+sed -n 's/^THREE_DEV_API_KEY=/X-Three-Api-Key: /p' <env file> | curl -sS -X POST https://api.three.dev/api/v1/setup/report -H @- -d "outcome=<finished or stopped>" -d "reason=<reason>" -d "partial=<true or false>" --data-urlencode "detail=<detail>"
 ```
 
-With a client `other`, the `detail` goes after the last client part, so the
-three client commands read:
+With a client `other`, the three client commands read:
 
 ```bash
 curl -sS -X POST https://api.three.dev/api/v1/setup/report -d "outcome=stopped" -d "reason=client_unsupported" -d "client=other" --data-urlencode "detail=<detail>"
@@ -574,7 +600,7 @@ Nothing in the answer is for the user, and none of it changes your message:
 | --- | --- |
 | `{"recorded":true}` or `{"recorded":false}` | Go on to your message. |
 | `{"message":"Unknown device code"}`, `{"message":"Unknown setup key"}`, `Too many requests...`, or curl fails | Go on. Do not repeat it. Without a device code, three.dev takes 10 reports from a network every 10 minutes and 1,000 a day in all. |
-| A message that starts with `client` | Run it once more without the client parts and the `detail`, then go on. |
+| A message that starts with `client` | Run it once more without the client parts, and without the `detail` unless the reason takes one, then go on. |
 | Any other `{"message":"..."}` | With a `detail`: run it once more without the detail, then go on. Otherwise, with a device code or by key: the command was changed, so run it as printed once more, then go on. Without one: go on. |
 
 If you work on after a report (the user asks you to fix or resume), report

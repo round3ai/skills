@@ -223,7 +223,8 @@ Add one line after the list for each that applies; name things, never count:
 - "Not connected: `<file>`, `<reason in a few words>`."
 - "Not verified: `<what, and why>`." When no check request succeeded, add "Your
   app's first request is the test: the setup page reads "`<title>`" until it
-  arrives.", with the title connect.md gives.
+  arrives.", with the title in the row of connect.md's `outcome=finished`
+  table for the reason your last report sent.
 - "Git is not protecting `<env file>` here: this folder is not a repository."
 - "If the three.dev proxy goes down, these calls fail. Unset
   `THREE_DEV_API_KEY` and restart the app, and they go straight to <provider>
@@ -248,8 +249,8 @@ revoked sends you back to Step 3. End with the report and Step 6.
 - The three.dev key never enters this conversation. Only connect.md's
   commands and the wiring files' check request, key check, counts, listings, and
   filtered reads name a file that may hold a key. Never print, `cat`, `head`,
-  read, or open one; `source` only a file step 2 created, in connect.md's check
-  command. Learn variable names from the code and the templates you may open.
+  read, or open one; `source` only a file connect.md's check command may load,
+  in that command. Learn variable names from the code and the templates you may open.
   Never run `env`, `printenv`, `set`, `export -p`, `set -x`, or a command that
   prints resolved settings (`docker compose config`). Ask whether a key is set
   only as `[ -n "${NAME:+x}" ] && echo set || echo unset`, or by the key check.
