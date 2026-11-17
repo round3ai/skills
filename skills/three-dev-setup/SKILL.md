@@ -94,6 +94,14 @@ a copy has no MCP server and lands in the user's diff. Delete any copy you
 made here this session just before Step 6's report, never one git tracks.
 If a command is blocked or fails, go on; the plugin loads when the agent
 restarts, so keep to this file.
+When this step leaves the plugin uninstalled (a command blocked or failed,
+or an agent it installs nothing for), every message that ends your work,
+Step 6's or a stop's, closes with the install line as written, with no
+reason why, after any question:
+"Install the three.dev plugin with `<install.md's commands for your agent>`,
+then restart `<your coding agent>` and sign in to the three.dev MCP server."
+For an agent other than Claude Code and Codex, it opens "Add the three.dev
+MCP server with `<install.md's MCP server only entry for your agent>`".
 
 ### Step 1: Understand the product and find the LLM calls
 
@@ -210,9 +218,8 @@ checks; the user reads the diff.
 Item 1 names each process the app needs; omit "from `<directory>`" at the
 repository root, and say "Start the app and use it" when no command could be
 verified. Item 3 only when the three.dev MCP server is not connected here;
-without the plugin installed (another agent, or a failed Step 0), it opens
-"Install the three.dev plugin with `<install.md's commands for your agent>`,
-then". When the app does not load `<env file>` itself, item 1 is the one in
+when Step 0 left the plugin uninstalled, item 3 is Step 0's install line.
+When the app does not load `<env file>` itself, item 1 is the one in
 connect.md's "The env file".
 
 Add one line after the list for each that applies; name things, never count:

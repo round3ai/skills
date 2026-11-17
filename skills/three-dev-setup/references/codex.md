@@ -16,10 +16,12 @@ the user approved.
    > no key but its own. Go ahead?
 
    On a yes, go on. Any other answer is a stop with `command_refused`.
-2. **Install the plugin.** Unless `codex plugin list` shows
-   `three-dev@three-dev` as installed, run
+2. **Install the plugin.** `codex plugin list` decides only whether
+   `three-dev@three-dev` is installed; a warning in its output is no reason
+   to skip. Unless it shows the plugin installed, run
    `codex plugin marketplace add round3ai/skills`, then
-   `codex plugin add three-dev@three-dev`.
+   `codex plugin add three-dev@three-dev`. If one runs and fails without a
+   decline, go on.
 3. **If the review still declines a setup command**, ask once, naming that
    exact action and what it sends. For the check request: "Is `<org>` your
    organization? I'll send one test request through it with your app's
