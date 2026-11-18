@@ -12,7 +12,7 @@ The three.dev proxy forwards your requests to your AI provider and records them 
 * **Add the `X-Three-AI-Provider` header** with your provider, such as `openai` or `anthropic`. See [Choosing the target AI provider](https://docs.three.dev/sending-requests/ai-providers-integration.md#choosing-the-target-ai-provider).
 
 {% hint style="info" %}
-Azure OpenAI and Amazon Bedrock also need your provider's address in the `X-Three-AI-Provider-BaseURL` header. See [Sending your provider's address](https://docs.three.dev/sending-requests/ai-providers-integration.md#sending-your-providers-address). To store your provider key in three.dev instead, see [Storing your provider key in three.dev](https://docs.three.dev/sending-requests/pages/eSVyUHtGZZNdZc99D0y0#storing-your-provider-key-in-three.dev). For a step-by-step guide, see [Quickstart: Record your requests](https://docs.three.dev/getting-started/quickstart-record-requests.md).
+Azure OpenAI and Amazon Bedrock also need your provider's address in the `X-Three-AI-Provider-BaseURL` header. See [Sending your provider's address](https://docs.three.dev/sending-requests/ai-providers-integration.md#sending-your-providers-address). To store your provider key in three.dev instead, see [Storing your provider key in three.dev](https://docs.three.dev/pages/eSVyUHtGZZNdZc99D0y0#storing-your-provider-key-in-three.dev). For a step-by-step guide, see [Quickstart: Record your requests](https://docs.three.dev/getting-started/quickstart-record-requests.md).
 {% endhint %}
 
 ## Speed and availability
