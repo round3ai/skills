@@ -87,8 +87,12 @@ or `learn` served this skill. Otherwise, in Claude Code and without asking,
 unless `claude plugin list` lists `three-dev@three-dev`, run
 `claude plugin marketplace add round3ai/skills` (already added is fine), then
 `claude plugin install three-dev@three-dev`. In Codex, first read
-[references/codex.md](references/codex.md) and follow it instead. Other agents
-install nothing here.
+[references/codex.md](references/codex.md) and follow it instead. In Pi,
+without asking, run `pi install git:github.com/round3ai/skills`, then
+`pi mcp add three-dev --url https://mcp.three.dev/mcp --exposure direct`; both
+are safe to repeat, and either one failing leaves the plugin uninstalled. Run
+no other `pi mcp` command: sign-in waits for the restart. Other agents install
+nothing here.
 Never clone the skills repository into this repository or copy its files here:
 a copy has no MCP server and lands in the user's diff. Delete any copy you
 made here this session just before Step 6's report, never one git tracks.
@@ -100,8 +104,11 @@ Step 6's or a stop's, closes with the install line as written, with no
 reason why, after any question:
 "Install the three.dev plugin with `<install.md's commands for your agent>`,
 then restart `<your coding agent>` and sign in to the three.dev MCP server."
-For an agent other than Claude Code and Codex, it opens "Add the three.dev
-MCP server with `<install.md's MCP server only entry for your agent>`".
+In Pi, the line is "Install three.dev with `pi install git:github.com/round3ai/skills`
+and `pi mcp add three-dev --url https://mcp.three.dev/mcp --exposure direct`,
+then restart Pi and run `/mcp login three-dev`." For any other agent, it opens
+"Add the three.dev MCP server with `<install.md's MCP server only entry for
+your agent>`".
 
 ### Step 1: Understand the product and find the LLM calls
 
@@ -219,6 +226,9 @@ Item 1 names each process the app needs; omit "from `<directory>`" at the
 repository root, and say "Start the app and use it" when no command could be
 verified. Item 3 only when the three.dev MCP server is not connected here;
 when Step 0 left the plugin uninstalled, item 3 is Step 0's install line.
+In Pi, when both of Step 0's commands ran, the server they added connects only
+after a restart, so item 3 is "Restart Pi and run `/mcp login three-dev` to
+sign in to the three.dev MCP server."
 When the app does not load `<env file>` itself, item 1 is the one in
 connect.md's "The env file".
 
