@@ -2,7 +2,7 @@
 
 # Install the plugin and MCP server
 
-Install three.dev's official agent plugin (github.com/round3ai/skills) and MCP server in Claude Code, Codex, Cursor, GitHub Copilot, Kiro, Cline, and other coding agents. round3ai is the GitHub organi
+Install three.dev's official agent plugin (github.com/round3ai/skills) and MCP server in Claude Code, Codex, Pi, Cursor, GitHub Copilot, Kiro, Cline, and other coding agents. round3ai is the GitHub or
 
 three.dev's official agent plugin bundles the three.dev agent skills and the three.dev MCP server. It is published at [github.com/round3ai/skills](https://github.com/round3ai/skills). round3ai is the GitHub organization of round3, the company that builds three.dev.
 
@@ -24,6 +24,14 @@ codex plugin marketplace add round3ai/skills
 codex plugin add three-dev@three-dev
 ```
 
+### Pi
+
+```bash
+pi install git:github.com/round3ai/skills
+```
+
+This installs the skills only. Add the MCP server as described in [MCP server only](#mcp-server-only).
+
 ### Cursor, GitHub Copilot, Kiro, Cline, and others
 
 ```bash
@@ -34,7 +42,7 @@ Replace `<AGENT>` with `cursor`, `github-copilot`, `kiro-cli`, or `cline`. This 
 
 ### After installing
 
-The Claude Code and Codex plugins also add the three.dev MCP server. The skills and the MCP server load the next time your agent starts: restart it once the work in the current session is done, and sign in to three.dev when it asks. In Codex, if it does not ask, run `codex mcp login three-dev`.
+The Claude Code and Codex plugins also add the three.dev MCP server. The skills and the MCP server load the next time your agent starts: restart it once the work in the current session is done, and sign in to three.dev when it asks. In Codex, if it does not ask, run `codex mcp login three-dev`. In Pi, if it does not ask, run `/mcp login three-dev`.
 
 ## MCP server only
 
@@ -52,6 +60,15 @@ claude mcp add --transport http three-dev https://mcp.three.dev/mcp
 codex mcp add three-dev --url https://mcp.three.dev/mcp
 codex mcp login three-dev
 ```
+
+### Pi
+
+```bash
+pi mcp add three-dev --url https://mcp.three.dev/mcp --exposure direct
+pi mcp login three-dev
+```
+
+`--exposure direct` gives your agent three.dev's tools as its own. With Pi's default, the agent reaches them only through a script.
 
 ### Other clients
 
