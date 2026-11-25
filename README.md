@@ -52,9 +52,25 @@ To use the three.dev MCP server without the plugin, add
 | Kiro | `.kiro/settings/mcp.json`: `{"mcpServers": {"three-dev": {"url": "https://mcp.three.dev/mcp"}}}` |
 | Cline | MCP Servers panel: the URL above, transport Streamable HTTP |
 
+## What this plugin sends
+
+- **The MCP server**, `https://mcp.three.dev/mcp`: you sign in to three.dev
+  when your client asks. It receives only your agent's tool calls and reads
+  nothing from your machine.
+- **Your app's three.dev key**, `THREE_DEV_API_KEY`: issued after you approve
+  in your browser, it goes straight into the app's env file, never into the
+  conversation. Your app sends it only to the three.dev proxy,
+  `gate.three.dev`, and the setup skill only to `api.three.dev`, when it
+  resumes an interrupted setup.
+- **The setup skill** sends `api.three.dev` this machine's name, the
+  repository folder's name and your agent's name, which the approval page
+  shows so you can recognise your own request, and a short report of how the
+  setup ended, which your three.dev setup page shows and which helps us fix
+  setups that fail. No code.
+
 ## Skills
 
-<!-- Generated from each SKILL.md description by scripts/build-readme.sh on publish. Do not edit. -->
+<!-- Generated from each SKILL.md description on publish. Do not edit. -->
 <!-- SKILLS:START -->
 
 | Skill | What it does |

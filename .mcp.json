@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "three-dev": {
+      "type": "http",
+      "url": "https://mcp.three.dev/mcp"
+    }
+  }
+}

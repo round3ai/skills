@@ -23,5 +23,5 @@
   "privacyPolicyUrl": "https://three.dev/privacy",
   "termsOfServiceUrl": "https://three.dev/terms",
   "skills": "./skills/",
-  "mcpServers": "./mcp.json"
+  "mcpServers": "./.mcp.json"
 }
