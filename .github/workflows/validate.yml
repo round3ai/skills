@@ -227,6 +227,14 @@ jobs:
             done < <(jq -r '.. | strings | select(test("^[a-z][a-z0-9+.-]*://")) | select(startswith("https://") | not)' "$file")
           done
 
+          # Every link field must be an https URL: the directories drop any
+          # other scheme, mailto: included.
+          for file in "${manifests[@]}"; do
+            while IFS= read -r field; do
+              fail "$file: $field is not an https URL"
+            done < <(jq -r 'paths(strings) as $p | select(($p[-1] | tostring) | test("(url|homepage|repository)$"; "i")) | select(getpath($p) | startswith("https://") | not) | $p | map(tostring) | join(".")' "$file")
+          done
+
           if [ "$status" -eq 0 ]; then
             echo "plugin manifests agree"
           fi
