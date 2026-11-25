@@ -62,8 +62,8 @@ reads nothing else from your machine.
 
 - Before its first call to three.dev, it tells you what it sends to
   `api.three.dev`: this machine's name, the repository folder's name, your
-  agent's name, and a short report of how the setup ended. No code and no
-  keys.
+  agent's name, and a short report of how the setup ended. No code, and no
+  keys except when a setup is resumed (below).
 - You approve the connection once, in your browser. three.dev then issues a
   key for your app, `THREE_DEV_API_KEY`, which goes straight into the app's
   env file and never into the conversation. If git does not ignore that file,

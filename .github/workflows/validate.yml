@@ -254,7 +254,7 @@ jobs:
               *.svg | *.SVG)
                 fail "$file: the only SVG allowed is the icon, assets/icon.svg" ;;
             esac
-            if [ "$(head -c 2 "$file")" = '#!' ]; then
+            if [ "$(head -c 2 -- "$file")" = '#!' ]; then
               fail "$file: starts with #!; executable files are refused in a plugin"
             fi
           done < <(git ls-files -z)
