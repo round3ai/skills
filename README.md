@@ -63,8 +63,10 @@ To use the three.dev MCP server without the plugin, add
   `gate.three.dev`, and the setup skill only to `api.three.dev`, when it
   resumes an interrupted setup.
 - **The setup skill** sends `api.three.dev` this machine's name, the
-  repository folder's name, your agent's name and a short report of how the
-  setup ended. No code.
+  repository folder's name and your agent's name, which the approval page
+  shows so you can recognise your own request, and a short report of how the
+  setup ended, which your three.dev setup page shows and which helps us fix
+  setups that fail. No code.
 
 ## Skills
 
