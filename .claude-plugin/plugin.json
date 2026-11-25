@@ -19,7 +19,7 @@
   ],
   "icon": "./assets/icon.svg",
   "documentationUrl": "https://docs.three.dev/?ref=plugin-claude",
-  "supportUrl": "mailto:support@three.dev",
+  "supportUrl": "https://github.com/round3ai/skills/issues",
   "privacyPolicyUrl": "https://three.dev/privacy",
   "termsOfServiceUrl": "https://three.dev/terms",
   "skills": "./skills/",

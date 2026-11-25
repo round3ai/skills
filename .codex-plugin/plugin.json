@@ -30,6 +30,7 @@
       "Read"
     ],
     "websiteURL": "https://three.dev/?ref=plugin-codex",
+    "supportURL": "https://github.com/round3ai/skills/issues",
     "privacyPolicyURL": "https://three.dev/privacy",
     "termsOfServiceURL": "https://three.dev/terms",
     "logo": "./assets/icon.svg",
