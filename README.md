@@ -52,9 +52,41 @@ To use the three.dev MCP server without the plugin, add
 | Kiro | `.kiro/settings/mcp.json`: `{"mcpServers": {"three-dev": {"url": "https://mcp.three.dev/mcp"}}}` |
 | Cline | MCP Servers panel: the URL above, transport Streamable HTTP |
 
+## What this plugin sends and changes
+
+**The MCP server**, `https://mcp.three.dev/mcp`. You sign in to three.dev
+when your client asks. It receives only the tool calls your agent makes and
+reads nothing else from your machine.
+
+**The `three-dev-setup` skill**, run in your repository:
+
+- Before its first call to three.dev, it tells you what it sends to
+  `api.three.dev`: this machine's name, the repository folder's name, your
+  agent's name, and a short report of how the setup ended. No code and no
+  keys.
+- You approve the connection once, in your browser. three.dev then issues a
+  key for your app, `THREE_DEV_API_KEY`, which goes straight into the app's
+  env file and never into the conversation. If git does not ignore that file,
+  the skill adds it to `.gitignore`.
+- In your code it changes only the LLM calls: their base URL, which points at
+  the three.dev proxy, `gate.three.dev`, a few `X-Three-*` headers, and the
+  key variable. It adds an env file loader (`python-dotenv` or `dotenv`) only
+  when the app needs one. Your provider key stays where it is and is
+  forwarded to your provider untouched.
+- It checks the wiring with one short request through the proxy, marked as a
+  test so three.dev does not store it.
+- If an interrupted setup is resumed, it sends the key from the env file to
+  `api.three.dev`, the service that issued it, in a request header, without
+  printing it.
+
+**The `three-dev-failure-modes` skill** reads the traffic three.dev recorded
+through the MCP server. It sets a failure mode's severity, or dismisses or
+restores one, only when you ask, and edits your code, prompt or configuration
+only after you say yes.
+
 ## Skills
 
-<!-- Generated from each SKILL.md description by scripts/build-readme.sh on publish. Do not edit. -->
+<!-- Generated from each SKILL.md description on publish. Do not edit. -->
 <!-- SKILLS:START -->
 
 | Skill | What it does |
